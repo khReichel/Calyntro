@@ -1,10 +1,10 @@
 {
-    "analysis": 0.032,
-    "api": 0.037,
-    "importer_guide": 0.012,
-    "index": 0.005,
-    "installation": 0.015,
-    "manage_script": 0.025,
-    "pulseflow_config": 0.014,
-    "usage": 0.012
+    "analysis": 0.035,
+    "api": 0.04,
+    "importer_guide": 0.015,
+    "index": 0.006,
+    "installation": 0.017,
+    "manage_script": 0.03,
+    "pulseflow_config": 0.015,
+    "usage": 0.014
 }
