@@ -18,26 +18,25 @@ By bridging the gap between raw Git history and actionable insights, Pulseflow e
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
 Pulseflow provides a multi-dimensional view of your software project across **Files**, **Modules**, and **Teams**:
 
-###  Evolution & Pulse
+###  Evolution & Pulse
 * **Hotspot Trends:** Identifies files and modules that are becoming increasingly problematic ("Rising") or stabilizing ("Cooling") by comparing historical baselines with current activity.
 * **Activity Recency:** Quickly spot abandoned legacy code versus areas of intense recent development.
 * **Code Churn:** Analyze the raw volume of changes (added/deleted lines) to find unstable components.
 
-### 易 Structure & Logic
+###  Structure & Logic
 * **Combined Complexity:** A holistic view combining *Cognitive Complexity*, *Cyclomatic Complexity*, and structural *Effort* to pinpoint exactly where code is hardest to maintain.
-* **Code City Visualization:** Explore your codebase in a 3D interactive "City" metaphor, where buildings represent files, height is complexity, and color denotes risk.
 
-###  Team & Knowledge (Conway's Law in Action)
+###  Team & Knowledge (Conway's Law in Action)
 * **Code Ownership & Fragmentation:** Identify knowledge silos (single points of failure/Bus Factor) and fragmented code (too many developers touching the same file).
 * **Module-Team Alignment:** Visualize which teams effectively "own" which architectural components, helping to align software architecture with team topology.
 
 ---
 
-##  Quick Start
+##  Quick Start
 
 Get Pulseflow running locally via Docker in under 5 minutes:
 
@@ -67,7 +66,7 @@ Now open your browser at **`http://localhost`** to explore your dashboard.
 
 ---
 
-##  Architecture
+##  Architecture
 
 Pulseflow is designed for speed and simplicity, utilizing a modern, containerized stack:
 
@@ -78,11 +77,11 @@ Pulseflow is designed for speed and simplicity, utilizing a modern, containerize
 
 ---
 
-##  Comprehensive Documentation
+##  Comprehensive Documentation
 
 For detailed guides on configuration, API usage, and interpreting the metrics, please visit our official documentation:
 
- **[Pulseflow Documentation (GitHub Pages)](https://khreichel.github.io/Pulseflow/)**
+**[Pulseflow Documentation (GitHub Pages)](https://khreichel.github.io/Pulseflow/)**
 
 **Quick Links:**
 * [Understanding Pulseflow Analyses](https://khreichel.github.io/Pulseflow/analysis.html): Deep dive into what each metric means.
@@ -91,7 +90,7 @@ For detailed guides on configuration, API usage, and interpreting the metrics, p
 
 ---
 
-## ⚖️ Terms of Use & Disclaimer
+##  Terms of Use & Disclaimer
 
 Pulseflow is distributed as free-to-use Docker containers. You are welcome to deploy and use the provided images for your own projects.
 
