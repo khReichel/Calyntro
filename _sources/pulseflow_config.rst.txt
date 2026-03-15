@@ -3,7 +3,7 @@
 Pulseflow Configuration File
 ============================
 
-The ``pulseflow_config.yaml`` file is the central place to configure the analysis performed by Pulseflow. It defines the project settings, what to include and exclude from the analysis, and how to map users to teams.
+The ``config.yaml`` file is the central place to configure the analysis performed by Pulseflow. It defines the project settings, what to include and exclude from the analysis, and how to map users to teams.
 
 This document describes the structure and purpose of each section in the configuration file.
 

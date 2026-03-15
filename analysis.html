@@ -45,7 +45,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Deployment and Installation Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Data Import Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Data Import &amp; Update Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Dashboard User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Understanding Pulseflow Analyses</a><ul>
@@ -136,10 +136,13 @@
 <ul class="simple">
 <li><p><strong>UI Name</strong>: Change Recency</p></li>
 <li><p><strong>What it Measures</strong>: The time elapsed since a file (or the latest file in a module) was last modified.</p></li>
-<li><p><strong>How to Interpret</strong>:
-*   <strong>Young files</strong> are recent additions, often indicating new features.
-*   <strong>Old files</strong> that haven’t been touched in a long time are stable (or dead) code.
-*   <strong>Old files with recent changes</strong> are often core legacy components that are being maintained.</p></li>
+<li><p><strong>How to Interpret</strong>:</p>
+<ul>
+<li><p><strong>Young files</strong> are recent additions, often indicating new features.</p></li>
+<li><p><strong>Old files</strong> that haven’t been touched in a long time are stable (or dead) code.</p></li>
+<li><p><strong>Old files with recent changes</strong> are often core legacy components that are being maintained.</p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="absolute-churn">
@@ -155,10 +158,13 @@
 <ul class="simple">
 <li><p><strong>UI Name</strong>: Development Trend</p></li>
 <li><p><strong>What it Measures</strong>: This compares a “Baseline” period with a “Current” period to show the direction of activity.</p></li>
-<li><p><strong>How to Interpret</strong>:
-*   <strong>Spiking</strong>: Activity is significantly higher than in the past.
-*   <strong>Cooling</strong>: The component is stabilizing; activity is decreasing.
-*   <strong>Stable</strong>: No significant change in activity levels.</p></li>
+<li><p><strong>How to Interpret</strong>:</p>
+<ul>
+<li><p><strong>Spiking</strong>: Activity is significantly higher than in the past.</p></li>
+<li><p><strong>Cooling</strong>: The component is stabilizing; activity is decreasing.</p></li>
+<li><p><strong>Stable</strong>: No significant change in activity levels.</p></li>
+</ul>
+</li>
 </ul>
 </section>
 </section>
@@ -170,12 +176,18 @@
 <h3>Hotspot Analysis (File &amp; Module)<a class="headerlink" href="#hotspot-analysis-file-module" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>UI Name</strong>: Hotspot Analysis (Zeitfenster) / Module Hotspot Trend</p></li>
-<li><p><strong>What it Measures</strong>: This analysis identifies areas that are likely to cause problems by combining <strong>Churn</strong> (how much it changes) with <strong>Age</strong> (how long it has been changing). It compares two time windows to see if a component is heating up or cooling down.
-*   <strong>Activity Score</strong>: High churn in a short time (current intensity).
-*   <strong>Structural Score</strong>: Consistent churn over a long period (long-term instability).</p></li>
-<li><p><strong>How to Interpret</strong>:
-*   <strong>File Level</strong>: Files with both high Activity and high Structural scores are your most critical hotspots. They are likely sources of long-term technical debt and should be the first candidates for refactoring.
-*   <strong>Module Level</strong>: Aggregates these scores for whole components. It reveals which architectural modules are becoming increasingly unstable over time, helping in higher-level resource allocation.</p></li>
+<li><p><strong>What it Measures</strong>: This analysis identifies areas that are likely to cause problems by combining <strong>Churn</strong> (how much it changes) with <strong>Age</strong> (how long it has been changing). It compares two time windows to see if a component is heating up or cooling down.</p>
+<ul>
+<li><p><strong>Activity Score</strong>: High churn in a short time (current intensity).</p></li>
+<li><p><strong>Structural Score</strong>: Consistent churn over a long period (long-term instability).</p></li>
+</ul>
+</li>
+<li><p><strong>How to Interpret</strong>:</p>
+<ul>
+<li><p><strong>File Level</strong>: Files with both high Activity and high Structural scores are your most critical hotspots. They are likely sources of long-term technical debt and should be the first candidates for refactoring.</p></li>
+<li><p><strong>Module Level</strong>: Aggregates these scores for whole components. It reveals which architectural modules are becoming increasingly unstable over time, helping in higher-level resource allocation.</p></li>
+</ul>
+</li>
 </ul>
 </section>
 </section>
@@ -187,10 +199,13 @@
 <h3>Complexity<a class="headerlink" href="#complexity" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>UI Name</strong>: Complexity</p></li>
-<li><p><strong>What it Measures</strong>: A holistic view of complexity, combining:
-*   <strong>Cyclomatic Complexity</strong>: The number of independent paths through the code (branching logic).
-*   <strong>Cognitive Complexity</strong>: How difficult the code is for a human to read and understand.
-*   <strong>Efforts</strong>: An estimated measure of the effort required to maintain the file (based on Halstead metrics).</p></li>
+<li><p><strong>What it Measures</strong>: A holistic view of complexity, combining:</p>
+<ul>
+<li><p><strong>Cyclomatic Complexity</strong>: The number of independent paths through the code (branching logic).</p></li>
+<li><p><strong>Cognitive Complexity</strong>: How difficult the code is for a human to read and understand.</p></li>
+<li><p><strong>Efforts</strong>: An estimated measure of the effort required to maintain the file (based on Halstead metrics).</p></li>
+</ul>
+</li>
 <li><p><strong>How to Interpret</strong>: High complexity scores, especially when combined with high churn (Hotspots), are the single best predictor of bugs.</p></li>
 </ul>
 </section>
@@ -198,9 +213,12 @@
 <h3>Complexity Trend<a class="headerlink" href="#complexity-trend" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>What it Measures</strong>: Complexity isn’t just a snapshot; Pulseflow tracks how <strong>Cognitive Complexity</strong> changes between two points in time.</p></li>
-<li><p><strong>Calculation</strong>: It compares the complexity at the start and end of your selected timeframe.
-*   A <strong>relative increase</strong> in cognitive complexity suggests that new features are being added in a way that makes the code harder to understand.
-*   A <strong>decrease</strong> usually indicates successful refactoring or simplification.</p></li>
+<li><p><strong>Calculation</strong>: It compares the complexity at the start and end of your selected timeframe.</p>
+<ul>
+<li><p>A <strong>relative increase</strong> in cognitive complexity suggests that new features are being added in a way that makes the code harder to understand.</p></li>
+<li><p>A <strong>decrease</strong> usually indicates successful refactoring or simplification.</p></li>
+</ul>
+</li>
 <li><p><strong>How to Interpret</strong>: In the UI, icons indicate the trend (Rising, Stable, or Falling). A rising complexity trend in a file that already has high churn is a “code red” situation.</p></li>
 </ul>
 </section>

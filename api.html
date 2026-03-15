@@ -46,7 +46,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Deployment and Installation Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Data Import Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Data Import &amp; Update Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Dashboard User Guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#common-concepts">Common Concepts</a><ul>
@@ -66,8 +66,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#change-recency-files">Change Recency (Files)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#change-recency-modules">Change Recency (Modules)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#absolute-churn">Absolute Churn</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#absolute-churn-modules">Absolute Churn (Modules)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#development-trend">Development Trend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#file-trend-history">File Trend History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-trend-history">Module Trend History</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#quality-risk">Quality &amp; Risk</a><ul>
@@ -91,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#get-modules">Get Modules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-analysis-start-date">Get Analysis Start Date</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-teams">Get Teams</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#application-info">Application Info</a><ul>
@@ -198,8 +201,19 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <ul class="simple">
 <li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analysis/loc/modules</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
-<li><p><strong>Request Body:</strong> Same as <em>Get LOC per File</em>.</p></li>
 </ul>
+<p><strong>Request Body:</strong> Same as <em>Get LOC per File</em>.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/core/&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;loc&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5240</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="get-total-loc">
 <h3>Get Total LOC<a class="headerlink" href="#get-total-loc" title="Link to this heading"></a></h3>
@@ -265,6 +279,21 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Change Frequency (Files)</em>.</p></li>
 </ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/api/&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;commit_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">85</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;last_modified&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-12-15T14:30:00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;main_contributor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Jane Smith&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;author_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;last_commit_message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Fix API authentication&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="change-recency-files">
 <h3>Change Recency (Files)<a class="headerlink" href="#change-recency-files" title="Link to this heading"></a></h3>
@@ -305,23 +334,62 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Change Recency (Files)</em>.</p></li>
 </ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/core/&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;first_commit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2020-05-10T08:00:00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;last_commit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-12-01T16:45:00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;age_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1300</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;revisions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">450</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="absolute-churn">
 <h3>Absolute Churn<a class="headerlink" href="#absolute-churn" title="Link to this heading"></a></h3>
 <p>Returns the absolute churn (added + deleted lines) per file.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/abs_churn</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/abs_churn/files</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;from_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;from&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01T00:00:00&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;to&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-12-31T23:59:59&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;module&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;optional_module_name&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;nbr_items&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;file_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/db/connection.py&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;abs_churn&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1250</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;total_added&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;total_deleted&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">450</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;first_change&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-15T10:00:00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;last_change&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-11-20T15:30:00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;revisions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="absolute-churn-modules">
+<h3>Absolute Churn (Modules)<a class="headerlink" href="#absolute-churn-modules" title="Link to this heading"></a></h3>
+<p>Returns the absolute churn aggregated by module.</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/abs_churn/modules</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+<li><p><strong>Request Body:</strong> Same as <em>Absolute Churn</em>.</p></li>
+</ul>
 </section>
 <section id="development-trend">
 <h3>Development Trend<a class="headerlink" href="#development-trend" title="Link to this heading"></a></h3>
@@ -333,14 +401,45 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;baseline&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;from_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;from&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01T00:00:00&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;to&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-06-30T23:59:59&quot;</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;current&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;from_&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-07-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;from&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-07-01T00:00:00&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;to&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-12-31T23:59:59&quot;</span>
 <span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;module&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;optional_module_name&quot;</span>
+<span class="w">  </span><span class="nt">&quot;module&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;optional_module_name&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;nbr_items&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;file_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/core/analysis.py&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;churn_baseline&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">450</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;churn_current&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">820</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;scores&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;structural&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;baseline&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.45</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;current&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.82</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;delta&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.37</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;delta_norm&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;norm&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;trend&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;up&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;activity&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;baseline&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;current&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;delta&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;delta_norm&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;norm&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;trend&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;up&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -357,10 +456,54 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <span class="w">  </span><span class="nt">&quot;file_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/core/service.py&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01T00:00:00&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-12-31T23:59:59&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;bucket_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span>
+<span class="w">  </span><span class="nt">&quot;bucket_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;churn&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;file_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/core/service.py&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;metric&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;churn&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;from_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;to_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-12-31T23:59:59&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;bucket_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;series&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">150</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-15T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">240</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="module-trend-history">
+<h3>Module Trend History<a class="headerlink" href="#module-trend-history" title="Link to this heading"></a></h3>
+<p>Returns the historical development of metrics for a module.</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/module_trend</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+</ul>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/api/&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-12-31T23:59:59&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;bucket_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;churn&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong> Same structure as <em>File Trend History</em>.</p>
 </section>
 </section>
 <hr class="docutils" />
@@ -379,6 +522,19 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <span class="w">  </span><span class="nt">&quot;to&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-12-31T23:59:59&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;module&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;optional_module_name&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;nbr_items&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;file_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/core/logic.py&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;age_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">450</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;churn&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;hotspot_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.89</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -453,12 +609,27 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Combined Complexity (Files)</em>.</p></li>
 </ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;file_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/core/&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;cognitive&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;cyclomatic&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">85</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;loc&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5240</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;efforts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">12500.0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;trend_indicator&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="complexity-trend-history">
 <h3>Complexity Trend History<a class="headerlink" href="#complexity-trend-history" title="Link to this heading"></a></h3>
 <p>Returns the historical complexity trend for a specific file or module.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/trends/complexity</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/hotspots/complexity/trend</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -467,6 +638,21 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <span class="w">  </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01T00:00:00&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-12-31T23:59:59&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;author_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-15T10:00:00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;complexity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;cognitive&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;efforts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">450.0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;loc&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;commit_churn&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -499,6 +685,18 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Code Ownership (Files)</em>.</p></li>
 </ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/api/&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;author_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;main_contributor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Jane Smith&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="module-ownership-by-teams">
 <h3>Module Ownership by Teams<a class="headerlink" href="#module-ownership-by-teams" title="Link to this heading"></a></h3>
@@ -541,6 +739,23 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Module Ownership by Teams</em>.</p></li>
 </ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;component_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/core/&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;team_name_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Core Team&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ratio_1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.75</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;team_name_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DevOps&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ratio_2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.20</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;team_name_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Unassigned/Others&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;ratio_3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.05</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;health_status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;monopoly&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 </section>
 <hr class="docutils" />
@@ -564,6 +779,24 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;analysis_since&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2020-01-01T00:00:00&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="get-teams">
+<h3>Get Teams<a class="headerlink" href="#get-teams" title="Link to this heading"></a></h3>
+<p>Returns a list of all configured teams.</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/config/teams</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
+</ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Team A&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>

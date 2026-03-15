@@ -78,7 +78,21 @@ Returns the aggregated Lines of Code for each defined module.
 
 *   **URL:** ``/analysis/loc/modules``
 *   **Method:** ``POST``
-*   **Request Body:** Same as *Get LOC per File*.
+
+**Request Body:** Same as *Get LOC per File*.
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "name": "src/core/",
+         "loc": 5240
+       }
+     ]
+   }
 
 Get Total LOC
 ~~~~~~~~~~~~~
@@ -150,6 +164,23 @@ Retrieves commit activity aggregated by module.
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Change Frequency (Files)*.
 
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "module_name": "src/api/",
+         "commit_count": 85,
+         "last_modified": "2023-12-15T14:30:00",
+         "main_contributor": "Jane Smith",
+         "author_count": 5,
+         "last_commit_message": "Fix API authentication"
+       }
+     ]
+   }
+
 Change Recency (Files)
 ~~~~~~~~~~~~~~~~~~~~~~
 Returns the age of files (time since first and last commit).
@@ -192,11 +223,27 @@ Returns the age aggregated by module.
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Change Recency (Files)*.
 
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "module_name": "src/core/",
+         "first_commit": "2020-05-10T08:00:00",
+         "last_commit": "2023-12-01T16:45:00",
+         "age_days": 1300,
+         "revisions": 450
+       }
+     ]
+   }
+
 Absolute Churn
 ~~~~~~~~~~~~~~
 Returns the absolute churn (added + deleted lines) per file.
 
-*   **URL:** ``/analyze/abs_churn``
+*   **URL:** ``/analyze/abs_churn/files``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -204,11 +251,37 @@ Returns the absolute churn (added + deleted lines) per file.
 .. code-block:: json
 
    {
-     "from_": "2023-01-01T00:00:00",
+     "from": "2023-01-01T00:00:00",
      "to": "2023-12-31T23:59:59",
      "module": "optional_module_name",
      "nbr_items": 100
    }
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "file_path": "src/db/connection.py",
+         "abs_churn": 1250,
+         "total_added": 800,
+         "total_deleted": 450,
+         "first_change": "2023-01-15T10:00:00",
+         "last_change": "2023-11-20T15:30:00",
+         "revisions": 12
+       }
+     ]
+   }
+
+Absolute Churn (Modules)
+~~~~~~~~~~~~~~~~~~~~~~~~
+Returns the absolute churn aggregated by module.
+
+*   **URL:** ``/analyze/abs_churn/modules``
+*   **Method:** ``POST``
+*   **Request Body:** Same as *Absolute Churn*.
 
 Development Trend
 ~~~~~~~~~~~~~~~~~
@@ -223,14 +296,47 @@ Analyzes the evolution of hotspots by comparing a baseline time window with a cu
 
    {
      "baseline": {
-       "from_": "2023-01-01T00:00:00",
+       "from": "2023-01-01T00:00:00",
        "to": "2023-06-30T23:59:59"
      },
      "current": {
-       "from_": "2023-07-01T00:00:00",
+       "from": "2023-07-01T00:00:00",
        "to": "2023-12-31T23:59:59"
      },
-     "module": "optional_module_name"
+     "module": "optional_module_name",
+     "nbr_items": 50
+   }
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "file_path": "src/core/analysis.py",
+         "churn_baseline": 450,
+         "churn_current": 820,
+         "scores": {
+           "structural": {
+             "baseline": 0.45,
+             "current": 0.82,
+             "delta": 0.37,
+             "delta_norm": 0.5,
+             "norm": 0.6,
+             "trend": "up"
+           },
+           "activity": {
+             "baseline": 15,
+             "current": 25,
+             "delta": 10,
+             "delta_norm": 0.4,
+             "norm": 0.5,
+             "trend": "up"
+           }
+         }
+       }
+     ]
    }
 
 File Trend History
@@ -248,8 +354,56 @@ Returns the historical development of metrics for a specific file.
      "file_path": "src/core/service.py",
      "start_date": "2023-01-01T00:00:00",
      "end_date": "2023-12-31T23:59:59",
-     "bucket_days": 14
+     "bucket_days": 14,
+     "metric": "churn"
    }
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "file_path": "src/core/service.py",
+         "metric": "churn",
+         "from_date": "2023-01-01T00:00:00",
+         "to_date": "2023-12-31T23:59:59",
+         "bucket_days": 14,
+         "series": [
+           {
+             "t": "2023-01-01T00:00:00",
+             "value": 150
+           },
+           {
+             "t": "2023-01-15T00:00:00",
+             "value": 240
+           }
+         ]
+       }
+     ]
+   }
+
+Module Trend History
+~~~~~~~~~~~~~~~~~~~~
+Returns the historical development of metrics for a module.
+
+*   **URL:** ``/analyze/module_trend``
+*   **Method:** ``POST``
+
+**Request Body:**
+
+.. code-block:: json
+
+   {
+     "module_name": "src/api/",
+     "start_date": "2023-01-01T00:00:00",
+     "end_date": "2023-12-31T23:59:59",
+     "bucket_days": 14,
+     "metric": "churn"
+   }
+
+**Response:** Same structure as *File Trend History*.
 
 --------------------------------------------------------------------------------
 
@@ -272,6 +426,21 @@ Identifies "Hotspots" based on the intersection of high churn and file age.
      "to": "2023-12-31T23:59:59",
      "module": "optional_module_name",
      "nbr_items": 50
+   }
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "file_path": "src/core/logic.py",
+         "age_days": 450,
+         "churn": 1200,
+         "hotspot_score": 0.89
+       }
+     ]
    }
 
 Hotspot Analysis (Complexity & Churn)
@@ -351,11 +520,28 @@ Returns aggregated complexity metrics for modules.
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Combined Complexity (Files)*.
 
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "file_path": "src/core/",
+         "cognitive": 120,
+         "cyclomatic": 85,
+         "loc": 5240,
+         "efforts": 12500.0,
+         "trend_indicator": 1.5
+       }
+     ]
+   }
+
 Complexity Trend History
 ~~~~~~~~~~~~~~~~~~~~~~~~
 Returns the historical complexity trend for a specific file or module.
 
-*   **URL:** ``/analyze/trends/complexity``
+*   **URL:** ``/analyze/hotspots/complexity/trend``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -367,6 +553,23 @@ Returns the historical complexity trend for a specific file or module.
      "module_name": null,
      "start_date": "2023-01-01T00:00:00",
      "end_date": "2023-12-31T23:59:59"
+   }
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "author_date": "2023-01-15T10:00:00",
+         "complexity": 15,
+         "cognitive": 12,
+         "efforts": 450.0,
+         "loc": 120,
+         "commit_churn": 25
+       }
+     ]
    }
 
 --------------------------------------------------------------------------------
@@ -398,6 +601,20 @@ Returns ownership statistics aggregated by module.
 *   **URL:** ``/analysis/contributors/modules``
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Code Ownership (Files)*.
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "module_name": "src/api/",
+         "author_count": 8,
+         "main_contributor": "Jane Smith"
+       }
+     ]
+   }
 
 Module Ownership by Teams
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -443,6 +660,25 @@ Shows the top 3 contributing teams for each module (Module-centric view).
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Module Ownership by Teams*.
 
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "component_name": "src/core/",
+         "team_name_1": "Core Team",
+         "ratio_1": 0.75,
+         "team_name_2": "DevOps",
+         "ratio_2": 0.20,
+         "team_name_3": "Unassigned/Others",
+         "ratio_3": 0.05,
+         "health_status": "monopoly"
+       }
+     ]
+   }
+
 --------------------------------------------------------------------------------
 
 Configuration
@@ -468,6 +704,25 @@ Returns the configured start date for the current analysis session.
 
    {
      "analysis_since": "2020-01-01T00:00:00"
+   }
+
+Get Teams
+~~~~~~~~~
+Returns a list of all configured teams.
+
+*   **URL:** ``/config/teams``
+*   **Method:** ``GET``
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "name": "Team A"
+       }
+     ]
    }
 
 --------------------------------------------------------------------------------

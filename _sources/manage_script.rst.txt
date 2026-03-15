@@ -36,6 +36,8 @@ Here is a list of the commands supported by the ``manage.sh`` script:
 **import <path>**
    Runs the full data import process for a local repository. This command takes the path to the repository on your host machine, mounts it into the container, and runs both the configuration and analysis import steps.
 
+   *Note: After the import is complete, the generated DuckDB database files will be located in the ``data/update_data/`` directory (or as defined by ``db_update_path`` in your ``config.yaml``). Reference the ``config.yaml`` or :ref:`pulseflow_config` for more details.*
+
    .. code-block:: bash
 
       ./manage.sh import /path/to/your/local/repo

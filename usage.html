@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="API Reference" href="api.html" />
-    <link rel="prev" title="Data Import Guide" href="importer_guide.html" /> 
+    <link rel="prev" title="Data Import &amp; Update Guide" href="importer_guide.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,17 +46,13 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Deployment and Installation Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Data Import Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Data Import &amp; Update Guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Dashboard User Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#navigation-filtering">Navigation &amp; Filtering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#views">Views</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#table-view">1. Table View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hotspot-view-heatmap">2. Hotspot View (Heatmap)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#code-city-view">3. Code City View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#trend-view">4. Trend View</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#drill-down-file-details">Drill-Down: File Details</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
@@ -113,7 +109,7 @@
 </section>
 <section id="views">
 <h2>Views<a class="headerlink" href="#views" title="Link to this heading"></a></h2>
-<p>Pulseflow presents data in four different views, each optimized for a specific kind of insight.</p>
+<p>Pulseflow currently provides a detailed table view for exploring your code analysis results.</p>
 <section id="table-view">
 <h3>1. Table View<a class="headerlink" href="#table-view" title="Link to this heading"></a></h3>
 <p>The default view. It provides a detailed, sortable list of all files or modules matching your criteria.</p>
@@ -124,46 +120,6 @@
 *   <strong>External Link Icon</strong>: Opens a full-screen modal with detailed file history and metrics.</p></li>
 </ul>
 </section>
-<section id="hotspot-view-heatmap">
-<h3>2. Hotspot View (Heatmap)<a class="headerlink" href="#hotspot-view-heatmap" title="Link to this heading"></a></h3>
-<p>A visual grid where each cell represents a file.</p>
-<ul class="simple">
-<li><p><strong>Size</strong>: Represents the complexity or size of the file.</p></li>
-<li><p><strong>Color</strong>: Represents the intensity of the metric (e.g., Churn or Hotspot Score). Red indicates critical areas.</p></li>
-<li><p><strong>Interaction</strong>: Hover over a cell to see details; click to drill down.</p></li>
-</ul>
-</section>
-<section id="code-city-view">
-<h3>3. Code City View<a class="headerlink" href="#code-city-view" title="Link to this heading"></a></h3>
-<p>A 3D visualization of your codebase using the “City Metaphor”.</p>
-<ul class="simple">
-<li><p><strong>Districts</strong>: Files are grouped by their modules (districts).</p></li>
-<li><p><strong>Buildings</strong>: Each building is a file.
-*   <strong>Height</strong>: Represents Complexity.
-*   <strong>Width/Footprint</strong>: Represents Lines of Code.
-*   <strong>Color</strong>: Represents the “Health” or “Risk” level.</p></li>
-<li><p><strong>Navigation</strong>: Click and drag to rotate the city; scroll to zoom in/out.</p></li>
-</ul>
-</section>
-<section id="trend-view">
-<h3>4. Trend View<a class="headerlink" href="#trend-view" title="Link to this heading"></a></h3>
-<p>A chart showing the historical evolution of metrics over time.</p>
-<ul class="simple">
-<li><p><strong>Visualizing Progress</strong>: See if your refactoring efforts are paying off (downward trend in complexity) or if technical debt is accumulating (upward trend).</p></li>
-<li><p><strong>Granularity</strong>: Data is aggregated by day or week depending on the selected range.</p></li>
-</ul>
-</section>
-</section>
-<section id="drill-down-file-details">
-<h2>Drill-Down: File Details<a class="headerlink" href="#drill-down-file-details" title="Link to this heading"></a></h2>
-<p>Clicking on any file in the Table, Hotspot, or Code City views opens the <strong>File Detail View</strong>.</p>
-<p>This comprehensive view shows:</p>
-<ul class="simple">
-<li><p><strong>Metadata</strong>: Path, Module, Size.</p></li>
-<li><p><strong>Metric History</strong>: A sparkline chart showing the trend of key metrics for this specific file.</p></li>
-<li><p><strong>Complexity</strong>: Detailed breakdown of Cognitive and Cyclomatic complexity.</p></li>
-<li><p><strong>Activity</strong>: Recent commit history and active contributors.</p></li>
-</ul>
 </section>
 </section>
 
@@ -171,7 +127,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="importer_guide.html" class="btn btn-neutral float-left" title="Data Import Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="importer_guide.html" class="btn btn-neutral float-left" title="Data Import &amp; Update Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="api.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

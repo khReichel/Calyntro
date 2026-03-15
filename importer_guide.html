@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Data Import Guide &mdash; pulseflow 0.1.0 documentation</title>
+  <title>Data Import &amp; Update Guide &mdash; pulseflow 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
@@ -46,13 +46,9 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Deployment and Installation Guide</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Import Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#method-1-using-docker-recommended">Method 1: Using Docker (Recommended)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#method-2-direct-script-execution">Method 2: Direct Script Execution</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#configuration-sync">1. Configuration Sync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#analysis-import">2. Analysis Import</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Import &amp; Update Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#initial-data-import">Initial Data Import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#incremental-update-workflow-zero-downtime">Incremental Update Workflow (Zero Downtime)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
@@ -75,7 +71,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Data Import Guide</li>
+      <li class="breadcrumb-item active">Data Import &amp; Update Guide</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/importer_guide.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -85,85 +81,72 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="data-import-guide">
-<span id="importer-guide"></span><h1>Data Import Guide<a class="headerlink" href="#data-import-guide" title="Link to this heading"></a></h1>
-<p>This guide explains how to import data into Pulseflow. The import process is responsible for two key tasks:</p>
+  <section id="data-import-update-guide">
+<span id="importer-guide"></span><h1>Data Import &amp; Update Guide<a class="headerlink" href="#data-import-update-guide" title="Link to this heading"></a></h1>
+<p>This guide explains how to import data into Pulseflow and how to run updates while the application is actively serving users.</p>
+<p>The import process is responsible for two key tasks:</p>
 <ol class="arabic simple">
-<li><p><strong>Configuration Sync</strong>: Loading your project settings, component definitions, and team structures from <code class="docutils literal notranslate"><span class="pre">pulseflow_config.yaml</span></code> into the configuration database.</p></li>
+<li><p><strong>Configuration Sync</strong>: Loading your project settings, component definitions, and team structures from your <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> into the configuration database.</p></li>
 <li><p><strong>Analysis Import</strong>: Scanning your Git repository, calculating metrics (like complexity and churn), and populating the analysis database.</p></li>
 </ol>
-<p>There are two ways to run the importer, depending on your environment.</p>
-<section id="method-1-using-docker-recommended">
-<h2>Method 1: Using Docker (Recommended)<a class="headerlink" href="#method-1-using-docker-recommended" title="Link to this heading"></a></h2>
-<p>If you are running Pulseflow via Docker, the easiest way to import data is using the <code class="docutils literal notranslate"><span class="pre">manage.sh</span></code> script. This handles all the container mounting and environment setup for you.</p>
+<p>In Pulseflow, all data extraction and updating is handled exclusively via Docker containers using the <code class="docutils literal notranslate"><span class="pre">manage.sh</span></code> script.</p>
+<section id="initial-data-import">
+<h2>Initial Data Import<a class="headerlink" href="#initial-data-import" title="Link to this heading"></a></h2>
+<p>To run the initial import for a repository, use the <code class="docutils literal notranslate"><span class="pre">manage.sh</span></code> script. This command mounts your local repository into the Docker container, runs the configuration sync, and then performs the full analysis.</p>
 <p><strong>Command:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./manage.sh<span class="w"> </span>import<span class="w"> </span>/absolute/path/to/your/repository
 </pre></div>
 </div>
-<p><strong>What it does:</strong></p>
-<ul class="simple">
-<li><p>Mounts your local repository into the Docker container (mapped to <code class="docutils literal notranslate"><span class="pre">/repo</span></code>).</p></li>
-<li><p>Runs the configuration sync.</p></li>
-<li><p>Runs the full analysis import.</p></li>
-</ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Instead of passing the absolute path every time, you can create a symlink named <code class="docutils literal notranslate"><span class="pre">repo</span></code> in the Pulseflow root directory pointing to your target repository:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ln<span class="w"> </span>-s<span class="w"> </span>/path/to/target/repo<span class="w"> </span>./repo
 </pre></div>
 </div>
-<p>If you do this, the <code class="docutils literal notranslate"><span class="pre">importer</span></code> container will use this symlink by default if no path is provided to the script (though <code class="docutils literal notranslate"><span class="pre">manage.sh</span> <span class="pre">import</span></code> still expects an argument for clarity). This is also helpful when running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">run</span></code> directly.</p>
+<p>If you do this, you can simply run <code class="docutils literal notranslate"><span class="pre">./manage.sh</span> <span class="pre">import</span> <span class="pre">./repo</span></code>.</p>
 </div>
 <p><strong>Prerequisites:</strong></p>
 <ul class="simple">
 <li><p>Docker must be running.</p></li>
-<li><p>You must have a valid <code class="docutils literal notranslate"><span class="pre">pulseflow_config.yaml</span></code> in your project root.</p></li>
-<li><p>In <code class="docutils literal notranslate"><span class="pre">pulseflow_config.yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">project.repo_path</span></code> must be set to <code class="docutils literal notranslate"><span class="pre">/repo</span></code> (the path inside the container).</p></li>
+<li><p>You must have a valid <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> in your project’s <code class="docutils literal notranslate"><span class="pre">config/</span></code> folder.</p></li>
 </ul>
 </section>
-<section id="method-2-direct-script-execution">
-<h2>Method 2: Direct Script Execution<a class="headerlink" href="#method-2-direct-script-execution" title="Link to this heading"></a></h2>
-<p>If you are developing locally or running Pulseflow without Docker, you can use the helper scripts provided in the <code class="docutils literal notranslate"><span class="pre">scripts/</span></code> directory.</p>
-<section id="configuration-sync">
-<h3>1. Configuration Sync<a class="headerlink" href="#configuration-sync" title="Link to this heading"></a></h3>
-<p>To sync your <code class="docutils literal notranslate"><span class="pre">pulseflow_config.yaml</span></code> with the configuration database:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/import_config.sh<span class="w"> </span><span class="o">[</span>dev<span class="p">|</span>prod<span class="o">]</span>
+<section id="incremental-update-workflow-zero-downtime">
+<h2>Incremental Update Workflow (Zero Downtime)<a class="headerlink" href="#incremental-update-workflow-zero-downtime" title="Link to this heading"></a></h2>
+<p>Pulseflow is designed to support background updates without requiring you to shut down the frontend or the backend API.</p>
+<p>The importer operates incrementally: it checks which commits are already present in the database and only analyzes new commits. To ensure this process is fast and doesn’t lock the live database, Pulseflow uses two separate database paths defined in your <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">project.db_path</span></code>: The directory where the <em>live</em> databases used by the backend reside (e.g., <code class="docutils literal notranslate"><span class="pre">/app/data</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">project.db_update_path</span></code>: The directory where the importer writes new data (e.g., <code class="docutils literal notranslate"><span class="pre">/app/data/update_data</span></code>).</p></li>
+</ul>
+<p><strong>The Update Process:</strong></p>
+<ol class="arabic">
+<li><p><strong>Prepare the Update Directory</strong>
+For the incremental import to work efficiently, the importer needs to know the current state. Therefore, the live databases should be copied into the update directory before starting the import.</p>
+<p><em>Note: If you are using the default configuration paths provided by Pulseflow, this directory structure and file separation is handled automatically.</em></p>
+</li>
+<li><p><strong>Run the Importer</strong>
+Run the import command just like the initial import. The script will detect the existing databases in the <code class="docutils literal notranslate"><span class="pre">db_update_path</span></code>, identify new commits in the repository, and append the new analysis data.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./manage.sh<span class="w"> </span>import<span class="w"> </span>/absolute/path/to/your/repository
 </pre></div>
 </div>
-<ul class="simple">
-<li><p><strong>dev</strong>: (Default) Uses <code class="docutils literal notranslate"><span class="pre">pulseflow_config_dev.yaml</span></code>.</p></li>
-<li><p><strong>prod</strong>: Uses <code class="docutils literal notranslate"><span class="pre">pulseflow_config.yaml</span></code>.</p></li>
-</ul>
-</section>
-<section id="analysis-import">
-<h3>2. Analysis Import<a class="headerlink" href="#analysis-import" title="Link to this heading"></a></h3>
-<p>To scan your repository and populate the analysis database:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/import_analysis.sh<span class="w"> </span><span class="o">[</span>dev<span class="p">|</span>prod<span class="o">]</span>
+</li>
+<li><p><strong>Replace the Live Database</strong>
+Once the importer has finished running in the background and the databases in the <code class="docutils literal notranslate"><span class="pre">db_update_path</span></code> are fully updated, you need to swap them with the live databases.</p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">replace</span></code> command to perform a safe, transactional swap. This will briefly pause the backend, back up the old databases, copy the new ones in, and restart the backend.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Usage: ./manage.sh replace &lt;source_dir&gt; &lt;new_basename&gt; &lt;old_basename&gt;</span>
+
+./manage.sh<span class="w"> </span>replace<span class="w"> </span>./data/update_data<span class="w"> </span>pulseflow<span class="w"> </span>pulseflow
 </pre></div>
 </div>
-<p><strong>What these scripts do:</strong></p>
-<ul class="simple">
-<li><p>They validate your Python environment and dependencies.</p></li>
-<li><p>They execute the Python importer module directly on your host machine.</p></li>
-<li><p>They use the settings defined in your local configuration files.</p></li>
-</ul>
-<p><strong>Prerequisites:</strong></p>
-<ul class="simple">
-<li><p><strong>Python Environment</strong>: You must have the project’s virtual environment active (<code class="docutils literal notranslate"><span class="pre">.venv</span></code>).</p></li>
-<li><p><strong>Dependencies</strong>: All Python dependencies must be installed (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code>).</p></li>
-<li><p><strong>Rust Code Analysis</strong>: The <code class="docutils literal notranslate"><span class="pre">rust-code-analysis-cli</span></code> tool must be installed and available in your system PATH, as the importer relies on it for complexity metrics.</p></li>
-</ul>
-<p><strong>Configuration:</strong></p>
-<p>Ensure your <code class="docutils literal notranslate"><span class="pre">pulseflow_config.yaml</span></code> points to the correct local paths for:
-*   <code class="docutils literal notranslate"><span class="pre">repo_path</span></code>: The path to the Git repository you want to analyze.
-*   <code class="docutils literal notranslate"><span class="pre">db_path</span></code>: The directory where the DuckDB database files should be created.</p>
-</section>
+</li>
+</ol>
+<p>By following this workflow, your users can continue analyzing the existing data on the dashboard while the heavy lifting of parsing new commits happens transparently in the background.</p>
 </section>
 <section id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>“rust-code-analysis-cli not found”</strong>: If running locally, ensure you have installed the tool (usually via <code class="docutils literal notranslate"><span class="pre">cargo</span> <span class="pre">install</span> <span class="pre">rust-code-analysis-cli</span></code>).</p></li>
-<li><p><strong>Database Locks</strong>: Ensure no other process (like the API server or DBeaver) has the DuckDB files open in write mode during the import.</p></li>
+<li><p><strong>Database Locks</strong>: If you attempt to update the live database directly without using the <code class="docutils literal notranslate"><span class="pre">update_data</span></code> directory, you may encounter SQLite/DuckDB file lock errors because the backend API is actively reading from it. Always use the separate update path.</p></li>
 </ul>
 </section>
 </section>

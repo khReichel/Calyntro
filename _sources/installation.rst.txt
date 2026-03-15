@@ -3,13 +3,13 @@
 Deployment and Installation Guide
 =================================
 
-This guide provides instructions on how to set up and run the Pulseflow application using Docker.
+This guide provides instructions on how to set up and run the Pulseflow application using Docker images from the public registry. 
+
 Pulseflow is composed of three main services:
 
 * a **React.js** frontend
 * a Python **FastAPI** backend and
 * an **Nginx** gateway.
-
 
 Prerequisites
 -------------
@@ -18,189 +18,96 @@ Before starting, ensure you have the following installed on your system:
 
 * **Docker** (version 20.10 or higher)
 * **Docker Compose** (version 2.0 or higher)
-* **Git** (if installing from source)
+* **Git** (to download the deployment scripts)
 
-Option 1: Installation from Source (GitLab)
--------------------------------------------
+Installation via Docker Registry
+--------------------------------
 
-Use this method if you want to run the latest development version or modify the source code.
+The primary way to install Pulseflow is by pulling pre-built images from the GitHub Container Registry. Follow these steps to get your instance running:
 
-1. **Clone the Repository**
-
-   .. code-block:: bash
-
-      git clone https://gitlab.com/khrl01/pulseflow.git
-      cd pulseflow
-
-2. **Prepare Environment**
-
-   Ensure your database files are placed in the ``data/`` directory
-
-   * pulseflow.duckdb - analysis data
-   * pulseflow_config.duckdb - configuration data
-
-   You can find empty database files in folder ``examples``.
-
-3. **Import Configuration**
-
-   To populate the configuration database with users, teams, and components, run the database importer.
-   This script reads your configuration file and loads the metadata into the configuration database.
+1. **Download the Pulseflow Repository**
+   
+   Clone the repository from GitHub to get the necessary deployment files (``docker-compose.yml``, ``manage.sh``, and ``nginx.conf``).
 
    .. code-block:: bash
 
-      python -m src.import_export.importer.main config --config-file /path/to/your/config.yml
+      git clone https://github.com/khReichel/Pulseflow.git
+      cd Pulseflow
 
-4. **Load Analysis Data**
+2. **Configure Pulseflow**
 
-   Next, run the importer again with the ``analysis`` flag to analyze the repository and populate the analysis database.
-   This process may take some time depending on the size of the repository.
-
-   .. code-block:: bash
-
-      python -m src.import_export.importer.main analysis --config-file /path/to/your/config.yml
-
-
-5. **Build and Launch**
-
-   Run the management script to build the images locally and start the services:
+   An example configuration is provided in the ``config`` folder. Copy and modify it to suit your project needs. Documentation for all configuration parameters can be found in the provided ``config.yaml`` or in :ref:`pulseflow_config`.
 
    .. code-block:: bash
 
-      chmod +x manage.sh
-      ./manage.sh up
+      mkdir -p config
+      cp config/config_example.yaml config/config.yaml
+      # Edit config/config.yaml with your preferred editor
 
+   *Note: Ensure that the ``repo_path`` in ``config.yaml`` points to ``/repo`` inside the container, and that your local repository is correctly mapped in ``docker-compose.yml``. The generated DuckDB files will be stored in the ``data/`` folder by default.*
 
-   *This will build the Python and Node images, set up the Nginx gateway, and start all containers in detached mode.*
+3. **Link your Repository (Optional)**
 
-Option 2: Running from Docker Registry
---------------------------------------
+   To make it easier for the Docker containers to find the repository you want to analyze, create a symlink named ``repo`` in the Pulseflow root directory.
 
-Use this method if you want to retrievwe a specific version without handling the source code.
+   .. code-block:: bash
 
-1. **Create a Deployment Folder**
+      ln -s /path/to/your/local/git-repo ./repo
 
-   You only need the ``docker-compose.yml`` and ``nginx.conf`` files.
+   *Note: If you use this symlink, ensure that the ``REPO_PATH_HOST`` environment variable is not set to a different path, or simply use the default mapping provided in ``docker-compose.yml``.*
 
-2. **Login Docker Registry**
+4. **Pull Docker Images**
 
-    .. code-block:: bash
-
-        docker login registry.gitlab.com -u <token-username> -p <token-passwort>
-
-
-2. **Pull Images**
-
-   If you have no docker-compose file, you can use this template
-
-    .. code-block:: yaml
-
-        services:
-          gateway:
-            image: nginx:alpine
-            ports:
-              - "80:80"
-            volumes:
-              - ./nginx.conf:/etc/nginx/nginx.conf:ro
-            depends_on:
-              - backend
-              - ui
-
-          backend:
-            image: registry.gitlab.com/[dein-benutzer]/[projekt]/backend:latest
-            volumes:
-              - ./data:/app/dataF
-              - ./exports:/app/export
-            environment:
-              - PYTHONPATH=/app/src
-            command: python -m api.run --analysis-db /app/data/pulseflow.duckdb --config-db /app/data/pulseflow_config.duckdb
-            healthcheck:
-              test: [ "CMD", "curl", "-f", "http://localhost:8000/api/health" ]
-              interval: 30s
-              timeout: 10s
-
-          ui:
-            image: registry.gitlab.com/[dein-benutzer]/[projekt]/ui:latest
-            restart: always
-
-   and the configuration of nginx.conf
-
-.. code-block::
-
-        events {
-        worker_connections 1024;
-        }
-
-        http {
-            include       /etc/nginx/mime.types;
-            default_type  application/octet-stream;
-
-            server {
-                listen 80;
-
-                # 1. Route API requests
-                # This matches anything starting with /api/
-                location /api/ {
-                    # IMPORTANT: If there is a / at the end, “/api/” will be removed.
-                    # So “/api/v1/analyze” becomes “http://backend:8000/v1/analyze”.
-                    proxy_pass http://backend:8000/;
-
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                }
-
-                # 2. Route UI requests
-                # Everything else goes to the UI container
-                location / {
-                    proxy_pass http://ui:80;
-                    proxy_set_header Host $host;
-                    proxy_cache_bypass $http_upgrade;
-                }
-            }
-        }
-
-
-
-   Update your ``docker-compose.yml`` to point to the registry images (e.g., ``registry.gitlab.com/khrl01/pulseflow/backend:latest``), then run:
+   Fetch the latest images from the registry:
 
    .. code-block:: bash
 
       docker compose pull
-      docker compose up -d
 
-Accessing the Application
--------------------------
+5. **Start the Services**
 
-Once the containers are running, the application is accessible via your web browser:
-
-* **Frontend UI:** ``http://localhost`` (Port 80)
-* **API Documentation:** ``http://localhost/api/docs`` (Swagger UI)
-* **Health Check:** ``http://localhost/api/health``
-
-Maintenance & Database Updates
-------------------------------
-
-To update the analysis database safely without data corruption:
-
-1. Place the new ``.duckdb`` file in the ``data/`` directory.
-2. Run the replacement command:
+   Launch Pulseflow in detached mode:
 
    .. code-block:: bash
 
-      ./manage.sh replace /path/to/new_file.duckdb
+      docker compose up -d
 
-Troubleshooting
----------------
+6. **Import Configuration and Analysis Data**
 
-To inspect the system logs if a service fails to start:
+   Use the ``manage.sh`` script to import your project configuration and perform the initial repository analysis. You need to provide the absolute path to the local Git repository you want to analyze.
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   docker compose logs -f
+      chmod +x manage.sh
+      ./manage.sh import /path/to/your/local/repo
 
-* **404 Errors:** Verify the routing in ``nginx.conf``.
-* **503 Errors:** The backend is starting up or the database is locked. Check ``docker compose ps`` for health status.
+   *Note: After the import is complete, the generated DuckDB database files will be located in the ``data/update_data/`` directory (or as defined by ``db_update_path`` in your ``config.yaml``).*
 
+7. **Replace Database (Mandatory for Initial Setup)**
+
+   Since you are starting with a fresh installation, you have no pre-analyzed databases. Therefore, you must move the newly generated databases from the update directory to the active ``data/`` directory. 
+   Use the ``replace`` command, which safely stops the backend, backs up any existing files, copies the new ones, and restarts the service.
+
+   .. code-block:: bash
+
+      ./manage.sh replace ./data/update_data pulseflow pulseflow
+
+   *Note: The ``replace`` command expects: source directory, new file basename, and old file basename. In a default setup, both basenames are ``pulseflow``.*
+
+8. **Check Application URL**
+
+   Once the containers are running and data is imported, access the application:
+
+   * **Frontend UI:** ``http://localhost`` (Port 80)
+   * **API Documentation:** ``http://localhost/api/docs`` (Swagger UI)
+   * **Health Check:** ``http://localhost/api/health``
+
+Maintenance & Troubleshooting
+-----------------------------
+
+* **Logs:** To inspect service logs, run ``docker compose logs -f``.
+* **Updating:** To update to the latest version, run ``./manage.sh pull-latest``.
+* **Stopping:** To stop all services, run ``./manage.sh down``.
 
 .. toctree::
    :maxdepth: 1

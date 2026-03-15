@@ -1,31 +1,27 @@
 .. _importer_guide:
 
-Data Import Guide
-=================
+Data Import & Update Guide
+==========================
 
-This guide explains how to import data into Pulseflow. The import process is responsible for two key tasks:
+This guide explains how to import data into Pulseflow and how to run updates while the application is actively serving users.
 
-1.  **Configuration Sync**: Loading your project settings, component definitions, and team structures from ``pulseflow_config.yaml`` into the configuration database.
+The import process is responsible for two key tasks:
+
+1.  **Configuration Sync**: Loading your project settings, component definitions, and team structures from your ``config.yaml`` into the configuration database.
 2.  **Analysis Import**: Scanning your Git repository, calculating metrics (like complexity and churn), and populating the analysis database.
 
-There are two ways to run the importer, depending on your environment.
+In Pulseflow, all data extraction and updating is handled exclusively via Docker containers using the ``manage.sh`` script.
 
-Method 1: Using Docker (Recommended)
-------------------------------------
+Initial Data Import
+-------------------
 
-If you are running Pulseflow via Docker, the easiest way to import data is using the ``manage.sh`` script. This handles all the container mounting and environment setup for you.
+To run the initial import for a repository, use the ``manage.sh`` script. This command mounts your local repository into the Docker container, runs the configuration sync, and then performs the full analysis.
 
 **Command:**
 
 .. code-block:: bash
 
    ./manage.sh import /absolute/path/to/your/repository
-
-**What it does:**
-
-*   Mounts your local repository into the Docker container (mapped to ``/repo``).
-*   Runs the configuration sync.
-*   Runs the full analysis import.
 
 .. tip::
    Instead of passing the absolute path every time, you can create a symlink named ``repo`` in the Pulseflow root directory pointing to your target repository:
@@ -34,60 +30,51 @@ If you are running Pulseflow via Docker, the easiest way to import data is using
    
       ln -s /path/to/target/repo ./repo
 
-   If you do this, the ``importer`` container will use this symlink by default if no path is provided to the script (though ``manage.sh import`` still expects an argument for clarity). This is also helpful when running ``docker compose run`` directly.
+   If you do this, you can simply run ``./manage.sh import ./repo``.
 
 **Prerequisites:**
 
 *   Docker must be running.
-*   You must have a valid ``pulseflow_config.yaml`` in your project root.
-*   In ``pulseflow_config.yaml``, ``project.repo_path`` must be set to ``/repo`` (the path inside the container).
+*   You must have a valid ``config.yaml`` in your project's ``config/`` folder.
 
-Method 2: Direct Script Execution
----------------------------------
+Incremental Update Workflow (Zero Downtime)
+-------------------------------------------
 
-If you are developing locally or running Pulseflow without Docker, you can use the helper scripts provided in the ``scripts/`` directory.
+Pulseflow is designed to support background updates without requiring you to shut down the frontend or the backend API.
 
-1. Configuration Sync
-~~~~~~~~~~~~~~~~~~~~~
+The importer operates incrementally: it checks which commits are already present in the database and only analyzes new commits. To ensure this process is fast and doesn't lock the live database, Pulseflow uses two separate database paths defined in your ``config.yaml``:
 
-To sync your ``pulseflow_config.yaml`` with the configuration database:
+*   ``project.db_path``: The directory where the *live* databases used by the backend reside (e.g., ``/app/data``).
+*   ``project.db_update_path``: The directory where the importer writes new data (e.g., ``/app/data/update_data``).
 
-.. code-block:: bash
+**The Update Process:**
 
-   ./scripts/import_config.sh [dev|prod]
+1. **Prepare the Update Directory**
+   For the incremental import to work efficiently, the importer needs to know the current state. Therefore, the live databases should be copied into the update directory before starting the import.
 
-*   **dev**: (Default) Uses ``pulseflow_config_dev.yaml``.
-*   **prod**: Uses ``pulseflow_config.yaml``.
+   *Note: If you are using the default configuration paths provided by Pulseflow, this directory structure and file separation is handled automatically.*
 
-2. Analysis Import
-~~~~~~~~~~~~~~~~~~
+2. **Run the Importer**
+   Run the import command just like the initial import. The script will detect the existing databases in the ``db_update_path``, identify new commits in the repository, and append the new analysis data.
 
-To scan your repository and populate the analysis database:
+   .. code-block:: bash
 
-.. code-block:: bash
+      ./manage.sh import /absolute/path/to/your/repository
 
-   ./scripts/import_analysis.sh [dev|prod]
+3. **Replace the Live Database**
+   Once the importer has finished running in the background and the databases in the ``db_update_path`` are fully updated, you need to swap them with the live databases.
 
-**What these scripts do:**
+   Use the ``replace`` command to perform a safe, transactional swap. This will briefly pause the backend, back up the old databases, copy the new ones in, and restart the backend.
 
-*   They validate your Python environment and dependencies.
-*   They execute the Python importer module directly on your host machine.
-*   They use the settings defined in your local configuration files.
+   .. code-block:: bash
 
-**Prerequisites:**
+      # Usage: ./manage.sh replace <source_dir> <new_basename> <old_basename>
 
-*   **Python Environment**: You must have the project's virtual environment active (``.venv``).
-*   **Dependencies**: All Python dependencies must be installed (``pip install -r requirements.txt``).
-*   **Rust Code Analysis**: The ``rust-code-analysis-cli`` tool must be installed and available in your system PATH, as the importer relies on it for complexity metrics.
+      ./manage.sh replace ./data/update_data pulseflow pulseflow
 
-**Configuration:**
-
-Ensure your ``pulseflow_config.yaml`` points to the correct local paths for:
-*   ``repo_path``: The path to the Git repository you want to analyze.
-*   ``db_path``: The directory where the DuckDB database files should be created.
+By following this workflow, your users can continue analyzing the existing data on the dashboard while the heavy lifting of parsing new commits happens transparently in the background.
 
 Troubleshooting
 ---------------
 
-*   **"rust-code-analysis-cli not found"**: If running locally, ensure you have installed the tool (usually via ``cargo install rust-code-analysis-cli``).
-*   **Database Locks**: Ensure no other process (like the API server or DBeaver) has the DuckDB files open in write mode during the import.
+*   **Database Locks**: If you attempt to update the live database directly without using the ``update_data`` directory, you may encounter SQLite/DuckDB file lock errors because the backend API is actively reading from it. Always use the separate update path.

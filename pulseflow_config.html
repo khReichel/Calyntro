@@ -47,11 +47,8 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="installation.html">Deployment and Installation Guide</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#option-1-installation-from-source-gitlab">Option 1: Installation from Source (GitLab)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#option-2-running-from-docker-registry">Option 2: Running from Docker Registry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#accessing-the-application">Accessing the Application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#maintenance-database-updates">Maintenance &amp; Database Updates</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="installation.html#troubleshooting">Troubleshooting</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-via-docker-registry">Installation via Docker Registry</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="installation.html#maintenance-troubleshooting">Maintenance &amp; Troubleshooting</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Pulseflow Configuration File</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#project-section">Project Section</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#analysis-section">Analysis Section</a></li>
@@ -64,7 +61,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Data Import Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Data Import &amp; Update Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Dashboard User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis.html">Understanding Pulseflow Analyses</a></li>
@@ -97,7 +94,7 @@
              
   <section id="pulseflow-configuration-file">
 <span id="pulseflow-config"></span><h1>Pulseflow Configuration File<a class="headerlink" href="#pulseflow-configuration-file" title="Link to this heading"></a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">pulseflow_config.yaml</span></code> file is the central place to configure the analysis performed by Pulseflow. It defines the project settings, what to include and exclude from the analysis, and how to map users to teams.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file is the central place to configure the analysis performed by Pulseflow. It defines the project settings, what to include and exclude from the analysis, and how to map users to teams.</p>
 <p>This document describes the structure and purpose of each section in the configuration file.</p>
 <section id="project-section">
 <h2>Project Section<a class="headerlink" href="#project-section" title="Link to this heading"></a></h2>

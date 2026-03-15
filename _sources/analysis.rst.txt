@@ -34,6 +34,7 @@ Change Recency (Activity Recency)
 *   **UI Name**: Change Recency
 *   **What it Measures**: The time elapsed since a file (or the latest file in a module) was last modified.
 *   **How to Interpret**:
+
     *   **Young files** are recent additions, often indicating new features.
     *   **Old files** that haven't been touched in a long time are stable (or dead) code.
     *   **Old files with recent changes** are often core legacy components that are being maintained.
@@ -49,6 +50,7 @@ Development Trend (Development Velocity)
 *   **UI Name**: Development Trend
 *   **What it Measures**: This compares a "Baseline" period with a "Current" period to show the direction of activity.
 *   **How to Interpret**:
+
     *   **Spiking**: Activity is significantly higher than in the past.
     *   **Cooling**: The component is stabilizing; activity is decreasing.
     *   **Stable**: No significant change in activity levels.
@@ -64,9 +66,11 @@ Hotspot Analysis (File & Module)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 *   **UI Name**: Hotspot Analysis (Zeitfenster) / Module Hotspot Trend
 *   **What it Measures**: This analysis identifies areas that are likely to cause problems by combining **Churn** (how much it changes) with **Age** (how long it has been changing). It compares two time windows to see if a component is heating up or cooling down.
+
     *   **Activity Score**: High churn in a short time (current intensity).
     *   **Structural Score**: Consistent churn over a long period (long-term instability).
 *   **How to Interpret**: 
+
     *   **File Level**: Files with both high Activity and high Structural scores are your most critical hotspots. They are likely sources of long-term technical debt and should be the first candidates for refactoring.
     *   **Module Level**: Aggregates these scores for whole components. It reveals which architectural modules are becoming increasingly unstable over time, helping in higher-level resource allocation.
 
@@ -81,6 +85,7 @@ Complexity
 ^^^^^^^^^^
 *   **UI Name**: Complexity
 *   **What it Measures**: A holistic view of complexity, combining:
+
     *   **Cyclomatic Complexity**: The number of independent paths through the code (branching logic).
     *   **Cognitive Complexity**: How difficult the code is for a human to read and understand.
     *   **Efforts**: An estimated measure of the effort required to maintain the file (based on Halstead metrics).
@@ -90,6 +95,7 @@ Complexity Trend
 ^^^^^^^^^^^^^^^^
 *   **What it Measures**: Complexity isn't just a snapshot; Pulseflow tracks how **Cognitive Complexity** changes between two points in time.
 *   **Calculation**: It compares the complexity at the start and end of your selected timeframe.
+
     *   A **relative increase** in cognitive complexity suggests that new features are being added in a way that makes the code harder to understand.
     *   A **decrease** usually indicates successful refactoring or simplification.
 *   **How to Interpret**: In the UI, icons indicate the trend (Rising, Stable, or Falling). A rising complexity trend in a file that already has high churn is a "code red" situation.

@@ -47,18 +47,15 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Deployment and Installation Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#option-1-installation-from-source-gitlab">Option 1: Installation from Source (GitLab)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#option-2-running-from-docker-registry">Option 2: Running from Docker Registry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#accessing-the-application">Accessing the Application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#maintenance-database-updates">Maintenance &amp; Database Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation-via-docker-registry">Installation via Docker Registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#maintenance-troubleshooting">Maintenance &amp; Troubleshooting</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pulseflow_config.html">Pulseflow Configuration File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="manage_script.html">Management Script Usage</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Data Import Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Data Import &amp; Update Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Dashboard User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis.html">Understanding Pulseflow Analyses</a></li>
@@ -90,8 +87,8 @@
              
   <section id="deployment-and-installation-guide">
 <span id="deployment-guide"></span><h1>Deployment and Installation Guide<a class="headerlink" href="#deployment-and-installation-guide" title="Link to this heading"></a></h1>
-<p>This guide provides instructions on how to set up and run the Pulseflow application using Docker.
-Pulseflow is composed of three main services:</p>
+<p>This guide provides instructions on how to set up and run the Pulseflow application using Docker images from the public registry.</p>
+<p>Pulseflow is composed of three main services:</p>
 <ul class="simple">
 <li><p>a <strong>React.js</strong> frontend</p></li>
 <li><p>a Python <strong>FastAPI</strong> backend and</p></li>
@@ -103,177 +100,80 @@ Pulseflow is composed of three main services:</p>
 <ul class="simple">
 <li><p><strong>Docker</strong> (version 20.10 or higher)</p></li>
 <li><p><strong>Docker Compose</strong> (version 2.0 or higher)</p></li>
-<li><p><strong>Git</strong> (if installing from source)</p></li>
+<li><p><strong>Git</strong> (to download the deployment scripts)</p></li>
 </ul>
 </section>
-<section id="option-1-installation-from-source-gitlab">
-<h2>Option 1: Installation from Source (GitLab)<a class="headerlink" href="#option-1-installation-from-source-gitlab" title="Link to this heading"></a></h2>
-<p>Use this method if you want to run the latest development version or modify the source code.</p>
+<section id="installation-via-docker-registry">
+<h2>Installation via Docker Registry<a class="headerlink" href="#installation-via-docker-registry" title="Link to this heading"></a></h2>
+<p>The primary way to install Pulseflow is by pulling pre-built images from the GitHub Container Registry. Follow these steps to get your instance running:</p>
 <ol class="arabic">
-<li><p><strong>Clone the Repository</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://gitlab.com/khrl01/pulseflow.git
-<span class="nb">cd</span><span class="w"> </span>pulseflow
+<li><p><strong>Download the Pulseflow Repository</strong></p>
+<p>Clone the repository from GitHub to get the necessary deployment files (<code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">manage.sh</span></code>, and <code class="docutils literal notranslate"><span class="pre">nginx.conf</span></code>).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/khReichel/Pulseflow.git
+<span class="nb">cd</span><span class="w"> </span>Pulseflow
 </pre></div>
 </div>
 </li>
-<li><p><strong>Prepare Environment</strong></p>
-<p>Ensure your database files are placed in the <code class="docutils literal notranslate"><span class="pre">data/</span></code> directory</p>
-<ul class="simple">
-<li><p>pulseflow.duckdb - analysis data</p></li>
-<li><p>pulseflow_config.duckdb - configuration data</p></li>
-</ul>
-<p>You can find empty database files in folder <code class="docutils literal notranslate"><span class="pre">examples</span></code>.</p>
+<li><p><strong>Configure Pulseflow</strong></p>
+<p>An example configuration is provided in the <code class="docutils literal notranslate"><span class="pre">config</span></code> folder. Copy and modify it to suit your project needs. Documentation for all configuration parameters can be found in the provided <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> or in <a class="reference internal" href="pulseflow_config.html#pulseflow-config"><span class="std std-ref">Pulseflow Configuration File</span></a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>config
+cp<span class="w"> </span>config/config_example.yaml<span class="w"> </span>config/config.yaml
+<span class="c1"># Edit config/config.yaml with your preferred editor</span>
+</pre></div>
+</div>
+<p><em>Note: Ensure that the ``repo_path`` in ``config.yaml`` points to ``/repo`` inside the container, and that your local repository is correctly mapped in ``docker-compose.yml``. The generated DuckDB files will be stored in the ``data/`` folder by default.</em></p>
 </li>
-<li><p><strong>Import Configuration</strong></p>
-<p>To populate the configuration database with users, teams, and components, run the database importer.
-This script reads your configuration file and loads the metadata into the configuration database.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>src.import_export.importer.main<span class="w"> </span>config<span class="w"> </span>--config-file<span class="w"> </span>/path/to/your/config.yml
+<li><p><strong>Link your Repository (Optional)</strong></p>
+<p>To make it easier for the Docker containers to find the repository you want to analyze, create a symlink named <code class="docutils literal notranslate"><span class="pre">repo</span></code> in the Pulseflow root directory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ln<span class="w"> </span>-s<span class="w"> </span>/path/to/your/local/git-repo<span class="w"> </span>./repo
+</pre></div>
+</div>
+<p><em>Note: If you use this symlink, ensure that the ``REPO_PATH_HOST`` environment variable is not set to a different path, or simply use the default mapping provided in ``docker-compose.yml``.</em></p>
+</li>
+<li><p><strong>Pull Docker Images</strong></p>
+<p>Fetch the latest images from the registry:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>pull
 </pre></div>
 </div>
 </li>
-<li><p><strong>Load Analysis Data</strong></p>
-<p>Next, run the importer again with the <code class="docutils literal notranslate"><span class="pre">analysis</span></code> flag to analyze the repository and populate the analysis database.
-This process may take some time depending on the size of the repository.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>src.import_export.importer.main<span class="w"> </span>analysis<span class="w"> </span>--config-file<span class="w"> </span>/path/to/your/config.yml
+<li><p><strong>Start the Services</strong></p>
+<p>Launch Pulseflow in detached mode:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
 </li>
-<li><p><strong>Build and Launch</strong></p>
-<p>Run the management script to build the images locally and start the services:</p>
+<li><p><strong>Import Configuration and Analysis Data</strong></p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">manage.sh</span></code> script to import your project configuration and perform the initial repository analysis. You need to provide the absolute path to the local Git repository you want to analyze.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod<span class="w"> </span>+x<span class="w"> </span>manage.sh
-./manage.sh<span class="w"> </span>up
+./manage.sh<span class="w"> </span>import<span class="w"> </span>/path/to/your/local/repo
 </pre></div>
 </div>
-<p><em>This will build the Python and Node images, set up the Nginx gateway, and start all containers in detached mode.</em></p>
+<p><em>Note: After the import is complete, the generated DuckDB database files will be located in the ``data/update_data/`` directory (or as defined by ``db_update_path`` in your ``config.yaml``).</em></p>
 </li>
-</ol>
-</section>
-<section id="option-2-running-from-docker-registry">
-<h2>Option 2: Running from Docker Registry<a class="headerlink" href="#option-2-running-from-docker-registry" title="Link to this heading"></a></h2>
-<p>Use this method if you want to retrievwe a specific version without handling the source code.</p>
-<ol class="arabic">
-<li><p><strong>Create a Deployment Folder</strong></p>
-<p>You only need the <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">nginx.conf</span></code> files.</p>
-</li>
-<li><p><strong>Login Docker Registry</strong></p>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>login<span class="w"> </span>registry.gitlab.com<span class="w"> </span>-u<span class="w"> </span>&lt;token-username&gt;<span class="w"> </span>-p<span class="w"> </span>&lt;token-passwort&gt;
+<li><p><strong>Replace Database (Mandatory for Initial Setup)</strong></p>
+<p>Since you are starting with a fresh installation, you have no pre-analyzed databases. Therefore, you must move the newly generated databases from the update directory to the active <code class="docutils literal notranslate"><span class="pre">data/</span></code> directory.
+Use the <code class="docutils literal notranslate"><span class="pre">replace</span></code> command, which safely stops the backend, backs up any existing files, copies the new ones, and restarts the service.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./manage.sh<span class="w"> </span>replace<span class="w"> </span>./data/update_data<span class="w"> </span>pulseflow<span class="w"> </span>pulseflow
 </pre></div>
 </div>
-</div></blockquote>
+<p><em>Note: The ``replace`` command expects: source directory, new file basename, and old file basename. In a default setup, both basenames are ``pulseflow``.</em></p>
 </li>
-</ol>
-<ol class="arabic" start="2">
-<li><p><strong>Pull Images</strong></p>
-<p>If you have no docker-compose file, you can use this template</p>
-<blockquote>
-<div><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">services</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">gateway</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx:alpine</span>
-<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;80:80&quot;</span>
-<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./nginx.conf:/etc/nginx/nginx.conf:ro</span>
-<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">backend</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ui</span>
-
-<span class="w">  </span><span class="nt">backend</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">registry.gitlab.com/[dein-benutzer]/[projekt]/backend:latest</span>
-<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./data:/app/dataF</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./exports:/app/export</span>
-<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PYTHONPATH=/app/src</span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python -m api.run --analysis-db /app/data/pulseflow.duckdb --config-db /app/data/pulseflow_config.duckdb</span>
-<span class="w">    </span><span class="nt">healthcheck</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="s">&quot;CMD&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;curl&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;-f&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;http://localhost:8000/api/health&quot;</span><span class="w"> </span><span class="p p-Indicator">]</span>
-<span class="w">      </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30s</span>
-<span class="w">      </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10s</span>
-
-<span class="w">  </span><span class="nt">ui</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">registry.gitlab.com/[dein-benutzer]/[projekt]/ui:latest</span>
-<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
-</pre></div>
-</div>
-</div></blockquote>
-<p>and the configuration of nginx.conf</p>
-</li>
-</ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     events {
-     worker_connections 1024;
-     }
-
-     http {
-         include       /etc/nginx/mime.types;
-         default_type  application/octet-stream;
-
-         server {
-             listen 80;
-
-             # 1. Route API requests
-             # This matches anything starting with /api/
-             location /api/ {
-                 # IMPORTANT: If there is a / at the end, “/api/” will be removed.
-                 # So “/api/v1/analyze” becomes “http://backend:8000/v1/analyze”.
-                 proxy_pass http://backend:8000/;
-
-                 proxy_set_header Host $host;
-                 proxy_set_header X-Real-IP $remote_addr;
-                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-             }
-
-             # 2. Route UI requests
-             # Everything else goes to the UI container
-             location / {
-                 proxy_pass http://ui:80;
-                 proxy_set_header Host $host;
-                 proxy_cache_bypass $http_upgrade;
-             }
-         }
-     }
-
-
-
-Update your ``docker-compose.yml`` to point to the registry images (e.g., ``registry.gitlab.com/khrl01/pulseflow/backend:latest``), then run:
-
-.. code-block:: bash
-
-   docker compose pull
-   docker compose up -d
-</pre></div>
-</div>
-</section>
-<section id="accessing-the-application">
-<h2>Accessing the Application<a class="headerlink" href="#accessing-the-application" title="Link to this heading"></a></h2>
-<p>Once the containers are running, the application is accessible via your web browser:</p>
+<li><p><strong>Check Application URL</strong></p>
+<p>Once the containers are running and data is imported, access the application:</p>
 <ul class="simple">
 <li><p><strong>Frontend UI:</strong> <code class="docutils literal notranslate"><span class="pre">http://localhost</span></code> (Port 80)</p></li>
 <li><p><strong>API Documentation:</strong> <code class="docutils literal notranslate"><span class="pre">http://localhost/api/docs</span></code> (Swagger UI)</p></li>
 <li><p><strong>Health Check:</strong> <code class="docutils literal notranslate"><span class="pre">http://localhost/api/health</span></code></p></li>
 </ul>
-</section>
-<section id="maintenance-database-updates">
-<h2>Maintenance &amp; Database Updates<a class="headerlink" href="#maintenance-database-updates" title="Link to this heading"></a></h2>
-<p>To update the analysis database safely without data corruption:</p>
-<ol class="arabic">
-<li><p>Place the new <code class="docutils literal notranslate"><span class="pre">.duckdb</span></code> file in the <code class="docutils literal notranslate"><span class="pre">data/</span></code> directory.</p></li>
-<li><p>Run the replacement command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./manage.sh<span class="w"> </span>replace<span class="w"> </span>/path/to/new_file.duckdb
-</pre></div>
-</div>
 </li>
 </ol>
 </section>
-<section id="troubleshooting">
-<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
-<p>To inspect the system logs if a service fails to start:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>-f
-</pre></div>
-</div>
+<section id="maintenance-troubleshooting">
+<h2>Maintenance &amp; Troubleshooting<a class="headerlink" href="#maintenance-troubleshooting" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>404 Errors:</strong> Verify the routing in <code class="docutils literal notranslate"><span class="pre">nginx.conf</span></code>.</p></li>
-<li><p><strong>503 Errors:</strong> The backend is starting up or the database is locked. Check <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">ps</span></code> for health status.</p></li>
+<li><p><strong>Logs:</strong> To inspect service logs, run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">logs</span> <span class="pre">-f</span></code>.</p></li>
+<li><p><strong>Updating:</strong> To update to the latest version, run <code class="docutils literal notranslate"><span class="pre">./manage.sh</span> <span class="pre">pull-latest</span></code>.</p></li>
+<li><p><strong>Stopping:</strong> To stop all services, run <code class="docutils literal notranslate"><span class="pre">./manage.sh</span> <span class="pre">down</span></code>.</p></li>
 </ul>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Guides:</span></p>
