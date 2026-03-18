@@ -118,8 +118,6 @@ Stop containers:
 docker compose logs -f
 ```
 
-![RepoLens Workflow](artefacts/repolens_workflow.png)
-
 ## Architecture
 
 * **Backend:** FastAPI + Python for metrics and analysis.
@@ -140,7 +138,7 @@ docker compose logs -f
 
 ## Workflow Diagram
 
-![RepoLens Workflow](/mnt/data/a_flowchart_diagram_titled_repolens_workflow_fro.png)
+![RepoLens Workflow](artefacts/repolens_workflow.png)
 
 ---
 
