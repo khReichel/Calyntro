@@ -76,7 +76,7 @@ Open your browser at **`http://localhost`** to explore your data.
 
 For detailed guides on deploying RepoLens, configuring your analysis, managing the database lifecycle (including zero-downtime updates), and interpreting the metrics, please visit our official documentation:
 
-👉 **[RepoLens Official Documentation](https://github.com/ibrl/RepoLens)**
+👉 **[RepoLens Official Documentation](https://khreichel.github.io/RepoLens)**
 
 ---
 
