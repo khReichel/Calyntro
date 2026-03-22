@@ -1,0 +1,11 @@
+apiVersion: 1
+
+datasources:
+  - name: RepoLens
+    type: yesoreyeram-infinity-datasource
+    access: proxy
+    url: http://gateway/api
+    jsonData:
+      authenticationType: none
+    editable: true
+

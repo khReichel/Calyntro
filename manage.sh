@@ -55,6 +55,12 @@ case "$1" in
       ensure_volume_dir "./data"
       ensure_volume_dir "./exports"
       ensure_volume_dir "./repo"
+      ensure_volume_dir "./grafana"
+      ensure_volume_dir "./grafana/data"
+      ensure_volume_dir "./grafana/provisioning"
+      ensure_volume_dir "./grafana/provisioning/dashboards"
+      ensure_volume_dir "./grafana/provisioning/datasources"
+
     MODE="${2:-prod}"
     case "$MODE" in
       dev)
