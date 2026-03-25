@@ -1,4 +1,4 @@
-name: repolens
+name: calyntro
 services:
   # The Gateway (Nginx) routes traffic: /api/ -> Backend, everything else -> UI
   gateway:
@@ -11,12 +11,12 @@ services:
       - backend
       - ui
     networks:
-      - repolens-network
+      - calyntro-network
 
-  # --- RepoLens Backend ---
+  # --- Calyntro Backend ---
   backend:
-    image: ghcr.io/khreichel/repolens-backend:latest
-    container_name: repolens-backend
+    image: ghcr.io/khreichel/calyntro-backend:latest
+    container_name: calyntro-backend
     restart: unless-stopped
     user: "${HOST_UID}:${HOST_GID}"
     extra_hosts:
@@ -26,22 +26,22 @@ services:
       - ./data:/app/data
       - ./exports:/app/export
     environment:
-      - REPOLENS_CONFIG=/app/config/config.yaml
+      - CALYNTRO_CONFIG=/app/config/config.yaml
     networks:
-      - repolens-network
+      - calyntro-network
 
-  # --- RepoLens UI ---
+  # --- Calyntro UI ---
   ui:
-    image: ghcr.io/khreichel/repolens-ui:latest
-    container_name: repolens-ui
+    image: ghcr.io/khreichel/calyntro-ui:latest
+    container_name: calyntro-ui
     restart: unless-stopped
     networks:
-      - repolens-network
+      - calyntro-network
 
-  # --- RepoLens Importer (Run on demand: docker compose run importer) ---
+  # --- Calyntro Importer (Run on demand: docker compose run importer) ---
   importer:
-    image: ghcr.io/khreichel/repolens-backend:latest
-    container_name: repolens-importer
+    image: ghcr.io/khreichel/calyntro-backend:latest
+    container_name: calyntro-importer
     user: "${HOST_UID}:${HOST_GID}"
 
     profiles:
@@ -55,10 +55,10 @@ services:
       - ./repo:/repo:ro
     environment:
       - HOME=/tmp
-      - REPOLENS_CONFIG=/app/config/config.yaml
+      - CALYNTRO_CONFIG=/app/config/config.yaml
     entrypoint: ["python", "/app/src/importer.py"]
     networks:
-      - repolens-network
+      - calyntro-network
 
   grafana:
     user: "${HOST_UID}:${HOST_GID}"
@@ -75,9 +75,9 @@ services:
       - ./grafana/data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
     networks:
-      - repolens-network
+      - calyntro-network
 
 networks:
-  repolens-network:
+  calyntro-network:
     driver: bridge
 

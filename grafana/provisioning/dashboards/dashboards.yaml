@@ -1,9 +1,9 @@
 apiVersion: 1
 
 providers:
-  - name: 'repolens-dashboards'
+  - name: 'calyntro-dashboards'
     orgId: 1
-    folder: 'RepoLens'
+    folder: 'Calyntro'
     type: file
     disableDeletion: false
     updateIntervalSeconds: 10

@@ -1,7 +1,7 @@
 apiVersion: 1
 
 datasources:
-  - name: RepoLens
+  - name: Calyntro
     type: yesoreyeram-infinity-datasource
     access: proxy
     url: http://gateway/api

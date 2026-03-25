@@ -87,7 +87,7 @@ case "$1" in
 
   # 2. Refresh: Atomic swap from staging to production
   refresh)
-    echo "--- Refreshing RepoLens database from staging ---"
+    echo "--- Refreshing Calyntro database from staging ---"
     ensure_volume_dir "./data"
     # Read values from YAML
     DB_PATH=$(read_yaml_key "db_path")

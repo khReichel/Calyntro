@@ -1,13 +1,13 @@
 <div align="center">
 
-  <img src="artefacts/repoLens.png" alt="RepoLens Logo" width="200"/>
+  <img src="artefacts/designer.png" alt="Calyntro Logo" width="200"/>
 
-  # RepoLens
+  # Calyntro
 
   **From Code to Clarity: Master Your Software Evolution & Team Dynamics.**
 
 
-  [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue.svg)](https://github.com/ibrl/RepoLens/wiki)
+  [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue.svg)](https://github.com/ibrl/Calyntro/wiki)
     ![Docker](https://img.shields.io/badge/Platform-Docker-blue)
 </div>
 
@@ -15,15 +15,15 @@
 
 ## Overview
 
-**RepoLens** is an advanced repository analytics platform that extracts and interprets version control metadata to uncover software evolution patterns, code quality risks, and team interaction dynamics.
+**Calyntro** is an advanced repository analytics platform that extracts and interprets version control metadata to uncover software evolution patterns, code quality risks, and team interaction dynamics.
 
-By bridging the gap between raw Git history and actionable insights, RepoLens empowers engineering teams to manage technical debt proactively, optimize their architecture, and improve collaboration.
+By bridging the gap between raw Git history and actionable insights, Calyntro empowers engineering teams to manage technical debt proactively, optimize their architecture, and improve collaboration.
 
 ---
 
 ## Key Features
 
-RepoLens provides a multi-dimensional view of your software project across **Files**, **Modules**, and **Teams**:
+Calyntro provides a multi-dimensional view of your software project across **Files**, **Modules**, and **Teams**:
 
 ### Evolution & Pulse
 * **Change Frequency:** Understand where development effort is concentrated by tracking commit density over time.
@@ -53,7 +53,7 @@ RepoLens provides a multi-dimensional view of your software project across **Fil
 
 ##  Quick Start
 
-RepoLens is distributed as a set of pre-built Docker containers, making it easy to deploy without needing to build from source.
+Calyntro is distributed as a set of pre-built Docker containers, making it easy to deploy without needing to build from source.
 
 1. **Download the Release:** Get the latest `docker-compose.yml`, `manage.sh`, and configuration templates from our releases page.
 2. **Configure:** Edit the `config/config.yaml` to point to your repository and define your modules.
@@ -68,25 +68,25 @@ Open your browser at **`http://localhost`** to explore your data.
 ## Dashboard Preview
 <div align="center">
 
-  <img src="artefacts/repolens_view.png" alt="RepoLens Dashboard" width="100%"/>
+  <img src="artefacts/calyntro_view.png" alt="Calyntro Dashboard" width="100%"/>
 </div>
 
 
 ## Comprehensive Documentation
 
-For detailed guides on deploying RepoLens, configuring your analysis, managing the database lifecycle (including zero-downtime updates), and interpreting the metrics, please visit our official documentation:
+For detailed guides on deploying Calyntro, configuring your analysis, managing the database lifecycle (including zero-downtime updates), and interpreting the metrics, please visit our official documentation:
 
-👉 **[RepoLens Official Documentation](https://khreichel.github.io/RepoLens)**
+👉 **[Calyntro Official Documentation](https://khreichel.github.io/Calyntro)**
 
 ---
 
 ## Feedback, Bugs & Feature Requests
 
-RepoLens is actively evolving, and your feedback is highly appreciated!
+Calyntro is actively evolving, and your feedback is highly appreciated!
 
 If you encounter any issues, discover a bug, or have a great idea for a new analysis feature, please let us know. We welcome all feedback to make this tool better for everyone.
 
-👉 **[Open an Issue on our GitHub Tracker](https://github.com/khreichel/RepoLens/issues)**
+👉 **[Open an Issue on our GitHub Tracker](https://github.com/khreichel/Calyntro/issues)**
 
 When reporting bugs, please provide as much context as possible (steps to reproduce, logs, or error messages). For feature requests, describe the use case and how it would benefit your workflow.
 
@@ -94,7 +94,7 @@ When reporting bugs, please provide as much context as possible (steps to reprod
 
 ##  Terms of Use & Disclaimer
 
-RepoLens is distributed as free-to-use Docker containers. You are welcome to deploy and use the provided images for your own projects.
+Calyntro is distributed as free-to-use Docker containers. You are welcome to deploy and use the provided images for your own projects.
 
 **Disclaimer of Warranty:**
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. USE AT YOUR OWN RISK.
