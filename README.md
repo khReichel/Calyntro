@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="artefacts/designer.png" alt="Calyntro Logo" width="200"/>
+  <img src="artefacts/calyntro.png" alt="Calyntro Logo" width="200"/>
 
   # Calyntro
 
