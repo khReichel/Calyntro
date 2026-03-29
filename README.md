@@ -60,6 +60,7 @@ Calyntro is distributed as a set of pre-built Docker containers, making it easy 
 1. **Checkout the Repository:** Clone the current repository and change to the checkout directory.
 2. **Pull latest images:** Run `./manage.sh pull-latest` to pull the latest pre-built containers from the registry.
 3. **Setup your Configuration:** Create your `config.yaml` using `config_example.yaml` as a template.
+4. **Mount Target Repository:** Create a symlink to target repo
 4. **Analyze:** Run `./manage.sh import` to analyze your repository history.
 5. **Refresh:** Run `./manage.sh refresh` to bring analysis in place.
 6. **Launch:** Run `./manage.sh up` to start the dashboard.
