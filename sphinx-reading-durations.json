@@ -2,7 +2,7 @@
     "analysis": 0.035,
     "api": 0.043,
     "config_guide": 0.014,
-    "importer_guide": 0.008,
+    "importer_guide": 0.01,
     "index": 0.005,
     "installation": 0.005,
     "manage_script": 0.026,

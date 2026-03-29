@@ -890,6 +890,132 @@
         }
       }
     },
+    "/v1/analysis/silos/files": {
+      "post": {
+        "tags": [
+          "Silos"
+        ],
+        "summary": "Get File Silos",
+        "description": "Returns all files that are classified as a knowledge silo.\n\nA file is a silo when a single developer accounts for at least\n`silo_threshold` (default 80 %) of all commits to that file.\nResults are ordered by ownership percentage descending.",
+        "operationId": "get_file_silos_v1_analysis_silos_files_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SilosRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileSiloResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/analysis/silos/modules": {
+      "post": {
+        "tags": [
+          "Silos"
+        ],
+        "summary": "Get Module Silos",
+        "description": "Returns the silo density for each component/module.\n\nReports what fraction of a module's files are silos and which\ndeveloper is responsible for the most silos within that module.\nResults are ordered by silo ratio descending.",
+        "operationId": "get_module_silos_v1_analysis_silos_modules_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SilosRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModuleSiloResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/analysis/silos/developers": {
+      "post": {
+        "tags": [
+          "Silos"
+        ],
+        "summary": "Get Developer Silos",
+        "description": "Returns the silo footprint of each developer.\n\nShows how many files and modules each developer is the sole knowledge\nholder of, ordered by silo file count descending.",
+        "operationId": "get_developer_silos_v1_analysis_silos_developers_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SilosRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeveloperSiloResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/info": {
       "get": {
         "summary": "Info",
@@ -1707,6 +1833,54 @@
         "title": "ContributorsRequest",
         "description": "Pydantic model for the contributor analysis request body."
       },
+      "DeveloperSiloItem": {
+        "properties": {
+          "developer": {
+            "type": "string",
+            "title": "Developer"
+          },
+          "silo_file_count": {
+            "type": "integer",
+            "title": "Silo File Count"
+          },
+          "silo_module_count": {
+            "type": "integer",
+            "title": "Silo Module Count"
+          },
+          "avg_ownership_pct": {
+            "type": "number",
+            "title": "Avg Ownership Pct"
+          },
+          "risk": {
+            "$ref": "#/components/schemas/SiloRisk"
+          }
+        },
+        "type": "object",
+        "required": [
+          "developer",
+          "silo_file_count",
+          "silo_module_count",
+          "avg_ownership_pct",
+          "risk"
+        ],
+        "title": "DeveloperSiloItem"
+      },
+      "DeveloperSiloResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DeveloperSiloItem"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "DeveloperSiloResponse"
+      },
       "FileContributorItem": {
         "properties": {
           "file_path": {
@@ -1779,6 +1953,65 @@
         ],
         "title": "FileContributorResponse",
         "description": "Pydantic model for the file-level contributor analysis response."
+      },
+      "FileSiloItem": {
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "title": "File Path"
+          },
+          "component_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Component Name"
+          },
+          "silo_developer": {
+            "type": "string",
+            "title": "Silo Developer"
+          },
+          "ownership_pct": {
+            "type": "number",
+            "title": "Ownership Pct"
+          },
+          "total_commits": {
+            "type": "integer",
+            "title": "Total Commits"
+          },
+          "risk": {
+            "$ref": "#/components/schemas/SiloRisk"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_path",
+          "silo_developer",
+          "ownership_pct",
+          "total_commits",
+          "risk"
+        ],
+        "title": "FileSiloItem"
+      },
+      "FileSiloResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FileSiloItem"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "FileSiloResponse"
       },
       "FileTrendItem": {
         "properties": {
@@ -2297,6 +2530,65 @@
         ],
         "title": "ModuleHotspotTrendResponse"
       },
+      "ModuleSiloItem": {
+        "properties": {
+          "component_name": {
+            "type": "string",
+            "title": "Component Name"
+          },
+          "total_files": {
+            "type": "integer",
+            "title": "Total Files"
+          },
+          "silo_files": {
+            "type": "integer",
+            "title": "Silo Files"
+          },
+          "silo_ratio": {
+            "type": "number",
+            "title": "Silo Ratio"
+          },
+          "dominant_silo_developer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dominant Silo Developer"
+          },
+          "risk": {
+            "$ref": "#/components/schemas/SiloRisk"
+          }
+        },
+        "type": "object",
+        "required": [
+          "component_name",
+          "total_files",
+          "silo_files",
+          "silo_ratio",
+          "risk"
+        ],
+        "title": "ModuleSiloItem"
+      },
+      "ModuleSiloResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ModuleSiloItem"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "ModuleSiloResponse"
+      },
       "ModuleTeamAlignmentItem": {
         "properties": {
           "team_name": {
@@ -2622,6 +2914,76 @@
           "activity"
         ],
         "title": "Scores"
+      },
+      "SiloRisk": {
+        "type": "string",
+        "enum": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ],
+        "title": "SiloRisk"
+      },
+      "SilosRequest": {
+        "properties": {
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date",
+            "description": "Filter for commits on or after this date"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date",
+            "description": "Filter for commits on or before this date"
+          },
+          "module_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Module Name",
+            "description": "Restrict analysis to a specific component"
+          },
+          "silo_threshold": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.5,
+            "title": "Silo Threshold",
+            "description": "Ownership fraction at or above which a file is classified as a silo (default 0.80 = 80 %)",
+            "default": 0.8
+          },
+          "min_commits": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Min Commits",
+            "description": "Minimum total commits a file must have to be considered (noise filter)",
+            "default": 5
+          }
+        },
+        "type": "object",
+        "title": "SilosRequest",
+        "description": "Request body for all silo analysis endpoints."
       },
       "TeamModuleAlignmentItem": {
         "properties": {

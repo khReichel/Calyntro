@@ -26,7 +26,7 @@ First, pull the latest pre-built Calyntro images from the registry:
 
 .. code-block:: bash
 
-   docker compose pull
+   ./manage.sh pull-latest
 
 2. Prepare Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~
