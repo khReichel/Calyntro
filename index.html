@@ -1,184 +1,955 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Calyntro’s documentation! &mdash; calyntro 0.1.10 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+  <title>Calyntro — Brings your repository's evolution into focus</title>
+  <meta name="description" content="Calyntro brings your repository's evolution into focus. Analyse Git history, complexity metrics, and team ownership to surface technical debt, knowledge silos, and architectural drift." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-  
-    <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="canonical" href="https://khreichel.github.io/Calyntro/index.html" />
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=bafade30"></script>
-      <script src="_static/doctools.js?v=fd6eb6e6"></script>
-      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation Guide" href="installation.html" /> 
+    :root {
+      --color-bg:            #ffffff;
+      --color-bg-secondary:  #f4faf9;
+      --color-text-primary:  #0d2b28;
+      --color-text-secondary:#3d6b66;
+      --color-text-tertiary: #7eaaa4;
+      --color-border:        rgba(13,158,143,0.14);
+      --color-border-mid:    rgba(13,158,143,0.28);
+
+      /* Calyntro teal — primary brand colour */
+      --color-info-bg:       #e0f5f3;
+      --color-info-text:     #0d9e8f;
+      --color-info-border:   rgba(13,158,143,0.3);
+
+      --color-success-bg:    #eaf3de;
+      --color-success-text:  #3b6d11;
+      --color-success-border:rgba(59,109,17,0.25);
+
+      --color-warning-bg:    #e0f5f3;
+      --color-warning-text:  #0a7a6e;
+      --color-warning-border:rgba(13,158,143,0.3);
+
+      --color-danger-bg:     #fcebeb;
+      --color-danger-text:   #a32d2d;
+      --color-danger-border: rgba(163,45,45,0.25);
+
+      
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+      --font-mono:  'Fira Code', 'Cascadia Code', monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-pill: 99px;
+
+      --max-w: 820px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg:            #0a1f1d;
+        --color-bg-secondary:  #102926;
+        --color-text-primary:  #d4f0ed;
+        --color-text-secondary:#7abfb9;
+        --color-text-tertiary: #4a8a83;
+        --color-border:        rgba(13,158,143,0.15);
+        --color-border-mid:    rgba(13,158,143,0.28);
+
+        --color-info-bg:       #0a3330;
+        --color-info-text:     #5dd9cc;
+        --color-info-border:   rgba(93,217,204,0.25);
+
+        --color-success-bg:    #173404;
+        --color-success-text:  #c0dd97;
+        --color-success-border:rgba(192,221,151,0.2);
+
+        --color-warning-bg:    #0a3330;
+        --color-warning-text:  #5dd9cc;
+        --color-warning-border:rgba(93,217,204,0.25);
+
+        --color-danger-bg:     #501313;
+        --color-danger-text:   #f7c1c1;
+        --color-danger-border: rgba(247,193,193,0.2);
+      }
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ── Nav ── */
+    nav {
+      border-bottom: 0.5px solid var(--color-border);
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      background: var(--color-bg);
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .nav-logo {
+      font-family: var(--font-sans);
+      font-size: 20px;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-logo svg { flex-shrink: 0; }
+    .nav-logo-beta {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-warning-text);
+      background: var(--color-warning-bg);
+      border: 0.5px solid var(--color-warning-border);
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--color-text-primary); }
+    .nav-cta {
+      background: #0d9e8f !important;
+      color: #ffffff !important;
+      padding: 7px 16px;
+      border-radius: var(--radius-md);
+      font-weight: 500 !important;
+    }
+    .nav-cta:hover { opacity: 0.88; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 11px 24px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.15s, background 0.15s;
+      border: none;
+    }
+    .btn-primary {
+      background: #0d9e8f;
+      color: #ffffff;
+    }
+    .btn-primary:hover { opacity: 0.82; }
+    .btn-outline {
+      background: transparent;
+      color: var(--color-text-secondary);
+      border: 0.5px solid var(--color-border-mid);
+    }
+    .btn-outline:hover { background: var(--color-bg-secondary); }
+
+    /* ── Pills & Badges ── */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-info-text);
+      background: var(--color-info-bg);
+      border: 0.5px solid var(--color-info-border);
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+    }
+    .eyebrow::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--color-info-text);
+    }
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+    }
+    .badge-red    { background: var(--color-danger-bg);  color: var(--color-danger-text); }
+    .badge-amber  { background: var(--color-warning-bg); color: var(--color-warning-text); }
+    .badge-green  { background: var(--color-success-bg); color: var(--color-success-text); }
+    .badge-beta   { background: var(--color-warning-bg); color: var(--color-warning-text); border: 0.5px solid var(--color-warning-border); padding: 4px 10px; border-radius: var(--radius-pill); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* ── Section labels ── */
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-tertiary);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: var(--font-sans);
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.25;
+      margin-bottom: 28px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 72px 32px 64px;
+      border-bottom: 0.5px solid var(--color-border);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: #0d9e8f;
+      opacity: 0.08;
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      position: relative;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .hero h1 {
+      font-family: var(--font-sans);
+      font-size: clamp(32px, 5vw, 46px);
+      line-height: 1.1;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      max-width: 600px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--color-info-text);
+    }
+    .hero-sub {
+      font-size: 17px;
+      color: var(--color-text-secondary);
+      max-width: 540px;
+      margin-bottom: 20px;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .hero-beta-notice {
+      font-size: 13px;
+      color: var(--color-warning-text);
+      background: var(--color-warning-bg);
+      border: 0.5px solid var(--color-warning-border);
+      border-radius: var(--radius-md);
+      padding: 11px 16px;
+      margin-bottom: 28px;
+      max-width: 520px;
+      line-height: 1.5;
+    }
+    .hero-cta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .stat-strip {
+      display: flex;
+      border: 0.5px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      max-width: 560px;
+    }
+    .stat-item {
+      flex: 1;
+      padding: 16px 20px;
+      border-right: 0.5px solid var(--color-border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--font-sans);
+      font-size: 22px;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+    .stat-label { font-size: 11px; color: var(--color-text-secondary); }
+
+    /* ── PAIN POINTS ── */
+    .pain-section {
+      padding: 64px 32px;
+      border-bottom: 0.5px solid var(--color-border);
+    }
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 640px) {
+      .pain-grid { grid-template-columns: 1fr; }
+    }
+    .pain-card {
+      background: var(--color-bg-secondary);
+      border: 0.5px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+    .pain-icon {
+      width: 30px; height: 30px;
+      border-radius: var(--radius-sm);
+      background: var(--color-danger-bg);
+      color: var(--color-danger-text);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .pain-title { font-size: 13px; font-weight: 500; margin-bottom: 7px; line-height: 1.3; }
+    .pain-body  { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+    .bridge {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px 18px;
+      background: var(--color-success-bg);
+      border: 0.5px solid var(--color-success-border);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      color: var(--color-success-text);
+      line-height: 1.55;
+    }
+    .bridge-arrow { flex-shrink: 0; font-weight: 500; margin-top: 1px; }
+
+    /* ── FEATURE BLOCKS ── */
+    .feature-block {
+      padding: 64px 32px;
+      border-bottom: 0.5px solid var(--color-border);
+    }
+    .feat-inner { max-width: var(--max-w); margin: 0 auto; }
+    .feat-tag {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+      margin-bottom: 14px;
+    }
+    .feat-tag-blue   { background: var(--color-info-bg);    color: var(--color-info-text); }
+    .feat-tag-teal   { background: var(--color-info-bg);    color: var(--color-info-text); }
+    .feat-tag-amber  { background: var(--color-warning-bg); color: var(--color-warning-text); }
+    .feat-headline {
+      font-family: var(--font-sans);
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .feat-sub {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      max-width: 500px;
+      margin-bottom: 28px;
+      line-height: 1.65;
+    }
+    .feat-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 540px) {
+      .feat-metrics { grid-template-columns: 1fr; }
+    }
+    .feat-metric {
+      background: var(--color-bg-secondary);
+      border: 0.5px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+    .feat-metric-name {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-tertiary);
+      margin-bottom: 5px;
+    }
+    .feat-metric-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.55; }
+
+    /* ── Demo panels ── */
+    .demo-panel {
+      border: 0.5px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .demo-bar {
+      background: var(--color-bg-secondary);
+      border-bottom: 0.5px solid var(--color-border);
+      padding: 9px 14px;
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .demo-bar::before {
+      content: '';
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--color-text-tertiary);
+      opacity: 0.4;
+    }
+    .demo-body { padding: 16px 18px; }
+
+    /* Hotspot table */
+    .hs-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .hs-table th {
+      font-size: 10px; font-weight: 500; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--color-text-tertiary);
+      text-align: left; padding: 0 10px 10px 0;
+      border-bottom: 0.5px solid var(--color-border);
+    }
+    .hs-table td {
+      padding: 8px 10px 8px 0;
+      border-bottom: 0.5px solid var(--color-border);
+      color: var(--color-text-secondary);
+      vertical-align: middle;
+    }
+    .hs-table tr:last-child td { border-bottom: none; }
+    .hs-table td:first-child { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-primary); }
+    .trend-up     { color: #e24b4a; font-size: 12px; }
+    .trend-stable { color: var(--color-text-tertiary); font-size: 12px; }
+    .trend-down   { color: #639922; font-size: 12px; }
+
+    /* Bar rows */
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+    .bar-row:last-child { margin-bottom: 0; }
+    .bar-name { font-size: 12px; color: var(--color-text-secondary); min-width: 110px; font-family: var(--font-mono); }
+    .bar-wrap  { flex: 1; background: var(--color-bg-secondary); border-radius: 3px; height: 8px; overflow: hidden; }
+    .bar-fill  { height: 100%; border-radius: 3px; }
+    .bar-val   { font-size: 11px; color: var(--color-text-tertiary); min-width: 24px; text-align: right; }
+
+    /* Ownership */
+    .own-row  { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+    .own-row:last-child { margin-bottom: 0; }
+    .own-name { font-size: 12px; color: var(--color-text-secondary); min-width: 90px; }
+    .own-bar-wrap { flex: 1; background: var(--color-bg-secondary); border-radius: 3px; height: 10px; overflow: hidden; }
+    .own-bar  { height: 100%; border-radius: 3px; }
+    .own-pct  { font-size: 11px; color: var(--color-text-tertiary); min-width: 30px; text-align: right; }
+    .own-tag  { font-size: 10px; padding: 2px 7px; border-radius: var(--radius-sm); font-weight: 500; white-space: nowrap; }
+
+    .alert-box {
+      margin-top: 14px;
+      padding: 11px 14px;
+      background: var(--color-danger-bg);
+      border: 0.5px solid var(--color-danger-border);
+      border-radius: var(--radius-md);
+    }
+    .alert-title { font-size: 12px; font-weight: 500; color: var(--color-danger-text); margin-bottom: 4px; }
+    .alert-body  { font-size: 11px; color: var(--color-danger-text); opacity: 0.85; }
+
+    /* ── HOW IT WORKS ── */
+    .how-section {
+      padding: 64px 32px;
+      border-bottom: 0.5px solid var(--color-border);
+    }
+    .steps { display: flex; flex-direction: column; }
+    .step  { display: flex; gap: 20px; padding: 20px 0; border-bottom: 0.5px solid var(--color-border); }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      font-family: var(--font-sans);
+      font-size: 26px;
+      color: var(--color-text-tertiary);
+      min-width: 32px;
+      line-height: 1.2;
+      padding-top: 2px;
+    }
+    .step-title { font-size: 15px; font-weight: 500; margin-bottom: 5px; }
+    .step-body  { font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 80px 32px;
+      text-align: center;
+    }
+    .cta-inner { max-width: 480px; margin: 0 auto; }
+    .cta-title {
+      font-family: var(--font-sans);
+      font-size: 32px;
+      font-weight: 400;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    .cta-body {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      margin-bottom: 18px;
+      line-height: 1.65;
+    }
+    .cta-beta-notice {
+      font-size: 13px;
+      color: var(--color-warning-text);
+      background: var(--color-warning-bg);
+      border: 0.5px solid var(--color-warning-border);
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
+      margin-bottom: 28px;
+      line-height: 1.55;
+    }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .trust-badges {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+    .trust-badge {
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+      background: var(--color-bg-secondary);
+      border: 0.5px solid var(--color-border);
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 0.5px solid var(--color-border);
+      padding: 24px 32px;
+    }
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-logo {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      color: var(--color-text-primary);
+      text-decoration: none;
+    }
+    .footer-note { font-size: 12px; color: var(--color-text-tertiary); }
+    .footer-links { display: flex; gap: 20px; list-style: none; }
+    .footer-links a { font-size: 12px; color: var(--color-text-tertiary); text-decoration: none; }
+    .footer-links a:hover { color: var(--color-text-secondary); }
+  </style>
 </head>
+<body>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="#" class="icon icon-home">
-            calyntro
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Setup &amp; Update Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Dashboard User Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis.html">Understanding Calyntro Analyses</a></li>
-</ul>
-
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">calyntro</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to Calyntro’s documentation!</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="welcome-to-calyntro-s-documentation">
-<h1>Welcome to Calyntro’s documentation!<a class="headerlink" href="#welcome-to-calyntro-s-documentation" title="Link to this heading"></a></h1>
-<p><strong>Calyntro</strong> is an advanced repository analytics tool that extracts and interprets version control metadata (e.g., from Git) to uncover software evolution patterns, code quality risks, and team interaction dynamics.</p>
-<p>By analyzing commit histories, change frequencies, and developer contributions, Calyntro identifies hotspots—code areas with high modification activity that may indicate maintenance bottlenecks or architectural weaknesses.</p>
-<p>The application integrates historical code metrics with behavioral analysis to reveal trends such as tightly coupled files, ownership dispersion, and code churn. These insights enable teams to make data-driven decisions about refactoring priorities, technical debt management, and team collaboration strategies.</p>
-<p>Calyntro provides a modular architecture for analysis pipelines, supporting customizable metrics, visual output formats, and integration with CI/CD workflows. Its flexible data model allows correlation with external systems, making it suitable for continuous code health monitoring and large-scale repository intelligence.</p>
-<p>Check out the <a class="reference internal" href="usage.html"><span class="doc">Dashboard User Guide</span></a> section for further information, including how to
-<span class="xref std std-ref">install</span> the project.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This project is under active development</p>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#getting-the-deployment-files">Getting the Deployment Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#next-steps">Next Steps</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Setup &amp; Update Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="importer_guide.html#initial-setup">Initial Setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="importer_guide.html#update-process-operation">Update Process (Operation)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Dashboard User Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#navigation-filtering">Navigation &amp; Filtering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#views">Views</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#common-concepts">Common Concepts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#lines-of-code-loc">Lines of Code (LOC)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#evolution-pulse">Evolution &amp; Pulse</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#quality-risk">Quality &amp; Risk</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#structure-logic">Structure &amp; Logic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#team-knowledge">Team &amp; Knowledge</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#configuration">Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#application-info">Application Info</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="analysis.html">Understanding Calyntro Analyses</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="analysis.html#analysis-scopes">Analysis Scopes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="analysis.html#evolution-pulse-activity">Evolution &amp; Pulse (Activity)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="analysis.html#quality-risk">Quality &amp; Risk</a></li>
-<li class="toctree-l2"><a class="reference internal" href="analysis.html#structure-logic-complexity">Structure &amp; Logic (Complexity)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="analysis.html#team-knowledge-ownership">Team &amp; Knowledge (Ownership)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="analysis.html#base-metrics">Base Metrics</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="license">
-<h1>License<a class="headerlink" href="#license" title="Link to this heading"></a></h1>
-<p>Calyntro is released under the terms specified in the LICENSE file.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Terms</span> <span class="n">of</span> <span class="n">Use</span> <span class="o">&amp;</span> <span class="n">Disclaimer</span>
-
-<span class="n">Calyntro</span> <span class="ow">is</span> <span class="n">distributed</span> <span class="k">as</span> <span class="n">free</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">use</span> <span class="n">Docker</span> <span class="n">containers</span><span class="o">.</span>
-<span class="n">You</span> <span class="n">are</span> <span class="n">welcome</span> <span class="n">to</span> <span class="n">deploy</span> <span class="ow">and</span> <span class="n">use</span> <span class="n">the</span> <span class="n">provided</span> <span class="n">images</span> <span class="k">for</span> <span class="n">your</span> <span class="n">own</span> <span class="n">projects</span><span class="o">.</span>
-
-<span class="n">Disclaimer</span> <span class="n">of</span> <span class="n">Warranty</span><span class="p">:</span>
-<span class="n">THE</span> <span class="n">SOFTWARE</span> <span class="n">IS</span> <span class="n">PROVIDED</span> <span class="s2">&quot;AS IS&quot;</span><span class="p">,</span> <span class="n">WITHOUT</span> <span class="n">WARRANTY</span> <span class="n">OF</span> <span class="n">ANY</span> <span class="n">KIND</span><span class="p">,</span> <span class="n">EXPRESS</span> <span class="n">OR</span> <span class="n">IMPLIED</span><span class="p">,</span>
-<span class="n">INCLUDING</span> <span class="n">BUT</span> <span class="n">NOT</span> <span class="n">LIMITED</span> <span class="n">TO</span> <span class="n">THE</span> <span class="n">WARRANTIES</span> <span class="n">OF</span> <span class="n">MERCHANTABILITY</span><span class="p">,</span>
-<span class="n">FITNESS</span> <span class="n">FOR</span> <span class="n">A</span> <span class="n">PARTICULAR</span> <span class="n">PURPOSE</span> <span class="n">AND</span> <span class="n">NONINFRINGEMENT</span><span class="o">.</span>
-<span class="n">IN</span> <span class="n">NO</span> <span class="n">EVENT</span> <span class="n">SHALL</span> <span class="n">THE</span> <span class="n">AUTHORS</span> <span class="n">OR</span> <span class="n">COPYRIGHT</span> <span class="n">HOLDERS</span> <span class="n">BE</span> <span class="n">LIABLE</span> <span class="n">FOR</span> <span class="n">ANY</span> <span class="n">CLAIM</span><span class="p">,</span>
-<span class="n">DAMAGES</span> <span class="n">OR</span> <span class="n">OTHER</span> <span class="n">LIABILITY</span><span class="p">,</span> <span class="n">WHETHER</span> <span class="n">IN</span> <span class="n">AN</span> <span class="n">ACTION</span> <span class="n">OF</span> <span class="n">CONTRACT</span><span class="p">,</span> <span class="n">TORT</span> <span class="n">OR</span> <span class="n">OTHERWISE</span><span class="p">,</span>
-<span class="n">ARISING</span> <span class="n">FROM</span><span class="p">,</span> <span class="n">OUT</span> <span class="n">OF</span> <span class="n">OR</span> <span class="n">IN</span> <span class="n">CONNECTION</span> <span class="n">WITH</span> <span class="n">THE</span> <span class="n">SOFTWARE</span> <span class="n">OR</span> <span class="n">THE</span> <span class="n">USE</span> <span class="n">OR</span> <span class="n">OTHER</span>
-<span class="n">DEALINGS</span> <span class="n">IN</span> <span class="n">THE</span> <span class="n">SOFTWARE</span><span class="o">.</span>
-<span class="n">USE</span> <span class="n">AT</span> <span class="n">YOUR</span> <span class="n">OWN</span> <span class="n">RISK</span><span class="o">.</span>
-</pre></div>
-</div>
-</section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="installation.html" class="btn btn-neutral float-right" title="Installation Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  <!-- ── Navigation ── -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 18 Q7 10, 11 14 Q15 18, 19 10 Q23 4, 26 10" stroke="#0d9e8f" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M4 22 Q7 15, 11 18 Q15 22, 19 15 Q23 9, 26 14" stroke="#0d9e8f" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.55"/>
+        </svg>
+        Calyntro
+        <span class="nav-logo-beta">Beta</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How it works</a></li>
+        <li><a href="https://khreichel.github.io/Calyntro/" target="_blank" rel="noopener">Docs</a></li>
+        <li><a href="#cta" class="nav-cta">Join the beta</a></li>
+      </ul>
     </div>
+  </nav>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2025-2026, karl-heinz reichel.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">
+        <span class="eyebrow">Repository Intelligence for Engineering Leaders</span>
+        <span class="badge-beta">Public Beta</span>
+      </div>
+      <h1>Brings your repository's evolution <em>into focus</em></h1>
+      <p class="hero-sub">Calyntro analyses Git history, complexity metrics, and team ownership to give CTOs and Engineering Managers a clear view of Knowledge Silos, Absolute Churn, and architectural drift — at File, Module, and Team level.</p>
+      <div class="hero-beta-notice">
+        Calyntro is currently in public beta. Core analyses are fully functional. We're actively refining the experience and welcome early feedback from engineering teams.
+      </div>
+      <div class="hero-cta">
+        <a href="#cta" class="btn btn-primary">Try the beta →</a>
+        <a href="https://khreichel.github.io/Calyntro/" target="_blank" rel="noopener" class="btn btn-outline">Explore the docs</a>
+      </div>
+      <div class="stat-strip">
+        <div class="stat-item">
+          <div class="stat-num">3 scopes</div>
+          <div class="stat-label">File · Module · Team</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">Git-native</div>
+          <div class="stat-label">No agents, no instrumentation</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">Docker</div>
+          <div class="stat-label">Self-hosted, data stays yours</div>
         </div>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+    </div>
+  </section>
+
+  <!-- ── Pain Points ── -->
+  <section class="pain-section" id="problems">
+    <div class="container">
+      <div class="section-label">The Problem</div>
+      <h2 class="section-title">Engineering decisions are made blind — every day</h2>
+      <div class="pain-grid">
+        <div class="pain-card">
+          <div class="pain-icon">!</div>
+          <div class="pain-title">Knowledge walks out the door</div>
+          <div class="pain-body">When a key engineer leaves, their understanding of critical modules leaves with them. You only discover the gap when something breaks in production.</div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon">!</div>
+          <div class="pain-title">Technical debt is invisible until it hurts</div>
+          <div class="pain-body">High churn + rising complexity = the next incident. Without objective metrics, these files stay off the radar until they cause missed sprints or outages.</div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon">!</div>
+          <div class="pain-title">Teams drift off their modules</div>
+          <div class="pain-body">Effort scatters across the codebase. Without ownership visibility, you can't tell if a team is focused — or spread thin across systems they shouldn't be touching.</div>
+        </div>
+      </div>
+      <div class="bridge">
+        <span class="bridge-arrow">→</span>
+        Calyntro translates your Git history into an always-current risk map — surfacing hotspots, ownership gaps, and complexity trends before they escalate.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Feature 1: Operational Excellence ── -->
+  <section class="feature-block" id="features">
+    <div class="feat-inner">
+      <span class="feat-tag feat-tag-blue">Operational Excellence</span>
+      <h3 class="feat-headline">Know which files are your next incident</h3>
+      <p class="feat-sub">Calyntro combines churn, age, and complexity into a single Hotspot score — so you can direct refactoring effort where it will have the most impact, not where it's loudest.</p>
+      <div class="feat-metrics">
+        <div class="feat-metric">
+          <div class="feat-metric-name">Hotspot Analysis</div>
+          <div class="feat-metric-desc">Activity Score + Structural Score identifies files that are both frequently changed and persistently unstable.</div>
+        </div>
+        <div class="feat-metric">
+          <div class="feat-metric-name">Absolute Churn</div>
+          <div class="feat-metric-desc">Lines added + deleted reveal files being heavily reworked — a leading indicator of unclear requirements or architectural problems.</div>
+        </div>
+        <div class="feat-metric">
+          <div class="feat-metric-name">Complexity Trend</div>
+          <div class="feat-metric-desc">Tracks Cognitive Complexity over time. A rising trend in a high-churn file is a code-red signal — catch it before it becomes a bug farm.</div>
+        </div>
+        <div class="feat-metric">
+          <div class="feat-metric-name">Development Trend</div>
+          <div class="feat-metric-desc">Compares activity across two time windows. See what's heating up, stabilising, or going cold across your entire file tree.</div>
+        </div>
+      </div>
+      <div class="demo-panel">
+        <div class="demo-bar">Absolute Churn · File Level · All Modules</div>
+        <div class="demo-body">
+          <table class="hs-table">
+            <thead>
+              <tr>
+                <th>File Path</th>
+                <th>Status</th>
+                <th>Abs Churn</th>
+                <th>Added</th>
+                <th>Deleted</th>
+                <th>Revisions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>src/mongo/db/pipeline/document_source_score_fusion_test.cpp</td>
+                <td><span class="trend-up">↑</span></td>
+                <td>32,868</td>
+                <td style="color:var(--color-success-text);">+22,066</td>
+                <td style="color:var(--color-danger-text);">−10,802</td>
+                <td>34</td>
+              </tr>
+              <tr>
+                <td>src/mongo/db/pipeline/expression_convert_test.cpp</td>
+                <td><span class="trend-down">↓</span></td>
+                <td>12,605</td>
+                <td style="color:var(--color-success-text);">+4,298</td>
+                <td style="color:var(--color-danger-text);">−8,307</td>
+                <td>10</td>
+              </tr>
+              <tr>
+                <td>src/mongo/db/timeseries/bucket_catalog/bucket_catalog_test.cpp</td>
+                <td><span class="trend-up">↑</span></td>
+                <td>11,845</td>
+                <td style="color:var(--color-success-text);">+7,811</td>
+                <td style="color:var(--color-danger-text);">−4,034</td>
+                <td>73</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="margin-top:12px;padding-top:10px;border-top:0.5px solid var(--color-border);font-size:11px;color:var(--color-text-tertiary);">50 entries found · showing top 3 by Abs Churn · sortable by any column</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Feature 2: Strategic Planning ── -->
+  <section class="feature-block">
+    <div class="feat-inner">
+      <span class="feat-tag feat-tag-teal">Strategic Planning &amp; Stability</span>
+      <h3 class="feat-headline">Bring data to your architecture conversations</h3>
+      <p class="feat-sub">At module level, Calyntro aggregates hotspot scores, ownership distribution, and velocity trends into an architectural health view — the evidence base your roadmap decisions have been missing.</p>
+      <div class="feat-metrics">
+        <div class="feat-metric">
+          <div class="feat-metric-name">Module Hotspot Trend</div>
+          <div class="feat-metric-desc">Aggregated Activity + Structural scores reveal which architectural components are accumulating instability over time.</div>
+        </div>
+        <div class="feat-metric">
+          <div class="feat-metric-name">Module Change Frequency</div>
+          <div class="feat-metric-desc">Total commits per module. Outliers reveal "god modules" absorbing disproportionate maintenance effort.</div>
+        </div>
+        <div class="feat-metric">
+          <div class="feat-metric-name">Lines of Code (LOC)</div>
+          <div class="feat-metric-desc">Identify God Objects — massive files that should be split. Size + churn flags the highest-priority decomposition candidates.</div>
+        </div>
+        <div class="feat-metric">
+          <div class="feat-metric-name">Cyclomatic + Cognitive Complexity</div>
+          <div class="feat-metric-desc">The best predictor of bugs. Combined with high churn scores, complex files are the first candidates for your next refactoring sprint.</div>
+        </div>
+      </div>
+      <div class="demo-panel">
+        <div class="demo-bar">Knowledge Silos · Module Level · All Modules</div>
+        <div class="demo-body">
+          <table class="hs-table">
+            <thead>
+              <tr>
+                <th>Module</th>
+                <th>Total Files</th>
+                <th>Silo Files</th>
+                <th>Silo Ratio</th>
+                <th>Dominant Developer</th>
+                <th>Risk</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>shell</td>
+                <td>112</td>
+                <td>16</td>
+                <td>14.3%</td>
+                <td>Steve McClure</td>
+                <td><span class="badge badge-amber">low</span></td>
+              </tr>
+              <tr>
+                <td>client</td>
+                <td>180</td>
+                <td>4</td>
+                <td>2.2%</td>
+                <td>Guillaume Racicot</td>
+                <td><span class="badge badge-green">low</span></td>
+              </tr>
+              <tr>
+                <td>base</td>
+                <td>69</td>
+                <td>1</td>
+                <td>1.4%</td>
+                <td>Billy Donahue</td>
+                <td><span class="badge badge-green">low</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="margin-top:12px;padding-top:10px;border-top:0.5px solid var(--color-border);font-size:11px;color:var(--color-text-tertiary);">9 entries found · Knowledge Silos = files owned overwhelmingly by a single developer — Bus Factor risk</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Feature 3: Risk & Knowledge ── -->
+  <section class="feature-block">
+    <div class="feat-inner">
+      <span class="feat-tag feat-tag-amber">Risk Management &amp; Knowledge Retention</span>
+      <h3 class="feat-headline">Reduce your bus factor before someone leaves</h3>
+      <p class="feat-sub">Calyntro maps exactly who owns what — not based on org charts, but on actual commit history. Spot single points of knowledge and fragmented ownership before they become crises.</p>
+      <div class="feat-metrics">
+        <div class="feat-metric">
+          <div class="feat-metric-name">Code Ownership</div>
+          <div class="feat-metric-desc">Primary contributor per file or module with ownership percentage. High single-owner concentration = high bus-factor risk.</div>
+        </div>
+        <div class="feat-metric">
+          <div class="feat-metric-name">Knowledge Fragmentation</div>
+          <div class="feat-metric-desc">Too many contributors signals diffusion of responsibility — no clear owner, higher communication overhead, a "junk drawer" module.</div>
+        </div>
+        <div class="feat-metric">
+          <div class="feat-metric-name">Module Ownership by Teams</div>
+          <div class="feat-metric-desc">Team-centric view: is your team focused on their assigned modules, or is effort scattered across systems they shouldn't own?</div>
+        </div>
+        <div class="feat-metric">
+          <div class="feat-metric-name">Top Team Contributors</div>
+          <div class="feat-metric-desc">Module-centric view: which teams are actually driving each component? Detect cross-team boundary violations early.</div>
+        </div>
+      </div>
+      <div class="demo-panel">
+        <div class="demo-bar">Top Team Contributors · Team Level · All Modules</div>
+        <div class="demo-body">
+          <table class="hs-table">
+            <thead>
+              <tr>
+                <th>Module</th>
+                <th>Team 1</th>
+                <th>Team 2</th>
+                <th>Team 3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>(unassigned)</td>
+                <td>TeamF <span style="color:var(--color-text-tertiary);font-size:11px;">100.0%</span></td>
+                <td style="color:var(--color-text-tertiary);">—</td>
+                <td style="color:var(--color-text-tertiary);">—</td>
+              </tr>
+              <tr>
+                <td>base</td>
+                <td>TeamF <span style="color:var(--color-text-tertiary);font-size:11px;">100.0%</span></td>
+                <td style="color:var(--color-text-tertiary);">—</td>
+                <td style="color:var(--color-text-tertiary);">—</td>
+              </tr>
+              <tr>
+                <td>bson</td>
+                <td>TeamF <span style="color:var(--color-text-tertiary);font-size:11px;">100.0%</span></td>
+                <td style="color:var(--color-text-tertiary);">—</td>
+                <td style="color:var(--color-text-tertiary);">—</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="margin-top:12px;padding-top:10px;border-top:0.5px solid var(--color-border);font-size:11px;color:var(--color-text-warning);background:var(--color-warning-bg);border-radius:6px;padding:8px 10px;margin-top:12px;">
+            Single-team dominance detected across all modules — no cross-team knowledge redundancy. Bus Factor risk at organisational level.
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:var(--color-text-tertiary);">8 entries found · shows top 3 contributing teams per module by churn percentage</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How it works ── -->
+  <section class="how-section" id="how-it-works">
+    <div class="container">
+      <div class="section-label">Deployment</div>
+      <h2 class="section-title">Up and running in one afternoon</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-title">Deploy via Docker</div>
+            <div class="step-body">Calyntro ships as a self-hosted Docker container. No SaaS vendor receives your code. Your IP stays on your infrastructure.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-title">Import your Git history</div>
+            <div class="step-body">Run the initial data import against your repository. Incremental updates keep the dashboard current with zero downtime — designed to fit existing CI/CD pipelines.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-title">Filter, analyse, decide</div>
+            <div class="step-body">Select any analysis — Hotspots, Ownership, Complexity Trends — filter by module and date range, and drill into any file with a single click. Session filters are saved automatically.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="cta-section" id="cta">
+    <div class="cta-inner">
+      <h2 class="cta-title">Your Git history already holds the answers</h2>
+      <p class="cta-body">Calyntro surfaces them. Deploy in an afternoon, run your first hotspot analysis the same day.</p>
+      <div class="cta-beta-notice">
+        We're looking for early adopters to shape the product. Beta access is free — all we ask for is honest feedback.
+      </div>
+      <div class="cta-btns">
+        <a href="https://khreichel.github.io/calyntro/installation.html" target="_blank" rel="noopener" class="btn btn-primary">Join the beta →</a>
+        <a href="https://khreichel.github.io/calyntro/" target="_blank" rel="noopener" class="btn btn-outline">Read the docs</a>
+      </div>
+      <div class="trust-badges">
+        <span class="trust-badge">Self-hosted · your data stays yours</span>
+        <span class="trust-badge">Docker · no infrastructure overhead</span>
+        <span class="trust-badge">Git-native · no agents required</span>
+        <span class="trust-badge">Free during beta</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-inner">
+      <a href="#" class="footer-logo" style="display:flex;align-items:center;gap:7px;">
+        <svg width="20" height="20" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 18 Q7 10, 11 14 Q15 18, 19 10 Q23 4, 26 10" stroke="#0d9e8f" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M4 22 Q7 15, 11 18 Q15 22, 19 15 Q23 9, 26 14" stroke="#0d9e8f" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.55"/>
+        </svg>
+        Calyntro
+      </a>
+      <span class="footer-note">© 2025 karl-heinz reichel · calyntro 0.1.0 beta</span>
+      <ul class="footer-links">
+        <li><a href="https://khreichel.github.io/calyntro/" target="_blank" rel="noopener">Docs</a></li>
+        <li><a href="https://khreichel.github.io/calyntro/installation.html" target="_blank" rel="noopener">Install</a></li>
+        <li><a href="https://khreichel.github.io/calyntro/analysis.html" target="_blank" rel="noopener">Analyses</a></li>
+      </ul>
+    </div>
+  </footer>
 
 </body>
 </html>
