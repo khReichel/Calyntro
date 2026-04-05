@@ -12,29 +12,73 @@ The Calyntro Dashboard is your central hub for exploring the health and evolutio
 Navigation & Filtering
 ----------------------
 
-The top bar of the dashboard provides global controls that affect all analysis views.
+The analysis controls are grouped in a card at the top of the Analysis View page.
+They apply globally to all views (table and visual).
 
-1. **Analysis Selector**: Choose the specific metric or analysis you want to perform (e.g., "Hotspots Trends", "Code Churn", "Commits").
-2. **Module Filter**: Narrow down the analysis to a specific architectural component or module.
-3. **Date Range**:
-    *   **Start/End Date**: Defines the primary time window for the analysis.
-    *   **Baseline Date**: (Visible only for Trend analyses) Defines the start of the comparison period.
+1. **Scope Selector**: Selects the granularity of the analysis — **File**, **Module**, or **Team**.
+   This is the primary control: it determines which analyses are available and which views
+   can be activated. The four visual views (Hotspot, Code Map, Trend, Scatter) are only
+   enabled in Module scope.
+
+2. **Analysis Type**: Selects the specific metric dimension to explore (e.g., "Complexity",
+   "Absolute Churn", "Development Trend", "Knowledge Silos"). The available options are
+   filtered to those that support the currently selected scope. When a visual view other
+   than the Table is active, this selector is disabled — switch back to the Table view
+   to change the analysis dimension.
+
+3. **Module Filter**: Narrows the analysis to a specific architectural component. Disabled
+   (and has no effect) when Module scope is selected, since the Module scope already
+   aggregates all components.
+
+4. **Date Range**:
+
+   *   **Start / End Date**: Defines the primary analysis time window.
+   *   **Baseline Date**: Visible only when the **Development Trend** analysis is selected.
+       Defines the start of the comparison period from which trend deltas are calculated.
+       It is auto-populated from the configured analysis start date if not set manually.
 
 .. tip::
-   Your filter settings (Date Range) are automatically saved to your session, so you don't lose your context when switching between different analysis types.
+   Date filters persist when switching between analysis types and views within the same
+   session, so you retain your time context as you move between perspectives.
 
 Views
 -----
 
-Calyntro currently provides a detailed table view for exploring your code analysis results.
+Calyntro provides five complementary views. The **Table** view is available for all analysis scopes (file, module, team). The remaining four views — Hotspot Analysis, Code Map, Trend Analysis, and Scatter Analysis — are available exclusively in **Module** scope, where the data volume and aggregation level make them meaningful.
+
+When a visual view is active, the analysis-type selector is disabled. Switch back to the Table view to change the analysis dimension.
 
 1. Table View
 ^^^^^^^^^^^^^
-The default view. It provides a detailed, sortable list of all files or modules matching your criteria.
+The default view. A detailed, sortable list of all files or modules matching your current analysis selection and filters.
 
-*   **Sort**: Click on any column header to sort by that metric.
+*   **Sort**: Click any column header to sort by that metric.
 *   **Quick Actions**:
-    *   **Eye Icon**: Opens a quick summary panel on the right.
-    *   **External Link Icon**: Opens a full-screen modal with detailed file history and metrics.
+    *   **Eye Icon**: Opens a summary panel on the right side.
+    *   **External Link Icon**: Opens a full-screen detail modal with file history and all available metrics.
+
+2. Hotspot Analysis
+^^^^^^^^^^^^^^^^^^^
+A heatmap matrix showing all modules across five risk dimensions simultaneously: Complexity, Change Frequency, Silo Risk, Absolute Churn, and Code Age. Each cell is coloured on a 0–100 scale relative to the current module set.
+
+Use this view to **compare modules across multiple risk axes at a glance** — a module that scores red across three or more dimensions simultaneously warrants immediate architectural attention.
+
+3. Code Map
+^^^^^^^^^^^
+A treemap in which cell **area** represents Lines of Code and cell **colour** represents composite risk (60 % cognitive complexity + 40 % churn, both normalised). Large red cells are the most critical: they are high-volume modules that are both cognitively demanding and actively churning.
+
+Use this view to **calibrate effort against impact** — it makes immediately visible whether your most complex code is also your biggest code.
+
+4. Trend Analysis
+^^^^^^^^^^^^^^^^^
+Line or area charts of up to ten modules over time, with a shared time axis. Four metrics are selectable via toggle buttons: Cognitive Complexity, Lines of Code, Silo Ratio, and Commits.
+
+Use this view to **detect directional problems early** — a module whose complexity and LOC are both rising over multiple periods is accumulating structural debt, regardless of how it looks in a point-in-time snapshot.
+
+5. Scatter Analysis
+^^^^^^^^^^^^^^^^^^^
+A bubble chart plotting Cognitive Complexity (X-axis) against Absolute Churn (Y-axis) for every module, with bubble size proportional to code age. Both axes are logarithmic. Dashed reference lines mark the project medians, dividing the chart into four quadrants: Hotspots (red), Dormant Risk (purple), Non-critical Churn (yellow), and Healthy (green).
+
+Use this view to **prioritise refactoring candidates** — modules in the top-right red quadrant are the statistically most likely sources of future defects.
 
 

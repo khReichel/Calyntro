@@ -161,6 +161,129 @@
         }
       }
     },
+    "/v1/analysis/trends/overview": {
+      "post": {
+        "summary": "Analyze Trends Overview",
+        "description": "Analyzes trends overview for complexity, loc, and silo ratio over time.\n\nWhen start_date or end_date are omitted the endpoint defaults to the last\n12 months (end = now, start = now - 365 days).",
+        "operationId": "analyze_trends_overview_v1_analysis_trends_overview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrendsOverviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrendsOverviewWrapped"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/analysis/trends/modules": {
+      "post": {
+        "tags": [
+          "Trends"
+        ],
+        "summary": "Analyze Module Trends",
+        "description": "Returns bucketed time-series for complexity, LOC, silo-ratio, and commits\nfor every module (or the requested subset) in a single response.\nAll modules share the same time axis (buckets).",
+        "operationId": "analyze_module_trends_v1_analysis_trends_modules_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModuleTrendsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModuleTrendsWrapped"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/analysis/warnings": {
+      "post": {
+        "tags": [
+          "Warnings"
+        ],
+        "summary": "Analyze Warnings",
+        "description": "Analyzes warnings from various analyses.",
+        "operationId": "analyze_warnings_v1_analysis_warnings_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WarningsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarningsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/analyze/hotspots/churnage": {
       "post": {
         "summary": "Hotspots",
@@ -322,6 +445,48 @@
         }
       }
     },
+    "/v1/analysis/complexity/avg": {
+      "post": {
+        "tags": [
+          "Complexity"
+        ],
+        "summary": "Get Complexity Avg",
+        "description": "Returns the average cognitive complexity across all files (latest value per file\nas of ``end_date``) together with its growth percentage compared to the window\nshifted back by ``trend_window_days`` days.\n\nFiles with a cognitive complexity of 0 are excluded (e.g. non-code assets).",
+        "operationId": "get_complexity_avg_v1_analysis_complexity_avg_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComplexityAvgRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComplexityAvgResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/analyze/commits": {
       "post": {
         "tags": [
@@ -389,6 +554,48 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CommitAnalysisModuleResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/analyze/commits/count": {
+      "post": {
+        "tags": [
+          "Commits"
+        ],
+        "summary": "Get Commit Count",
+        "description": "Retrieves the total commit count and growth percentage for the specified period.\n\nThe growth percentage is calculated by comparing the total commits up to the end_date\nwith the total commits up to a previous point in time (end_date - trend_window_days).",
+        "operationId": "get_commit_count_v1_analyze_commits_count_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommitAnalysisRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommitCountResponse"
                 }
               }
             }
@@ -854,6 +1061,45 @@
         }
       }
     },
+    "/v1/analyze/age/avg": {
+      "post": {
+        "summary": "Get Avg File Age",
+        "description": "Returns the average file age in days across all files in the specified window,\nplus a growth percentage compared to the same window shifted back by trend_window_days.",
+        "operationId": "get_avg_file_age_v1_analyze_age_avg_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvgFileAgeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvgFileAgeWrapped"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/config/modules": {
       "get": {
         "summary": "Config Modules",
@@ -882,7 +1128,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AnalysisSettingsResponse"
+                  "$ref": "#/components/schemas/AnalysisSettingsWrapped"
                 }
               }
             }
@@ -999,6 +1245,90 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DeveloperSiloResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/analysis/silos/count": {
+      "post": {
+        "tags": [
+          "Silos"
+        ],
+        "summary": "Get Silo Count",
+        "description": "Returns the total number of silo files together with the growth percentage\ncompared to the previous window (shifted back by ``trend_window_days``).\n\nUses the same ``silo_threshold`` and ``min_commits`` filters as the other\nsilo endpoints so all numbers are consistent.",
+        "operationId": "get_silo_count_v1_analysis_silos_count_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SiloCountRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiloCountResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/analysis/summary": {
+      "post": {
+        "tags": [
+          "Summary"
+        ],
+        "summary": "Get Summary Analysis",
+        "description": "Retrieves a summary of key metrics including total commits, file age, complexity, and silo ratio,\nalong with trend percentages compared to a baseline period.",
+        "operationId": "get_summary_analysis_v1_analysis_summary_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SummaryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryResponse"
                 }
               }
             }
@@ -1333,6 +1663,109 @@
         ],
         "title": "AnalysisSettingsResponse"
       },
+      "AnalysisSettingsWrapped": {
+        "properties": {
+          "items": {
+            "$ref": "#/components/schemas/AnalysisSettingsResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "AnalysisSettingsWrapped",
+        "description": "Wrapper response model exposing analysis settings under an `items` key."
+      },
+      "AvgFileAgeRequest": {
+        "properties": {
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date",
+            "description": "Start of the current window"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date",
+            "description": "End of the current window"
+          },
+          "module_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Module Name",
+            "description": "Filter by module name"
+          },
+          "trend_window_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trend Window Days",
+            "description": "Days to shift back for comparison (7 = week, 30 = month)",
+            "default": 30
+          }
+        },
+        "type": "object",
+        "title": "AvgFileAgeRequest"
+      },
+      "AvgFileAgeResponse": {
+        "properties": {
+          "avg_file_age_days": {
+            "type": "number",
+            "title": "Avg File Age Days",
+            "description": "Average file age in days across all files in the window"
+          },
+          "growth_pct": {
+            "type": "number",
+            "title": "Growth Pct",
+            "description": "Growth vs. same window shifted back by trend_window_days"
+          }
+        },
+        "type": "object",
+        "required": [
+          "avg_file_age_days",
+          "growth_pct"
+        ],
+        "title": "AvgFileAgeResponse"
+      },
+      "AvgFileAgeWrapped": {
+        "properties": {
+          "items": {
+            "$ref": "#/components/schemas/AvgFileAgeResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "AvgFileAgeWrapped",
+        "description": "Wrapper response model exposing avg file age data under an `items` key."
+      },
       "CombinedComplexityItem": {
         "properties": {
           "file_path": {
@@ -1616,6 +2049,19 @@
             ],
             "title": "Module Name",
             "description": "Filter by a specific module name"
+          },
+          "trend_window_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trend Window Days",
+            "description": "Number of days to use for the growth calculation (e.g., 7 for weekly, 30 for monthly)",
+            "default": 30
           }
         },
         "type": "object",
@@ -1638,6 +2084,125 @@
         ],
         "title": "CommitAnalysisResponse",
         "description": "Pydantic model for the file-level commit analysis response."
+      },
+      "CommitCountItem": {
+        "properties": {
+          "total_commits": {
+            "type": "integer",
+            "title": "Total Commits",
+            "description": "Total number of commits in the specified period"
+          },
+          "growth_pct": {
+            "type": "number",
+            "title": "Growth Pct",
+            "description": "Growth percentage compared to the previous period"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_commits",
+          "growth_pct"
+        ],
+        "title": "CommitCountItem",
+        "description": "Pydantic model for the commit count result with growth percentage."
+      },
+      "CommitCountResponse": {
+        "properties": {
+          "items": {
+            "$ref": "#/components/schemas/CommitCountItem"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "CommitCountResponse",
+        "description": "Pydantic model for the commit count response."
+      },
+      "ComplexityAvgRequest": {
+        "properties": {
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date",
+            "description": "Lower bound on commits considered for the latest-value snapshot"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date",
+            "description": "Snapshot date; defaults to now() when omitted"
+          },
+          "module_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Module Name",
+            "description": "Restrict to files belonging to this module"
+          },
+          "trend_window_days": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Trend Window Days",
+            "description": "Days to shift the snapshot back for the trend comparison (1\u2013365)",
+            "default": 30
+          }
+        },
+        "type": "object",
+        "title": "ComplexityAvgRequest",
+        "description": "Request body for the complexity average endpoint."
+      },
+      "ComplexityAvgResponse": {
+        "properties": {
+          "items": {
+            "$ref": "#/components/schemas/ComplexityAvgResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "ComplexityAvgResponse",
+        "description": "Response for the complexity average endpoint."
+      },
+      "ComplexityAvgResult": {
+        "properties": {
+          "avg_cognitive": {
+            "type": "number",
+            "title": "Avg Cognitive",
+            "description": "Average cognitive complexity across all files (latest value per file)"
+          },
+          "growth_pct": {
+            "type": "number",
+            "title": "Growth Pct",
+            "description": "Growth percentage compared to the previous window (positive = complexity increased, negative = decreased)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "avg_cognitive",
+          "growth_pct"
+        ],
+        "title": "ComplexityAvgResult"
       },
       "ComplexityTrendItem": {
         "properties": {
@@ -2283,6 +2848,23 @@
         "title": "HotspotComplexityItem",
         "description": "Pydantic model for a single item in the hotspot complexity analysis response."
       },
+      "HotspotComplexityListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/HotspotComplexityItem"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "HotspotComplexityListResponse",
+        "description": "Pydantic model for the hotspot complexity list response."
+      },
       "HotspotComplexityRequest": {
         "properties": {
           "component_name": {
@@ -2529,6 +3111,80 @@
           "items"
         ],
         "title": "ModuleHotspotTrendResponse"
+      },
+      "ModuleSeriesItem": {
+        "properties": {
+          "module_name": {
+            "type": "string",
+            "title": "Module Name"
+          },
+          "complexity": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Complexity"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Loc"
+          },
+          "silo_ratio": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Silo Ratio"
+          },
+          "commits": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Commits"
+          }
+        },
+        "type": "object",
+        "required": [
+          "module_name",
+          "complexity",
+          "loc",
+          "silo_ratio",
+          "commits"
+        ],
+        "title": "ModuleSeriesItem",
+        "description": "Time-series data for one module."
       },
       "ModuleSiloItem": {
         "properties": {
@@ -2861,6 +3517,106 @@
         ],
         "title": "ModuleTrendSeriesPoint"
       },
+      "ModuleTrendsRequest": {
+        "properties": {
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date",
+            "description": "Start date; defaults to 12 months before end_date"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date",
+            "description": "End date; defaults to now"
+          },
+          "bucket_days": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Bucket Days",
+            "description": "Number of days per bucket",
+            "default": 30
+          },
+          "module_names": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Module Names",
+            "description": "Restrict to these modules; null = all modules"
+          }
+        },
+        "type": "object",
+        "title": "ModuleTrendsRequest",
+        "description": "Request body for the per-module trends endpoint."
+      },
+      "ModuleTrendsResponse": {
+        "properties": {
+          "bucket_days": {
+            "type": "integer",
+            "title": "Bucket Days"
+          },
+          "buckets": {
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "type": "array",
+            "title": "Buckets",
+            "description": "Shared time axis (one entry per bucket)"
+          },
+          "modules": {
+            "items": {
+              "$ref": "#/components/schemas/ModuleSeriesItem"
+            },
+            "type": "array",
+            "title": "Modules"
+          }
+        },
+        "type": "object",
+        "required": [
+          "bucket_days",
+          "buckets",
+          "modules"
+        ],
+        "title": "ModuleTrendsResponse",
+        "description": "Response for the per-module trends endpoint."
+      },
+      "ModuleTrendsWrapped": {
+        "properties": {
+          "items": {
+            "$ref": "#/components/schemas/ModuleTrendsResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "ModuleTrendsWrapped",
+        "description": "Wrapper response model for module trends, exposing data under an `items` key."
+      },
       "ScoreDetail": {
         "properties": {
           "baseline": {
@@ -2914,6 +3670,106 @@
           "activity"
         ],
         "title": "Scores"
+      },
+      "SiloCountRequest": {
+        "properties": {
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date",
+            "description": "Filter for commits on or after this date"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date",
+            "description": "Filter for commits on or before this date"
+          },
+          "module_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Module Name",
+            "description": "Restrict analysis to a specific component"
+          },
+          "silo_threshold": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.5,
+            "title": "Silo Threshold",
+            "description": "Ownership fraction at or above which a file is classified as a silo (default 0.80 = 80 %)",
+            "default": 0.8
+          },
+          "min_commits": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Min Commits",
+            "description": "Minimum total commits a file must have to be considered (noise filter)",
+            "default": 5
+          },
+          "trend_window_days": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Trend Window Days",
+            "description": "Days to shift the window back for the trend comparison",
+            "default": 30
+          }
+        },
+        "type": "object",
+        "title": "SiloCountRequest",
+        "description": "Request body for the silo count KPI endpoint."
+      },
+      "SiloCountResponse": {
+        "properties": {
+          "items": {
+            "$ref": "#/components/schemas/SiloCountResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "SiloCountResponse",
+        "description": "Response for the silo count KPI endpoint."
+      },
+      "SiloCountResult": {
+        "properties": {
+          "silo_count": {
+            "type": "integer",
+            "title": "Silo Count",
+            "description": "Number of silo files in the requested period"
+          },
+          "growth_pct": {
+            "type": "number",
+            "title": "Growth Pct",
+            "description": "Growth percentage compared to the previous window (positive = more silos, negative = fewer silos)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "silo_count",
+          "growth_pct"
+        ],
+        "title": "SiloCountResult"
       },
       "SiloRisk": {
         "type": "string",
@@ -2984,6 +3840,137 @@
         "type": "object",
         "title": "SilosRequest",
         "description": "Request body for all silo analysis endpoints."
+      },
+      "SummaryItem": {
+        "properties": {
+          "total_commits": {
+            "type": "integer",
+            "title": "Total Commits",
+            "description": "Total number of commits in the specified period"
+          },
+          "total_commits_trend_pct": {
+            "type": "number",
+            "title": "Total Commits Trend Pct",
+            "description": "Trend percentage for total commits compared to baseline"
+          },
+          "avg_file_age_days": {
+            "type": "integer",
+            "title": "Avg File Age Days",
+            "description": "Average file age in days"
+          },
+          "avg_file_age_trend_pct": {
+            "type": "number",
+            "title": "Avg File Age Trend Pct",
+            "description": "Trend percentage for average file age compared to baseline"
+          },
+          "avg_complexity": {
+            "type": "number",
+            "title": "Avg Complexity",
+            "description": "Average cognitive complexity"
+          },
+          "avg_complexity_trend_pct": {
+            "type": "number",
+            "title": "Avg Complexity Trend Pct",
+            "description": "Trend percentage for average complexity compared to baseline"
+          },
+          "silo_ratio_pct": {
+            "type": "number",
+            "title": "Silo Ratio Pct",
+            "description": "Silo ratio percentage"
+          },
+          "silo_ratio_trend_pct": {
+            "type": "number",
+            "title": "Silo Ratio Trend Pct",
+            "description": "Trend percentage for silo ratio compared to baseline"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_commits",
+          "total_commits_trend_pct",
+          "avg_file_age_days",
+          "avg_file_age_trend_pct",
+          "avg_complexity",
+          "avg_complexity_trend_pct",
+          "silo_ratio_pct",
+          "silo_ratio_trend_pct"
+        ],
+        "title": "SummaryItem",
+        "description": "Pydantic model for a single summary result."
+      },
+      "SummaryRequest": {
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start Date",
+            "description": "Start date for the analysis period"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End Date",
+            "description": "End date for the analysis period"
+          },
+          "baseline_start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Start Date",
+            "description": "Start date for the baseline period (defaults to 1 year before start_date)"
+          },
+          "baseline_end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline End Date",
+            "description": "End date for the baseline period (defaults to 1 year before end_date)"
+          },
+          "module_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Module Name",
+            "description": "Filter by a specific module name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_date",
+          "end_date"
+        ],
+        "title": "SummaryRequest",
+        "description": "Pydantic model for the summary analysis request body."
+      },
+      "SummaryResponse": {
+        "properties": {
+          "items": {
+            "$ref": "#/components/schemas/SummaryItem"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "SummaryResponse",
+        "description": "Pydantic model for the summary analysis response."
       },
       "TeamModuleAlignmentItem": {
         "properties": {
@@ -3150,6 +4137,34 @@
         ],
         "title": "TrendItem"
       },
+      "TrendPoint": {
+        "properties": {
+          "t": {
+            "type": "string",
+            "format": "date-time",
+            "title": "T",
+            "description": "Timestamp of the bucket"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value",
+            "description": "Value for this bucket; null when bucket has no data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "t"
+        ],
+        "title": "TrendPoint",
+        "description": "A single point in a trend series."
+      },
       "TrendRequest": {
         "properties": {
           "baseline": {
@@ -3198,6 +4213,122 @@
         ],
         "title": "TrendResponse"
       },
+      "TrendsOverviewRequest": {
+        "properties": {
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date",
+            "description": "Start date for the analysis period; defaults to 12 months before end_date"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date",
+            "description": "End date for the analysis period; defaults to now"
+          },
+          "module_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Module Name",
+            "description": "Filter by a specific module name"
+          },
+          "bucket_days": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Bucket Days",
+            "description": "Number of days per bucket",
+            "default": 30
+          }
+        },
+        "type": "object",
+        "title": "TrendsOverviewRequest",
+        "description": "Pydantic model for the trends overview request body."
+      },
+      "TrendsOverviewResponse": {
+        "properties": {
+          "bucket_days": {
+            "type": "integer",
+            "title": "Bucket Days",
+            "description": "Number of days per bucket"
+          },
+          "complexity": {
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            },
+            "type": "array",
+            "title": "Complexity",
+            "description": "Complexity trend over time"
+          },
+          "loc": {
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            },
+            "type": "array",
+            "title": "Loc",
+            "description": "Lines of code trend over time"
+          },
+          "silo_ratio": {
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            },
+            "type": "array",
+            "title": "Silo Ratio",
+            "description": "Silo ratio trend over time"
+          },
+          "commits": {
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            },
+            "type": "array",
+            "title": "Commits",
+            "description": "Commit count trend over time"
+          }
+        },
+        "type": "object",
+        "required": [
+          "bucket_days",
+          "complexity",
+          "loc",
+          "silo_ratio",
+          "commits"
+        ],
+        "title": "TrendsOverviewResponse",
+        "description": "Pydantic model for the trends overview response."
+      },
+      "TrendsOverviewWrapped": {
+        "properties": {
+          "items": {
+            "$ref": "#/components/schemas/TrendsOverviewResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "TrendsOverviewWrapped",
+        "description": "Wrapper response model for trends overview, exposing data under an `items` key."
+      },
       "ValidationError": {
         "properties": {
           "loc": {
@@ -3237,6 +4368,120 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "WarningItem": {
+        "properties": {
+          "module_name": {
+            "type": "string",
+            "title": "Module Name",
+            "description": "Name of the module or file"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "description": "Reason code for the warning"
+          },
+          "reason_label": {
+            "type": "string",
+            "title": "Reason Label",
+            "description": "Human-readable label for the reason"
+          },
+          "severity": {
+            "type": "string",
+            "title": "Severity",
+            "description": "Severity level: low, medium, high, critical"
+          },
+          "metric_value": {
+            "type": "number",
+            "title": "Metric Value",
+            "description": "The metric value that triggered the warning"
+          },
+          "metric_unit": {
+            "type": "string",
+            "title": "Metric Unit",
+            "description": "Unit of the metric value"
+          }
+        },
+        "type": "object",
+        "required": [
+          "module_name",
+          "reason",
+          "reason_label",
+          "severity",
+          "metric_value",
+          "metric_unit"
+        ],
+        "title": "WarningItem",
+        "description": "Pydantic model for a single warning item."
+      },
+      "WarningsRequest": {
+        "properties": {
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date",
+            "description": "Start date for the analysis period"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date",
+            "description": "End date for the analysis period"
+          },
+          "module_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Module Name",
+            "description": "Filter by a specific module name"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maximum number of warnings to return",
+            "default": 10
+          }
+        },
+        "type": "object",
+        "title": "WarningsRequest",
+        "description": "Pydantic model for the warnings analysis request body."
+      },
+      "WarningsResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/WarningItem"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "List of warning items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "WarningsResponse",
+        "description": "Pydantic model for the warnings analysis response."
       }
     }
   }

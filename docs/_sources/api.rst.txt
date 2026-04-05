@@ -6,7 +6,7 @@ This guide is intended for developers who wish to build their own frontend appli
 The API is built with **FastAPI** and follows RESTful principles. All responses are JSON-formatted.
 
 .. note::
-   The Base URL for all endpoints is ``/api/v1``.
+   The Base URL for all endpoints is ``/v1``.
 
 Common Concepts
 ---------------
@@ -18,13 +18,18 @@ Dates should be provided in ISO 8601 format (e.g., ``2023-01-01T00:00:00``).
 
 **Standard Filter Parameters:**
 
-*   ``start_date`` (or ``from_``): The beginning of the analysis time window.
-*   ``end_date`` (or ``to``): The end of the analysis time window.
-*   ``module_name`` (or ``module``): Optional. Filter results to a specific architectural component/module.
+Many endpoints use a common filter structure:
+
+*   ``start_date``: The beginning of the analysis time window.
+*   ``end_date``: The end of the analysis time window.
+*   ``module_name``: Optional. Filter results to a specific architectural component/module.
+
+.. note::
+   Some older endpoints use ``from`` (aliased from ``from_``) and ``to`` instead of ``start_date`` and ``end_date``. These are noted in the respective sections.
 
 Response Format
 ~~~~~~~~~~~~~~~
-List-based responses follow a consistent structure wrapping the results in an ``items`` array:
+Most list-based responses wrap the results in an ``items`` array:
 
 .. code-block:: json
 
@@ -46,7 +51,7 @@ Get LOC per File
 ~~~~~~~~~~~~~~~~
 Returns the Lines of Code count for each file, based on the latest commit within the selected timeframe.
 
-*   **URL:** ``/analysis/loc/files``
+*   **URL:** ``/v1/analysis/loc/files``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -76,7 +81,7 @@ Get LOC per Module
 ~~~~~~~~~~~~~~~~~~
 Returns the aggregated Lines of Code for each defined module.
 
-*   **URL:** ``/analysis/loc/modules``
+*   **URL:** ``/v1/analysis/loc/modules``
 *   **Method:** ``POST``
 
 **Request Body:** Same as *Get LOC per File*.
@@ -98,7 +103,7 @@ Get Total LOC
 ~~~~~~~~~~~~~
 Returns the grand total Lines of Code for the entire project (or filtered selection).
 
-*   **URL:** ``/analysis/loc/total``
+*   **URL:** ``/v1/analysis/loc/total``
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Get LOC per File*.
 
@@ -126,7 +131,7 @@ Change Frequency (Files)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 Retrieves commit activity for files, including commit counts, author metrics, and last modification details.
 
-*   **URL:** ``/analyze/commits``
+*   **URL:** ``/v1/analyze/commits``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -160,7 +165,7 @@ Change Frequency (Modules)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Retrieves commit activity aggregated by module.
 
-*   **URL:** ``/analyze/modules/commits``
+*   **URL:** ``/v1/analyze/modules/commits``
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Change Frequency (Files)*.
 
@@ -185,7 +190,7 @@ Change Recency (Files)
 ~~~~~~~~~~~~~~~~~~~~~~
 Returns the age of files (time since first and last commit).
 
-*   **URL:** ``/analyze/age``
+*   **URL:** ``/v1/analyze/age``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -219,7 +224,7 @@ Change Recency (Modules)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 Returns the age aggregated by module.
 
-*   **URL:** ``/analyze/modules/age``
+*   **URL:** ``/v1/analyze/modules/age``
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Change Recency (Files)*.
 
@@ -243,7 +248,7 @@ Absolute Churn
 ~~~~~~~~~~~~~~
 Returns the absolute churn (added + deleted lines) per file.
 
-*   **URL:** ``/analyze/abs_churn/files``
+*   **URL:** ``/v1/analyze/abs_churn/files``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -279,7 +284,7 @@ Absolute Churn (Modules)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 Returns the absolute churn aggregated by module.
 
-*   **URL:** ``/analyze/abs_churn/modules``
+*   **URL:** ``/v1/analyze/abs_churn/modules``
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Absolute Churn*.
 
@@ -287,7 +292,7 @@ Development Trend
 ~~~~~~~~~~~~~~~~~
 Analyzes the evolution of hotspots by comparing a baseline time window with a current time window.
 
-*   **URL:** ``/analyze/hotspot_trends``
+*   **URL:** ``/v1/analyze/hotspot_trends``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -343,7 +348,7 @@ File Trend History
 ~~~~~~~~~~~~~~~~~~
 Returns the historical development of metrics for a specific file.
 
-*   **URL:** ``/analyze/file_trend``
+*   **URL:** ``/v1/analyze/file_trend``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -386,9 +391,9 @@ Returns the historical development of metrics for a specific file.
 
 Module Trend History
 ~~~~~~~~~~~~~~~~~~~~
-Returns the historical development of metrics for a module.
+Returns the historical development of a single churn-based metric for one module.
 
-*   **URL:** ``/analyze/module_trend``
+*   **URL:** ``/v1/analyze/module_trend``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -405,6 +410,91 @@ Returns the historical development of metrics for a module.
 
 **Response:** Same structure as *File Trend History*.
 
+Per-Module Trends (Visual View)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Returns bucketed time series for **four metrics simultaneously** across all modules
+(or a requested subset). This is the data source for the Trend Analysis visual view
+in the dashboard. All modules share an identical time axis so the frontend can
+render them on a common x-axis without further alignment.
+
+*   **URL:** ``/v1/analysis/trends/modules``
+*   **Method:** ``POST``
+
+**Request Body:**
+
+.. code-block:: json
+
+   {
+     "start_date":   "2024-01-01T00:00:00",
+     "end_date":     "2024-12-31T23:59:59",
+     "bucket_days":  30,
+     "module_names": ["core", "api"]
+   }
+
+.. list-table:: Request Parameters
+   :header-rows: 1
+   :widths: 20 10 70
+
+   * - Parameter
+     - Required
+     - Description
+   * - ``start_date``
+     - No
+     - Start of the analysis window; defaults to 12 months before ``end_date``.
+   * - ``end_date``
+     - No
+     - End of the analysis window; defaults to now.
+   * - ``bucket_days``
+     - No
+     - Width of each time bucket in days. Default: ``30``.
+   * - ``module_names``
+     - No
+     - List of component names to include. ``null`` or omitted returns all modules.
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": {
+       "bucket_days": 30,
+       "buckets": [
+         "2024-01-01T00:00:00",
+         "2024-02-01T00:00:00"
+       ],
+       "modules": [
+         {
+           "module_name": "core",
+           "complexity":  [21.3, 22.1],
+           "loc":         [14200, 14850],
+           "silo_ratio":  [16.4, 17.1],
+           "commits":     [42, 38]
+         }
+       ]
+     }
+   }
+
+.. list-table:: Response Fields
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Field
+     - Description
+   * - ``bucket_days``
+     - The bucket width used (echoes the request value).
+   * - ``buckets``
+     - Ordered list of bucket start timestamps. Shared across all modules.
+   * - ``modules``
+     - One entry per module. Each metric is an array aligned to ``buckets``; ``null`` at a position means no data exists for that module in that bucket.
+   * - ``complexity``
+     - Average cognitive complexity per bucket.
+   * - ``loc``
+     - Total lines of code per bucket (latest snapshot per file within bucket).
+   * - ``silo_ratio``
+     - Percentage of silo files per bucket (ownership ≥ 80 %).
+   * - ``commits``
+     - Distinct commit count per bucket.
+
 --------------------------------------------------------------------------------
 
 Quality & Risk
@@ -414,7 +504,7 @@ Hotspot Analysis (Age & Churn)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Identifies "Hotspots" based on the intersection of high churn and file age.
 
-*   **URL:** ``/analyze/hotspots/churnage``
+*   **URL:** ``/v1/analyze/hotspots/churnage``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -447,7 +537,7 @@ Hotspot Analysis (Complexity & Churn)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Identifies hotspots by combining cognitive complexity with churn metrics.
 
-*   **URL:** ``/analyze/hotspots/complexity``
+*   **URL:** ``/v1/analyze/hotspots/complexity``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -480,9 +570,9 @@ Structure & Logic
 
 Combined Complexity (Files)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Returns complexity metrics (Cyclomatic, Cognitive, Efforts) combined with a trend indicator.
+Returns complexity metrics (Cyclomatic, Cognitive, Efforts, LOC) combined with a trend indicator.
 
-*   **URL:** ``/analysis/complexity/combined``
+*   **URL:** ``/v1/analysis/complexity/combined``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -516,7 +606,7 @@ Combined Complexity (Modules)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Returns aggregated complexity metrics for modules.
 
-*   **URL:** ``/analysis/complexity/modules``
+*   **URL:** ``/v1/analysis/complexity/modules``
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Combined Complexity (Files)*.
 
@@ -539,9 +629,9 @@ Returns aggregated complexity metrics for modules.
 
 Complexity Trend History
 ~~~~~~~~~~~~~~~~~~~~~~~~
-Returns the historical complexity trend for a specific file or module.
+Returns the historical complexity trend for a specific file.
 
-*   **URL:** ``/analyze/hotspots/complexity/trend``
+*   **URL:** ``/v1/analyze/hotspots/complexity/trend``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -581,7 +671,7 @@ Code Ownership (Files)
 ~~~~~~~~~~~~~~~~~~~~~~
 Returns the number of distinct authors per file and identifies the main contributor.
 
-*   **URL:** ``/analysis/contributors/files``
+*   **URL:** ``/v1/analysis/contributors/files``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -598,7 +688,7 @@ Code Ownership (Modules)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 Returns ownership statistics aggregated by module.
 
-*   **URL:** ``/analysis/contributors/modules``
+*   **URL:** ``/v1/analysis/contributors/modules``
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Code Ownership (Files)*.
 
@@ -788,7 +878,7 @@ Module Ownership by Teams
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Shows how much of each module is owned by different teams (Team-centric view).
 
-*   **URL:** ``/analysis/alignment/modules``
+*   **URL:** ``/v1/analysis/alignment/modules``
 *   **Method:** ``POST``
 
 **Request Body:**
@@ -824,7 +914,7 @@ Top Team Contributors
 ~~~~~~~~~~~~~~~~~~~~~
 Shows the top 3 contributing teams for each module (Module-centric view).
 
-*   **URL:** ``/analysis/alignment/teams``
+*   **URL:** ``/v1/analysis/alignment/teams``
 *   **Method:** ``POST``
 *   **Request Body:** Same as *Module Ownership by Teams*.
 
@@ -849,6 +939,394 @@ Shows the top 3 contributing teams for each module (Module-centric view).
 
 --------------------------------------------------------------------------------
 
+Dashboard KPIs
+--------------
+
+Lightweight aggregate endpoints that power the four KPI cards, the three sparkline
+panels, and the warnings list on the overview dashboard. All computation happens in
+the backend; the frontend receives pre-calculated values and renders them directly.
+
+Project Summary
+~~~~~~~~~~~~~~~
+Returns the four headline metrics for the current period together with their
+trend percentages compared to an explicit baseline period. Powers all four KPI cards.
+
+*   **URL:** ``/v1/analysis/summary``
+*   **Method:** ``POST``
+
+**Request Body:**
+
+.. code-block:: json
+
+   {
+     "start_date":          "2024-01-01T00:00:00",
+     "end_date":            "2024-12-31T23:59:59",
+     "baseline_start_date": "2023-01-01T00:00:00",
+     "baseline_end_date":   "2023-12-31T23:59:59",
+     "module_name": null
+   }
+
+.. list-table:: Request Parameters
+   :header-rows: 1
+   :widths: 25 10 65
+
+   * - Parameter
+     - Required
+     - Description
+   * - ``start_date``
+     - Yes
+     - Start of the current analysis period.
+   * - ``end_date``
+     - Yes
+     - End of the current analysis period.
+   * - ``baseline_start_date``
+     - Yes
+     - Start of the baseline period used for trend calculation.
+   * - ``baseline_end_date``
+     - Yes
+     - End of the baseline period used for trend calculation.
+   * - ``module_name``
+     - No
+     - Restrict analysis to a specific component.
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "total_commits":            1808,
+         "total_commits_trend_pct":  12.5,
+         "avg_file_age_days":         47,
+         "avg_file_age_trend_pct":   -5.3,
+         "avg_complexity":            23.4,
+         "avg_complexity_trend_pct":  3.1,
+         "silo_ratio_pct":            18.2,
+         "silo_ratio_trend_pct":      1.4
+       }
+     ]
+   }
+
+.. list-table:: Response Fields
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Field
+     - Description
+   * - ``total_commits``
+     - Total commit count in the current period.
+   * - ``total_commits_trend_pct``
+     - Signed percentage change vs. baseline (positive = more commits).
+   * - ``avg_file_age_days``
+     - Average file age in days across all files in the current period.
+   * - ``avg_file_age_trend_pct``
+     - Signed percentage change in average file age vs. baseline.
+   * - ``avg_complexity``
+     - Average cognitive complexity across all files.
+   * - ``avg_complexity_trend_pct``
+     - Signed percentage change in average complexity vs. baseline (positive = worse).
+   * - ``silo_ratio_pct``
+     - Percentage of files where a single developer owns ≥ 80 % of commits.
+   * - ``silo_ratio_trend_pct``
+     - Signed percentage change in silo ratio vs. baseline (positive = more silos).
+
+Trends Overview
+~~~~~~~~~~~~~~~
+Returns time-bucketed trend series for complexity, LOC, silo ratio, and commit
+activity. Powers the three sparkline panels on the overview dashboard.
+
+*   **URL:** ``/v1/analysis/trends/overview``
+*   **Method:** ``POST``
+
+**Request Body:**
+
+.. code-block:: json
+
+   {
+     "start_date":  "2024-01-01T00:00:00",
+     "end_date":    "2024-12-31T23:59:59",
+     "module_name": null,
+     "bucket_days": 30
+   }
+
+.. list-table:: Request Parameters
+   :header-rows: 1
+   :widths: 20 10 70
+
+   * - Parameter
+     - Required
+     - Description
+   * - ``start_date``
+     - No
+     - Start of the analysis window; defaults to 12 months before ``end_date``.
+   * - ``end_date``
+     - No
+     - End of the analysis window; defaults to now.
+   * - ``module_name``
+     - No
+     - Restrict all series to a specific component.
+   * - ``bucket_days``
+     - No
+     - Width of each time bucket in days. Default: ``30``.
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "bucket_days": 30,
+     "complexity": [
+       { "t": "2024-01-01T00:00:00", "value": 21.3 },
+       { "t": "2024-02-01T00:00:00", "value": 22.1 }
+     ],
+     "loc": [
+       { "t": "2024-01-01T00:00:00", "value": 142300.0 },
+       { "t": "2024-02-01T00:00:00", "value": 148700.0 }
+     ],
+     "silo_ratio": [
+       { "t": "2024-01-01T00:00:00", "value": 16.4 },
+       { "t": "2024-02-01T00:00:00", "value": 17.1 }
+     ],
+     "commits": [
+       { "t": "2024-01-01T00:00:00", "value": 142.0 },
+       { "t": "2024-02-01T00:00:00", "value": 157.0 }
+     ]
+   }
+
+All four series share identical ``t`` timestamps so they can be aligned on the
+same x-axis in the frontend without further processing.
+
+.. list-table:: Response Fields
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Field
+     - Description
+   * - ``bucket_days``
+     - The bucket width used (echoes the request value).
+   * - ``complexity``
+     - Average cognitive complexity per bucket.
+   * - ``loc``
+     - Total lines of code per bucket (latest snapshot per file within bucket).
+   * - ``silo_ratio``
+     - Percentage of silo files per bucket (ownership ≥ 80 %).
+   * - ``commits``
+     - Total commit count per bucket.
+
+Warnings
+~~~~~~~~
+Returns the top-N warnings ranked by severity then normalised risk score.
+All warning types are derived exclusively from Git data — no external integrations
+required. Powers the warnings list on the overview dashboard.
+
+*   **URL:** ``/v1/analysis/warnings``
+*   **Method:** ``POST``
+
+**Request Body:**
+
+.. code-block:: json
+
+   {
+     "start_date":  "2024-01-01T00:00:00",
+     "end_date":    "2024-12-31T23:59:59",
+     "module_name": null,
+     "limit":       10
+   }
+
+.. list-table:: Request Parameters
+   :header-rows: 1
+   :widths: 20 10 70
+
+   * - Parameter
+     - Required
+     - Description
+   * - ``start_date``
+     - Yes
+     - Start of the analysis window.
+   * - ``end_date``
+     - Yes
+     - End of the analysis window.
+   * - ``module_name``
+     - No
+     - Restrict analysis to a specific component.
+   * - ``limit``
+     - No
+     - Maximum number of warnings to return. Default: ``10``.
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "items": [
+       {
+         "module_name":  "PaymentService",
+         "reason":       "critical_hotspot",
+         "reason_label": "Critical Hotspot",
+         "severity":     "critical",
+         "metric_value": 94.0,
+         "metric_unit":  "normalized_score"
+       }
+     ]
+   }
+
+.. list-table:: Warning Reason Codes
+   :header-rows: 1
+   :widths: 20 20 20 40
+
+   * - ``reason``
+     - ``reason_label``
+     - ``metric_unit``
+     - Description
+   * - ``critical_hotspot``
+     - Critical Hotspot
+     - ``normalized_score``
+     - Relative risk score 0–100 (``hotspot_score / max_hotspot_score × 100``). Critical ≥ 90, high ≥ 70. Score is relative to the worst module in the selected period, not an absolute threshold.
+   * - ``silo_risk``
+     - Knowledge Silo
+     - ``ownership_pct``
+     - File dominated by a single developer. Critical ≥ 95 %, high ≥ 80 %.
+   * - ``complexity_spike``
+     - Complexity Spike
+     - ``trend_indicator``
+     - Rapid complexity growth. Critical > 4.0×, high > 3.0×.
+   * - ``churn_outlier``
+     - Churn Outlier
+     - ``lines_changed``
+     - Absolute churn far above project average. Critical > 5× avg, high > 3× avg.
+   * - ``legacy_reactivated``
+     - Legacy Reactivated
+     - ``days``
+     - File dormant > 365 days that is now being heavily modified (churn > 2× avg). Always high.
+
+Results are ordered by severity (``critical`` before ``high``) then by normalised
+risk score descending.
+
+Commit Count KPI
+~~~~~~~~~~~~~~~~
+Returns the total commit count together with a growth percentage for use as a
+KPI indicator.
+
+*   **URL:** ``/v1/analyze/commits/count``
+*   **Method:** ``POST``
+
+**Request Body:**
+
+.. code-block:: json
+
+   {
+     "start_date":        "2024-01-01T00:00:00",
+     "end_date":          "2024-12-31T23:59:59",
+     "module_name":       null,
+     "trend_window_days": 30
+   }
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "total_commits": 1808,
+     "growth_pct":    12.5
+   }
+
+.. list-table:: Response Fields
+   :header-rows: 1
+   :widths: 25 75
+
+   * - Field
+     - Description
+   * - ``total_commits``
+     - Total commit count within the requested period.
+   * - ``growth_pct``
+     - Signed percentage change vs. the same window shifted back by ``trend_window_days`` (positive = more commits).
+
+Complexity Average KPI
+~~~~~~~~~~~~~~~~~~~~~~
+Returns the project-wide average cognitive complexity and its growth trend.
+Files with zero cognitive complexity (e.g. non-code assets) are excluded.
+
+*   **URL:** ``/v1/analysis/complexity/avg``
+*   **Method:** ``POST``
+
+**Request Body:**
+
+.. code-block:: json
+
+   {
+     "start_date":        "2024-01-01T00:00:00",
+     "end_date":          "2024-12-31T23:59:59",
+     "module_name":       null,
+     "trend_window_days": 30
+   }
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "avg_cognitive": 23.4,
+     "growth_pct":     3.1
+   }
+
+.. list-table:: Response Fields
+   :header-rows: 1
+   :widths: 25 75
+
+   * - Field
+     - Description
+   * - ``avg_cognitive``
+     - Average cognitive complexity across all files (latest value per file as of ``end_date``).
+   * - ``growth_pct``
+     - Signed percentage change vs. the window shifted back by ``trend_window_days`` (positive = complexity increased).
+
+Silo Count KPI
+~~~~~~~~~~~~~~
+Returns the total number of silo files and its growth trend. Consistent with
+the other silo endpoints — uses the same threshold and noise filters.
+
+*   **URL:** ``/v1/analysis/silos/count``
+*   **Method:** ``POST``
+
+**Request Body:**
+
+.. code-block:: json
+
+   {
+     "start_date":        "2024-01-01T00:00:00",
+     "end_date":          "2024-12-31T23:59:59",
+     "module_name":       null,
+     "silo_threshold":    0.80,
+     "min_commits":       5,
+     "trend_window_days": 30
+   }
+
+All parameters are optional. Defaults: ``silo_threshold`` = ``0.80``,
+``min_commits`` = ``5``, ``trend_window_days`` = ``30``.
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "silo_count": 14,
+     "growth_pct":  7.7
+   }
+
+.. list-table:: Response Fields
+   :header-rows: 1
+   :widths: 25 75
+
+   * - Field
+     - Description
+   * - ``silo_count``
+     - Number of silo files in the requested period.
+   * - ``growth_pct``
+     - Signed percentage change vs. the window shifted back by ``trend_window_days`` (positive = more silos).
+
+--------------------------------------------------------------------------------
+
 Configuration
 -------------
 
@@ -856,14 +1334,54 @@ Get Modules
 ~~~~~~~~~~~
 Returns a list of all configured modules/components.
 
-*   **URL:** ``/config/modules``
+*   **URL:** ``/v1/config/modules``
 *   **Method:** ``GET``
+
+Average File Age KPI
+~~~~~~~~~~~~~~~~~~~~
+Returns the project-wide average file age and its growth trend.
+
+*   **URL:** ``/v1/analyze/age/avg``
+*   **Method:** ``POST``
+
+**Request Body:**
+
+.. code-block:: json
+
+   {
+     "start_date": "2024-01-01T00:00:00",
+     "end_date": "2024-12-31T23:59:59",
+     "module_name": null,
+     "trend_window_days": 30
+   }
+
+**Response:**
+
+.. code-block:: json
+
+   {
+     "avg_file_age_days": 47.5,
+     "growth_pct": -5.3
+   }
+
+.. list-table:: Response Fields
+   :header-rows: 1
+   :widths: 25 75
+
+   * - Field
+     - Description
+   * - ``avg_file_age_days``
+     - Average file age in days across all files in the current period.
+   * - ``growth_pct``
+     - Signed percentage change vs. the baseline window shifted back by ``trend_window_days``.
+
+--------------------------------------------------------------------------------
 
 Get Analysis Start Date
 ~~~~~~~~~~~~~~~~~~~~~~~
 Returns the configured start date for the current analysis session.
 
-*   **URL:** ``/config/analysis-since``
+*   **URL:** ``/v1/config/analysis-since``
 *   **Method:** ``GET``
 
 **Response:**
@@ -874,40 +1392,10 @@ Returns the configured start date for the current analysis session.
      "analysis_since": "2020-01-01T00:00:00"
    }
 
-Get Teams
-~~~~~~~~~
-Returns a list of all configured teams.
-
-*   **URL:** ``/config/teams``
-*   **Method:** ``GET``
-
-**Response:**
-
-.. code-block:: json
-
-   {
-     "items": [
-       {
-         "name": "Team A"
-       }
-     ]
-   }
-
---------------------------------------------------------------------------------
-
-Application Info
-----------------
-
-Health Check
-~~~~~~~~~~~~
-Returns the current health status of the API and database.
-
-*   **URL:** ``/api/health``
-*   **Method:** ``GET``
 
 API Info
 ~~~~~~~~
 Returns metadata about the currently running analysis session.
 
-*   **URL:** ``/info``
+*   **URL:** ``/v1/info``
 *   **Method:** ``GET``

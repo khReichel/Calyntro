@@ -71,6 +71,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#development-trend">Development Trend</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#file-trend-history">File Trend History</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-trend-history">Module Trend History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#per-module-trends-visual-view">Per-Module Trends (Visual View)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#quality-risk">Quality &amp; Risk</a><ul>
@@ -94,14 +95,19 @@
 <li class="toctree-l3"><a class="reference internal" href="#top-team-contributors">Top Team Contributors</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#get-modules">Get Modules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#get-analysis-start-date">Get Analysis Start Date</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#get-teams">Get Teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dashboard-kpis">Dashboard KPIs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#project-summary">Project Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trends-overview">Trends Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#warnings">Warnings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#commit-count-kpi">Commit Count KPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complexity-average-kpi">Complexity Average KPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#silo-count-kpi">Silo Count KPI</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#application-info">Application Info</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#health-check">Health Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#get-modules">Get Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#average-file-age-kpi">Average File Age KPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-analysis-start-date">Get Analysis Start Date</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#api-info">API Info</a></li>
 </ul>
 </li>
@@ -140,7 +146,7 @@
 <p>The API is built with <strong>FastAPI</strong> and follows RESTful principles. All responses are JSON-formatted.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The Base URL for all endpoints is <code class="docutils literal notranslate"><span class="pre">/api/v1</span></code>.</p>
+<p>The Base URL for all endpoints is <code class="docutils literal notranslate"><span class="pre">/v1</span></code>.</p>
 </div>
 <section id="common-concepts">
 <h2>Common Concepts<a class="headerlink" href="#common-concepts" title="Link to this heading"></a></h2>
@@ -149,15 +155,20 @@
 <p>Most analysis endpoints accept <code class="docutils literal notranslate"><span class="pre">POST</span></code> requests to allow for complex filtering parameters in the body.
 Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal notranslate"><span class="pre">2023-01-01T00:00:00</span></code>).</p>
 <p><strong>Standard Filter Parameters:</strong></p>
+<p>Many endpoints use a common filter structure:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (or <code class="docutils literal notranslate"><span class="pre">from_</span></code>): The beginning of the analysis time window.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code> (or <code class="docutils literal notranslate"><span class="pre">to</span></code>): The end of the analysis time window.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">module_name</span></code> (or <code class="docutils literal notranslate"><span class="pre">module</span></code>): Optional. Filter results to a specific architectural component/module.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code>: The beginning of the analysis time window.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code>: The end of the analysis time window.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">module_name</span></code>: Optional. Filter results to a specific architectural component/module.</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some older endpoints use <code class="docutils literal notranslate"><span class="pre">from</span></code> (aliased from <code class="docutils literal notranslate"><span class="pre">from_</span></code>) and <code class="docutils literal notranslate"><span class="pre">to</span></code> instead of <code class="docutils literal notranslate"><span class="pre">start_date</span></code> and <code class="docutils literal notranslate"><span class="pre">end_date</span></code>. These are noted in the respective sections.</p>
+</div>
 </section>
 <section id="response-format">
 <h3>Response Format<a class="headerlink" href="#response-format" title="Link to this heading"></a></h3>
-<p>List-based responses follow a consistent structure wrapping the results in an <code class="docutils literal notranslate"><span class="pre">items</span></code> array:</p>
+<p>Most list-based responses wrap the results in an <code class="docutils literal notranslate"><span class="pre">items</span></code> array:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span>
@@ -176,7 +187,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Get LOC per File<a class="headerlink" href="#get-loc-per-file" title="Link to this heading"></a></h3>
 <p>Returns the Lines of Code count for each file, based on the latest commit within the selected timeframe.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analysis/loc/files</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/loc/files</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -203,7 +214,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Get LOC per Module<a class="headerlink" href="#get-loc-per-module" title="Link to this heading"></a></h3>
 <p>Returns the aggregated Lines of Code for each defined module.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analysis/loc/modules</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/loc/modules</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong> Same as <em>Get LOC per File</em>.</p>
@@ -223,7 +234,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Get Total LOC<a class="headerlink" href="#get-total-loc" title="Link to this heading"></a></h3>
 <p>Returns the grand total Lines of Code for the entire project (or filtered selection).</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analysis/loc/total</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/loc/total</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Get LOC per File</em>.</p></li>
 </ul>
@@ -248,7 +259,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Change Frequency (Files)<a class="headerlink" href="#change-frequency-files" title="Link to this heading"></a></h3>
 <p>Retrieves commit activity for files, including commit counts, author metrics, and last modification details.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/commits</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/commits</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -279,7 +290,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Change Frequency (Modules)<a class="headerlink" href="#change-frequency-modules" title="Link to this heading"></a></h3>
 <p>Retrieves commit activity aggregated by module.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/modules/commits</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/modules/commits</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Change Frequency (Files)</em>.</p></li>
 </ul>
@@ -303,7 +314,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Change Recency (Files)<a class="headerlink" href="#change-recency-files" title="Link to this heading"></a></h3>
 <p>Returns the age of files (time since first and last commit).</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/age</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/age</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -334,7 +345,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Change Recency (Modules)<a class="headerlink" href="#change-recency-modules" title="Link to this heading"></a></h3>
 <p>Returns the age aggregated by module.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/modules/age</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/modules/age</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Change Recency (Files)</em>.</p></li>
 </ul>
@@ -357,7 +368,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Absolute Churn<a class="headerlink" href="#absolute-churn" title="Link to this heading"></a></h3>
 <p>Returns the absolute churn (added + deleted lines) per file.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/abs_churn/files</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/abs_churn/files</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -390,7 +401,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Absolute Churn (Modules)<a class="headerlink" href="#absolute-churn-modules" title="Link to this heading"></a></h3>
 <p>Returns the absolute churn aggregated by module.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/abs_churn/modules</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/abs_churn/modules</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Absolute Churn</em>.</p></li>
 </ul>
@@ -399,7 +410,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Development Trend<a class="headerlink" href="#development-trend" title="Link to this heading"></a></h3>
 <p>Analyzes the evolution of hotspots by comparing a baseline time window with a current time window.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/hotspot_trends</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/hotspot_trends</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -452,7 +463,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>File Trend History<a class="headerlink" href="#file-trend-history" title="Link to this heading"></a></h3>
 <p>Returns the historical development of metrics for a specific file.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/file_trend</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/file_trend</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -492,9 +503,9 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 </section>
 <section id="module-trend-history">
 <h3>Module Trend History<a class="headerlink" href="#module-trend-history" title="Link to this heading"></a></h3>
-<p>Returns the historical development of metrics for a module.</p>
+<p>Returns the historical development of a single churn-based metric for one module.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/module_trend</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/module_trend</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -509,6 +520,114 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 </div>
 <p><strong>Response:</strong> Same structure as <em>File Trend History</em>.</p>
 </section>
+<section id="per-module-trends-visual-view">
+<h3>Per-Module Trends (Visual View)<a class="headerlink" href="#per-module-trends-visual-view" title="Link to this heading"></a></h3>
+<p>Returns bucketed time series for <strong>four metrics simultaneously</strong> across all modules
+(or a requested subset). This is the data source for the Trend Analysis visual view
+in the dashboard. All modules share an identical time axis so the frontend can
+render them on a common x-axis without further alignment.</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/trends/modules</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+</ul>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w">   </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot;2024-12-31T23:59:59&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;bucket_days&quot;</span><span class="p">:</span><span class="w">  </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;module_names&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;api&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 10.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Start of the analysis window; defaults to 12 months before <code class="docutils literal notranslate"><span class="pre">end_date</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code></p></td>
+<td><p>No</p></td>
+<td><p>End of the analysis window; defaults to now.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bucket_days</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Width of each time bucket in days. Default: <code class="docutils literal notranslate"><span class="pre">30</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">module_names</span></code></p></td>
+<td><p>No</p></td>
+<td><p>List of component names to include. <code class="docutils literal notranslate"><span class="pre">null</span></code> or omitted returns all modules.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;bucket_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;buckets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;2024-02-01T00:00:00&quot;</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;modules&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;core&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;complexity&quot;</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="mf">21.3</span><span class="p">,</span><span class="w"> </span><span class="mf">22.1</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;loc&quot;</span><span class="p">:</span><span class="w">         </span><span class="p">[</span><span class="mi">14200</span><span class="p">,</span><span class="w"> </span><span class="mi">14850</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;silo_ratio&quot;</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="mf">16.4</span><span class="p">,</span><span class="w"> </span><span class="mf">17.1</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;commits&quot;</span><span class="p">:</span><span class="w">     </span><span class="p">[</span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="mi">38</span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bucket_days</span></code></p></td>
+<td><p>The bucket width used (echoes the request value).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">buckets</span></code></p></td>
+<td><p>Ordered list of bucket start timestamps. Shared across all modules.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modules</span></code></p></td>
+<td><p>One entry per module. Each metric is an array aligned to <code class="docutils literal notranslate"><span class="pre">buckets</span></code>; <code class="docutils literal notranslate"><span class="pre">null</span></code> at a position means no data exists for that module in that bucket.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">complexity</span></code></p></td>
+<td><p>Average cognitive complexity per bucket.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">loc</span></code></p></td>
+<td><p>Total lines of code per bucket (latest snapshot per file within bucket).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">silo_ratio</span></code></p></td>
+<td><p>Percentage of silo files per bucket (ownership ≥ 80 %).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">commits</span></code></p></td>
+<td><p>Distinct commit count per bucket.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 <hr class="docutils" />
 <section id="quality-risk">
@@ -517,7 +636,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Hotspot Analysis (Age &amp; Churn)<a class="headerlink" href="#hotspot-analysis-age-churn" title="Link to this heading"></a></h3>
 <p>Identifies “Hotspots” based on the intersection of high churn and file age.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/hotspots/churnage</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/hotspots/churnage</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -547,7 +666,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Hotspot Analysis (Complexity &amp; Churn)<a class="headerlink" href="#hotspot-analysis-complexity-churn" title="Link to this heading"></a></h3>
 <p>Identifies hotspots by combining cognitive complexity with churn metrics.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/hotspots/complexity</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/hotspots/complexity</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -576,9 +695,9 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h2>Structure &amp; Logic<a class="headerlink" href="#structure-logic" title="Link to this heading"></a></h2>
 <section id="combined-complexity-files">
 <h3>Combined Complexity (Files)<a class="headerlink" href="#combined-complexity-files" title="Link to this heading"></a></h3>
-<p>Returns complexity metrics (Cyclomatic, Cognitive, Efforts) combined with a trend indicator.</p>
+<p>Returns complexity metrics (Cyclomatic, Cognitive, Efforts, LOC) combined with a trend indicator.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analysis/complexity/combined</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/complexity/combined</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -609,7 +728,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Combined Complexity (Modules)<a class="headerlink" href="#combined-complexity-modules" title="Link to this heading"></a></h3>
 <p>Returns aggregated complexity metrics for modules.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analysis/complexity/modules</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/complexity/modules</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Combined Complexity (Files)</em>.</p></li>
 </ul>
@@ -631,9 +750,9 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 </section>
 <section id="complexity-trend-history">
 <h3>Complexity Trend History<a class="headerlink" href="#complexity-trend-history" title="Link to this heading"></a></h3>
-<p>Returns the historical complexity trend for a specific file or module.</p>
+<p>Returns the historical complexity trend for a specific file.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analyze/hotspots/complexity/trend</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/hotspots/complexity/trend</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -669,7 +788,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Code Ownership (Files)<a class="headerlink" href="#code-ownership-files" title="Link to this heading"></a></h3>
 <p>Returns the number of distinct authors per file and identifies the main contributor.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analysis/contributors/files</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/contributors/files</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -685,7 +804,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <h3>Code Ownership (Modules)<a class="headerlink" href="#code-ownership-modules" title="Link to this heading"></a></h3>
 <p>Returns ownership statistics aggregated by module.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analysis/contributors/modules</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/contributors/modules</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Code Ownership (Files)</em>.</p></li>
 </ul>
@@ -721,8 +840,8 @@ percentage descending.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id1">
-<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 10.0%" />
@@ -772,8 +891,8 @@ percentage descending.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id2">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id4">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 75.0%" />
@@ -830,8 +949,8 @@ Results are ordered by silo ratio descending.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id3">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id5">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id5" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 75.0%" />
@@ -886,8 +1005,8 @@ knowledge holder of. Results are ordered by silo file count descending.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id4">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id6">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id6" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 75.0%" />
@@ -920,7 +1039,7 @@ knowledge holder of. Results are ordered by silo file count descending.</p>
 <h3>Module Ownership by Teams<a class="headerlink" href="#module-ownership-by-teams" title="Link to this heading"></a></h3>
 <p>Shows how much of each module is owned by different teams (Team-centric view).</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analysis/alignment/modules</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/alignment/modules</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 </ul>
 <p><strong>Request Body:</strong></p>
@@ -953,7 +1072,7 @@ knowledge holder of. Results are ordered by silo file count descending.</p>
 <h3>Top Team Contributors<a class="headerlink" href="#top-team-contributors" title="Link to this heading"></a></h3>
 <p>Shows the top 3 contributing teams for each module (Module-centric view).</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/analysis/alignment/teams</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/alignment/teams</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
 <li><p><strong>Request Body:</strong> Same as <em>Module Ownership by Teams</em>.</p></li>
 </ul>
@@ -977,21 +1096,536 @@ knowledge holder of. Results are ordered by silo file count descending.</p>
 </section>
 </section>
 <hr class="docutils" />
+<section id="dashboard-kpis">
+<h2>Dashboard KPIs<a class="headerlink" href="#dashboard-kpis" title="Link to this heading"></a></h2>
+<p>Lightweight aggregate endpoints that power the four KPI cards, the three sparkline
+panels, and the warnings list on the overview dashboard. All computation happens in
+the backend; the frontend receives pre-calculated values and renders them directly.</p>
+<section id="project-summary">
+<h3>Project Summary<a class="headerlink" href="#project-summary" title="Link to this heading"></a></h3>
+<p>Returns the four headline metrics for the current period together with their
+trend percentages compared to an explicit baseline period. Powers all four KPI cards.</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/summary</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+</ul>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w">          </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w">            </span><span class="s2">&quot;2024-12-31T23:59:59&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;baseline_start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2023-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;baseline_end_date&quot;</span><span class="p">:</span><span class="w">   </span><span class="s2">&quot;2023-12-31T23:59:59&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id7">
+<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id7" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 10.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Start of the current analysis period.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>End of the current analysis period.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">baseline_start_date</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Start of the baseline period used for trend calculation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">baseline_end_date</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>End of the baseline period used for trend calculation.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">module_name</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Restrict analysis to a specific component.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;total_commits&quot;</span><span class="p">:</span><span class="w">            </span><span class="mi">1808</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;total_commits_trend_pct&quot;</span><span class="p">:</span><span class="w">  </span><span class="mf">12.5</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;avg_file_age_days&quot;</span><span class="p">:</span><span class="w">         </span><span class="mi">47</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;avg_file_age_trend_pct&quot;</span><span class="p">:</span><span class="w">   </span><span class="mf">-5.3</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;avg_complexity&quot;</span><span class="p">:</span><span class="w">            </span><span class="mf">23.4</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;avg_complexity_trend_pct&quot;</span><span class="p">:</span><span class="w">  </span><span class="mf">3.1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;silo_ratio_pct&quot;</span><span class="p">:</span><span class="w">            </span><span class="mf">18.2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;silo_ratio_trend_pct&quot;</span><span class="p">:</span><span class="w">      </span><span class="mf">1.4</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id8">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id8" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">total_commits</span></code></p></td>
+<td><p>Total commit count in the current period.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">total_commits_trend_pct</span></code></p></td>
+<td><p>Signed percentage change vs. baseline (positive = more commits).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">avg_file_age_days</span></code></p></td>
+<td><p>Average file age in days across all files in the current period.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">avg_file_age_trend_pct</span></code></p></td>
+<td><p>Signed percentage change in average file age vs. baseline.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">avg_complexity</span></code></p></td>
+<td><p>Average cognitive complexity across all files.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">avg_complexity_trend_pct</span></code></p></td>
+<td><p>Signed percentage change in average complexity vs. baseline (positive = worse).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">silo_ratio_pct</span></code></p></td>
+<td><p>Percentage of files where a single developer owns ≥ 80 % of commits.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">silo_ratio_trend_pct</span></code></p></td>
+<td><p>Signed percentage change in silo ratio vs. baseline (positive = more silos).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="trends-overview">
+<h3>Trends Overview<a class="headerlink" href="#trends-overview" title="Link to this heading"></a></h3>
+<p>Returns time-bucketed trend series for complexity, LOC, silo ratio, and commit
+activity. Powers the three sparkline panels on the overview dashboard.</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/trends/overview</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+</ul>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w">    </span><span class="s2">&quot;2024-12-31T23:59:59&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;bucket_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id9">
+<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id9" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 10.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Start of the analysis window; defaults to 12 months before <code class="docutils literal notranslate"><span class="pre">end_date</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code></p></td>
+<td><p>No</p></td>
+<td><p>End of the analysis window; defaults to now.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">module_name</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Restrict all series to a specific component.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bucket_days</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Width of each time bucket in days. Default: <code class="docutils literal notranslate"><span class="pre">30</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;bucket_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;complexity&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">21.3</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-02-01T00:00:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">22.1</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;loc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">142300.0</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-02-01T00:00:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">148700.0</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;silo_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">16.4</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-02-01T00:00:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">17.1</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;commits&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">142.0</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-02-01T00:00:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">157.0</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>All four series share identical <code class="docutils literal notranslate"><span class="pre">t</span></code> timestamps so they can be aligned on the
+same x-axis in the frontend without further processing.</p>
+<table class="docutils align-default" id="id10">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id10" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bucket_days</span></code></p></td>
+<td><p>The bucket width used (echoes the request value).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">complexity</span></code></p></td>
+<td><p>Average cognitive complexity per bucket.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">loc</span></code></p></td>
+<td><p>Total lines of code per bucket (latest snapshot per file within bucket).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">silo_ratio</span></code></p></td>
+<td><p>Percentage of silo files per bucket (ownership ≥ 80 %).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">commits</span></code></p></td>
+<td><p>Total commit count per bucket.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="warnings">
+<h3>Warnings<a class="headerlink" href="#warnings" title="Link to this heading"></a></h3>
+<p>Returns the top-N warnings ranked by severity then normalised risk score.
+All warning types are derived exclusively from Git data — no external integrations
+required. Powers the warnings list on the overview dashboard.</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/warnings</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+</ul>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w">    </span><span class="s2">&quot;2024-12-31T23:59:59&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;limit&quot;</span><span class="p">:</span><span class="w">       </span><span class="mi">10</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id11">
+<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id11" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 10.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Start of the analysis window.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>End of the analysis window.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">module_name</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Restrict analysis to a specific component.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">limit</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Maximum number of warnings to return. Default: <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;PaymentService&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w">       </span><span class="s2">&quot;critical_hotspot&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;reason_label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Critical Hotspot&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;severity&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;metric_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">94.0</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;metric_unit&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;normalized_score&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id12">
+<caption><span class="caption-text">Warning Reason Codes</span><a class="headerlink" href="#id12" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">reason</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">reason_label</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">metric_unit</span></code></p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">critical_hotspot</span></code></p></td>
+<td><p>Critical Hotspot</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">normalized_score</span></code></p></td>
+<td><p>Relative risk score 0–100 (<code class="docutils literal notranslate"><span class="pre">hotspot_score</span> <span class="pre">/</span> <span class="pre">max_hotspot_score</span> <span class="pre">×</span> <span class="pre">100</span></code>). Critical ≥ 90, high ≥ 70. Score is relative to the worst module in the selected period, not an absolute threshold.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">silo_risk</span></code></p></td>
+<td><p>Knowledge Silo</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ownership_pct</span></code></p></td>
+<td><p>File dominated by a single developer. Critical ≥ 95 %, high ≥ 80 %.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">complexity_spike</span></code></p></td>
+<td><p>Complexity Spike</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">trend_indicator</span></code></p></td>
+<td><p>Rapid complexity growth. Critical &gt; 4.0×, high &gt; 3.0×.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">churn_outlier</span></code></p></td>
+<td><p>Churn Outlier</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">lines_changed</span></code></p></td>
+<td><p>Absolute churn far above project average. Critical &gt; 5× avg, high &gt; 3× avg.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">legacy_reactivated</span></code></p></td>
+<td><p>Legacy Reactivated</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">days</span></code></p></td>
+<td><p>File dormant &gt; 365 days that is now being heavily modified (churn &gt; 2× avg). Always high.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Results are ordered by severity (<code class="docutils literal notranslate"><span class="pre">critical</span></code> before <code class="docutils literal notranslate"><span class="pre">high</span></code>) then by normalised
+risk score descending.</p>
+</section>
+<section id="commit-count-kpi">
+<h3>Commit Count KPI<a class="headerlink" href="#commit-count-kpi" title="Link to this heading"></a></h3>
+<p>Returns the total commit count together with a growth percentage for use as a
+KPI indicator.</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/commits/count</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+</ul>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w">        </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w">          </span><span class="s2">&quot;2024-12-31T23:59:59&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w">       </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;trend_window_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;total_commits&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1808</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;growth_pct&quot;</span><span class="p">:</span><span class="w">    </span><span class="mf">12.5</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id13">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id13" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">total_commits</span></code></p></td>
+<td><p>Total commit count within the requested period.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">growth_pct</span></code></p></td>
+<td><p>Signed percentage change vs. the same window shifted back by <code class="docutils literal notranslate"><span class="pre">trend_window_days</span></code> (positive = more commits).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="complexity-average-kpi">
+<h3>Complexity Average KPI<a class="headerlink" href="#complexity-average-kpi" title="Link to this heading"></a></h3>
+<p>Returns the project-wide average cognitive complexity and its growth trend.
+Files with zero cognitive complexity (e.g. non-code assets) are excluded.</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/complexity/avg</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+</ul>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w">        </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w">          </span><span class="s2">&quot;2024-12-31T23:59:59&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w">       </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;trend_window_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;avg_cognitive&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">23.4</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;growth_pct&quot;</span><span class="p">:</span><span class="w">     </span><span class="mf">3.1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id14">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id14" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">avg_cognitive</span></code></p></td>
+<td><p>Average cognitive complexity across all files (latest value per file as of <code class="docutils literal notranslate"><span class="pre">end_date</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">growth_pct</span></code></p></td>
+<td><p>Signed percentage change vs. the window shifted back by <code class="docutils literal notranslate"><span class="pre">trend_window_days</span></code> (positive = complexity increased).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="silo-count-kpi">
+<h3>Silo Count KPI<a class="headerlink" href="#silo-count-kpi" title="Link to this heading"></a></h3>
+<p>Returns the total number of silo files and its growth trend. Consistent with
+the other silo endpoints — uses the same threshold and noise filters.</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analysis/silos/count</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+</ul>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w">        </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w">          </span><span class="s2">&quot;2024-12-31T23:59:59&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w">       </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;silo_threshold&quot;</span><span class="p">:</span><span class="w">    </span><span class="mf">0.80</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;min_commits&quot;</span><span class="p">:</span><span class="w">       </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;trend_window_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>All parameters are optional. Defaults: <code class="docutils literal notranslate"><span class="pre">silo_threshold</span></code> = <code class="docutils literal notranslate"><span class="pre">0.80</span></code>,
+<code class="docutils literal notranslate"><span class="pre">min_commits</span></code> = <code class="docutils literal notranslate"><span class="pre">5</span></code>, <code class="docutils literal notranslate"><span class="pre">trend_window_days</span></code> = <code class="docutils literal notranslate"><span class="pre">30</span></code>.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;silo_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;growth_pct&quot;</span><span class="p">:</span><span class="w">  </span><span class="mf">7.7</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id15">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id15" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">silo_count</span></code></p></td>
+<td><p>Number of silo files in the requested period.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">growth_pct</span></code></p></td>
+<td><p>Signed percentage change vs. the window shifted back by <code class="docutils literal notranslate"><span class="pre">trend_window_days</span></code> (positive = more silos).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<hr class="docutils" />
 <section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
 <section id="get-modules">
 <h3>Get Modules<a class="headerlink" href="#get-modules" title="Link to this heading"></a></h3>
 <p>Returns a list of all configured modules/components.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/config/modules</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/config/modules</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
 </ul>
 </section>
+<section id="average-file-age-kpi">
+<h3>Average File Age KPI<a class="headerlink" href="#average-file-age-kpi" title="Link to this heading"></a></h3>
+<p>Returns the project-wide average file age and its growth trend.</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/analyze/age/avg</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+</ul>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-12-31T23:59:59&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;module_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;trend_window_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;avg_file_age_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">47.5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;growth_pct&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">-5.3</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id16">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id16" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">avg_file_age_days</span></code></p></td>
+<td><p>Average file age in days across all files in the current period.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">growth_pct</span></code></p></td>
+<td><p>Signed percentage change vs. the baseline window shifted back by <code class="docutils literal notranslate"><span class="pre">trend_window_days</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
 <section id="get-analysis-start-date">
 <h3>Get Analysis Start Date<a class="headerlink" href="#get-analysis-start-date" title="Link to this heading"></a></h3>
 <p>Returns the configured start date for the current analysis session.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/config/analysis-since</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/config/analysis-since</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
 </ul>
 <p><strong>Response:</strong></p>
@@ -1001,41 +1635,11 @@ knowledge holder of. Results are ordered by silo file count descending.</p>
 </pre></div>
 </div>
 </section>
-<section id="get-teams">
-<h3>Get Teams<a class="headerlink" href="#get-teams" title="Link to this heading"></a></h3>
-<p>Returns a list of all configured teams.</p>
-<ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/config/teams</span></code></p></li>
-<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
-</ul>
-<p><strong>Response:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Team A&quot;</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-</section>
-<hr class="docutils" />
-<section id="application-info">
-<h2>Application Info<a class="headerlink" href="#application-info" title="Link to this heading"></a></h2>
-<section id="health-check">
-<h3>Health Check<a class="headerlink" href="#health-check" title="Link to this heading"></a></h3>
-<p>Returns the current health status of the API and database.</p>
-<ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/api/health</span></code></p></li>
-<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
-</ul>
-</section>
 <section id="api-info">
 <h3>API Info<a class="headerlink" href="#api-info" title="Link to this heading"></a></h3>
 <p>Returns metadata about the currently running analysis session.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/info</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/info</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
 </ul>
 </section>

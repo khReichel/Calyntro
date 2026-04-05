@@ -25,19 +25,20 @@ These metrics focus on the "pulse" of your development process—where work is h
 
 Change Frequency (Commits)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-*   **UI Name**: Change Frequency / Module Change Frequency
-*   **What it Measures**: The total number of commits made to a file or module within the selected timeframe.
-*   **How to Interpret**: High commit counts indicate active development. A file with an unusually high number of commits compared to others might be a "god object" or a source of instability that requires frequent fixes.
+*   **UI Name**: Change Frequency / Module Change Frequency / Gesamt Commits
+*   **What it Measures**: The total number of commits made to a file or module within the selected timeframe. On the Dashboard, it shows the absolute number of commits and the growth compared to the previous week.
+*   **How to Interpret**: High commit counts indicate active development. A file with an unusually high number of commits compared to others might be a "god object" or a source of instability that requires frequent fixes. Positive growth indicates increasing activity.
 
 Change Recency (Activity Recency)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-*   **UI Name**: Change Recency
-*   **What it Measures**: The time elapsed since a file (or the latest file in a module) was last modified.
+*   **UI Name**: Change Recency / Codebase Age
+*   **What it Measures**: The time elapsed since a file (or the latest file in a module) was last modified. On the Dashboard, "Codebase Age" represents the average age across the entire codebase or selected module.
 *   **How to Interpret**:
 
     *   **Young files** are recent additions, often indicating new features.
     *   **Old files** that haven't been touched in a long time are stable (or dead) code.
     *   **Old files with recent changes** are often core legacy components that are being maintained.
+    *   **Increasing Codebase Age** suggests a maturing system, while a sudden drop indicates significant new development.
 
 Absolute Churn
 ^^^^^^^^^^^^^^
@@ -83,13 +84,15 @@ These metrics focus on how difficult the code is to understand and maintain.
 
 Complexity
 ^^^^^^^^^^
-*   **UI Name**: Complexity
+*   **UI Name**: Complexity / Maintainability
 *   **What it Measures**: A holistic view of complexity, combining:
 
     *   **Cyclomatic Complexity**: The number of independent paths through the code (branching logic).
     *   **Cognitive Complexity**: How difficult the code is for a human to read and understand.
     *   **Efforts**: An estimated measure of the effort required to maintain the file (based on Halstead metrics).
-*   **How to Interpret**: High complexity scores, especially when combined with high churn (Hotspots), are the single best predictor of bugs.
+
+    On the Dashboard, "Maintainability" is derived from these complexity scores. A lower average cognitive complexity indicates better maintainability.
+*   **How to Interpret**: High complexity scores, especially when combined with high churn (Hotspots), are the single best predictor of bugs. Falling maintainability (rising complexity) on the dashboard is a sign that the code is becoming harder to work with.
 
 Complexity Trend
 ^^^^^^^^^^^^^^^^
@@ -121,19 +124,21 @@ Knowledge Fragmentation
 
 Knowledge Silos
 ^^^^^^^^^^^^^^^
-*   **UI Name**: Knowledge Silos
+*   **UI Name**: Wissenssilos / Knowledge Risk
 *   **What it Measures**: Identifies files and modules where a single developer is responsible for an overwhelming share of commits — making that person the **sole knowledge holder**. A file is classified as a silo when one developer's contribution meets or exceeds a configurable ownership threshold (default: **80 %**). Files with very few total commits are excluded to filter out noise.
+
+    On the Dashboard, "Knowledge Risk" reflects the number of identified silos and the "Silo Ratio" (percentage of files within a module that are silos).
 *   **Risk Levels**: Each silo entry carries a risk classification based on ownership concentration:
 
     *   **Low** (80–89 %): One clear owner, but some secondary knowledge exists.
     *   **Medium** (90–94 %): Near-exclusive ownership — onboarding a second contributor is advisable.
     *   **High** (95–99 %): Essentially a single point of failure.
     *   **Critical** (100 %): Absolute sole ownership — no other developer has ever touched this file.
-
 *   **How to Interpret**:
 
     *   **File view**: Lists every silo file sorted by ownership percentage. Use this to find the individual files with the highest Bus Factor risk and identify which developers carry the most concentrated knowledge.
     *   **Module view**: Shows the fraction of silo files within each component (``silo_ratio``). A module with a high silo ratio indicates a structural knowledge risk even if no single file is catastrophic by itself.
+    *   **Dashboard view**: A high Knowledge Risk or a rising Silo Ratio trend suggests that knowledge is becoming increasingly centralized, raising the project's Bus Factor.
     *   **Combining with Code Ownership and Hotspot data**: A silo file that is *also* a hotspot (high churn + high complexity) is the most dangerous combination — difficult code that only one person understands.
 *   **Recommended Actions**: For critical silos, schedule a knowledge transfer session (pair programming, documentation sprint) before the key developer transitions off the team.
 
@@ -167,3 +172,149 @@ Comment Density
 *   **UI Name**: Comment Density
 *   **What it Measures**: The ratio of comments to code lines.
 *   **How to Interpret**: Extremely low density might indicate cryptic code; extremely high density might indicate that the code is so complex it requires excessive explanation, or simply contains a lot of "dead" commented-out code.
+
+---------
+
+Visual Analysis Views (Module Scope)
+-------------------------------------
+
+The following four views are available when the **Module** scope is active. They operate on the same underlying data as the table analyses but present it in ways that make structural patterns and trends immediately visible. Because they aggregate across the whole module landscape, selecting a specific analysis type in the sidebar has no effect while one of these views is open — switch back to the **Table** view to change the analysis dimension.
+
+Code Map
+^^^^^^^^
+
+*   **UI Name**: Code Map — Risk & Size per Module
+*   **What it Shows**: A treemap in which every cell represents one module. Cell **area** encodes Lines of Code; cell **colour** encodes composite risk.
+*   **Risk Formula**:
+
+    .. code-block:: text
+
+        Risk Score = 0.6 × normalised(Cognitive Complexity)
+                   + 0.4 × normalised(Absolute Churn)
+
+    Both inputs are min-max normalised across the current module set, so the score is always relative to the worst module in the selected period — not an absolute threshold.
+
+*   **Colour Scale**: A four-stop gradient from green (low risk) through yellow and orange to red (critical).
+
+    +-----------+-------------+-------------------------------------------+
+    | Colour    | Risk range  | Interpretation                            |
+    +===========+=============+===========================================+
+    | Green     | 0 – 0.20    | Stable, low-activity module               |
+    +-----------+-------------+-------------------------------------------+
+    | Yellow    | 0.20 – 0.40 | Moderate risk; worth monitoring          |
+    +-----------+-------------+-------------------------------------------+
+    | Orange    | 0.40 – 0.70 | Elevated — schedule a review             |
+    +-----------+-------------+-------------------------------------------+
+    | Red       | 0.70 – 1.00 | Critical — refactoring overdue            |
+    +-----------+-------------+-------------------------------------------+
+
+*   **How to Interpret**:
+
+    *   A **large red cell** is the worst-case combination: a high-LOC module that is both cognitively complex and actively churning. It carries the highest maintenance cost and the highest defect probability.
+    *   A **small red cell** signals a compact but disproportionately risky module — often a utility or integration layer that accumulated complexity without growing in size. Do not ignore it because it looks small.
+    *   A **large green cell** is the ideal: substantial code that is stable and well-understood.
+    *   Hover over any cell to see the raw values (LOC, Cognitive Complexity, Absolute Churn) and the numeric risk score.
+
+*   **Practical Use**: Run this view at the start of a sprint planning cycle to identify which modules deserve architectural attention. Use it alongside the Scatter view to cross-validate findings.
+
+---------
+
+Scatter Analysis — Complexity × Churn Quadrants
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*   **UI Name**: Complexity × Churn — Hotspot Analysis
+*   **What it Shows**: A bubble chart with **Cognitive Complexity** on the X-axis, **Absolute Churn** on the Y-axis, and bubble size proportional to **Code Age** (days since first commit). Both axes use a logarithmic scale.
+
+*   **Why logarithmic axes?** Complexity and churn values across a real codebase span several orders of magnitude. A linear scale compresses 90 % of modules into a corner and makes the distribution unreadable. Log scaling preserves the relative distances between modules across the full range.
+
+*   **Quadrant Logic**: The two dashed reference lines mark the **project medians** for complexity and churn. Every module falls into one of four quadrants:
+
+    +---------------------------+-------------------+--------------------------------------------------+
+    | Quadrant (position)       | Colour            | Interpretation                                   |
+    +===========================+===================+==================================================+
+    | High complexity, high churn (top-right)  | Red    | **Hotspot** — complex code that is being         |
+    |                           |                   | actively modified. Highest bug probability.      |
+    |                           |                   | Prioritise for refactoring.                      |
+    +---------------------------+-------------------+--------------------------------------------------+
+    | High complexity, low churn (bottom-right) | Purple | **Dormant risk** — complex code that nobody      |
+    |                           |                   | is touching. Often legacy components. Safe       |
+    |                           |                   | today, dangerous when the next change arrives.   |
+    +---------------------------+-------------------+--------------------------------------------------+
+    | Low complexity, high churn (top-left)    | Yellow | **Non-critical churn** — configuration,          |
+    |                           |                   | test data, or generated files. Verify that       |
+    |                           |                   | churn is intentional, not symptomatic.           |
+    +---------------------------+-------------------+--------------------------------------------------+
+    | Low complexity, low churn (bottom-left)  | Green  | **Healthy** — stable, understandable code.       |
+    +---------------------------+-------------------+--------------------------------------------------+
+
+*   **Bubble Size (Code Age)**: Older modules have larger bubbles. A large red bubble is a long-lived module that has accumulated both complexity and instability — a structural liability. A small red bubble is a recently introduced problem that may still be correctable with modest effort.
+
+*   **How to Interpret**:
+
+    *   Focus first on the **top-right red cluster**. These modules will predictably contribute a disproportionate share of defects and are the primary candidates for refactoring or architectural decomposition.
+    *   A **purple module with a large bubble** (old, complex, quiet) is a latent risk. If it appears in the Warnings list as a "Complexity Spike" in the future, escalate immediately.
+    *   If most modules are in the **green quadrant with a few isolated red outliers**, the codebase is generally healthy with identifiable hotspots — a manageable situation.
+    *   A **broadly scattered red population** indicates systemic complexity growth, not isolated incidents. This warrants a discussion about architectural governance, not just individual file refactoring.
+
+---------
+
+Trend Analysis — Per-Module Time Series
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*   **UI Name**: *[Metric]* per Module over Time
+*   **What it Shows**: A line or area chart of up to 15 modules across a shared time axis, bucketed in configurable intervals (default: 30 days). Four metrics are available via toggle:
+
+    *   **Avg. Cognitive Complexity** — is the code getting harder to understand?
+    *   **Lines of Code** — is the module growing, shrinking, or stable?
+    *   **Silo Ratio** — is knowledge becoming more concentrated over time?
+    *   **Commits** — how is development activity distributed across modules and periods?
+
+*   **How to Read the Chart**:
+
+    *   Lines that are **rising together** (complexity + LOC) indicate uncontrolled growth — new functionality is being added without simplification.
+    *   **Rising Silo Ratio with falling Commits** is a particularly dangerous pattern: development is decelerating while knowledge is centralising. The module is drifting toward a single point of failure.
+    *   **Diverging complexity lines** between modules of similar function suggest inconsistent engineering standards and warrant a cross-team review.
+    *   Use the **bucket size** (30-day default) to balance noise and signal. For fast-moving teams, a 14-day bucket reveals sprint-level patterns; a 90-day bucket is better for quarterly architecture reviews.
+
+*   **Module Toggle**: All modules are shown by default (up to 10). Deselect modules to reduce visual noise and compare specific candidates side by side. Line colours are stable — toggling a module on and off does not reassign colours.
+
+---------
+
+Dashboard — Warnings
+^^^^^^^^^^^^^^^^^^^^^
+
+*   **UI Name**: Dashboard → Warnings panel
+*   **What it Shows**: Up to five prioritised warnings derived entirely from Git history — no external integrations required. The backend generates up to ten candidates, ranks them by severity and normalised risk score, and returns the top results.
+
+*   **Warning Types**:
+
+    .. list-table::
+       :header-rows: 1
+       :widths: 20 15 65
+
+       * - Reason Code
+         - Max Severity
+         - Trigger Condition
+       * - ``critical_hotspot``
+         - Critical
+         - Composite hotspot score ≥ 90 % of the highest score in the period (critical) or ≥ 70 % (high). Score = complexity × churn weighting.
+       * - ``silo_risk``
+         - Critical
+         - A single developer accounts for ≥ 95 % of commits to a file (critical) or ≥ 80 % (high). Files with fewer than 5 total commits are excluded.
+       * - ``complexity_spike``
+         - Critical
+         - Cognitive complexity trend indicator > 4.0× baseline (critical) or > 3.0× (high).
+       * - ``churn_outlier``
+         - Critical
+         - File churn > 5× the project average (critical) or > 3× (high).
+       * - ``legacy_reactivated``
+         - High
+         - File age > 365 days *and* recent churn > 2× project average. Indicates that dormant, complex code is being actively modified.
+
+*   **Risk Score — Critical_Hotspot**: The displayed value (e.g., *"Risk score 94 / 100"*) is a **relative score**, not an absolute threshold. It is computed as ``(module_hotspot_score / max_hotspot_score_in_period) × 100``. A score of 94 means this module is 94 % as risky as the worst module currently in scope — not that it has crossed a fixed danger level. Scores will shift as the date range changes.
+
+*   **Ranking**: Warnings are sorted first by severity (Critical before High), then by normalised risk score descending. This ensures the most actionable items appear at the top regardless of which warning type they belong to.
+
+*   **Navigating from a Warning**: The "Details →" link routes to the corresponding analysis view (e.g., a hotspot warning links to the Complexity analysis filtered to that module). Use this as the entry point for root cause investigation.
+
+*   **Recommended Workflow**: Review the Warnings panel at the start of each sprint. A warning that persists across multiple consecutive periods without remediation is a strong signal that it has become structural debt — escalate it to the architecture backlog.
