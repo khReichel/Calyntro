@@ -1346,6 +1346,88 @@
         }
       }
     },
+    "/v1/files/details": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Get File Details",
+        "operationId": "get_file_details_v1_files_details_get",
+        "parameters": [
+          {
+            "name": "file_path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "File path to retrieve details for",
+              "title": "File Path"
+            },
+            "description": "File path to retrieve details for"
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Start of analysis window",
+              "title": "Start Date"
+            },
+            "description": "Start of analysis window"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "End of analysis window (defaults to now)",
+              "title": "End Date"
+            },
+            "description": "End of analysis window (defaults to now)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/info": {
       "get": {
         "summary": "Info",
@@ -2519,6 +2601,143 @@
         "title": "FileContributorResponse",
         "description": "Pydantic model for the file-level contributor analysis response."
       },
+      "FileDetailActivity": {
+        "properties": {
+          "commits": {
+            "type": "integer",
+            "title": "Commits"
+          },
+          "churn": {
+            "type": "integer",
+            "title": "Churn"
+          },
+          "file_age_days": {
+            "type": "integer",
+            "title": "File Age Days"
+          }
+        },
+        "type": "object",
+        "required": [
+          "commits",
+          "churn",
+          "file_age_days"
+        ],
+        "title": "FileDetailActivity"
+      },
+      "FileDetailKpis": {
+        "properties": {
+          "complexity": {
+            "$ref": "#/components/schemas/KpiValue"
+          },
+          "churn_rate": {
+            "$ref": "#/components/schemas/KpiValue"
+          },
+          "hotspot_score": {
+            "$ref": "#/components/schemas/KpiValue"
+          },
+          "silo_risk_pct": {
+            "$ref": "#/components/schemas/KpiValue"
+          }
+        },
+        "type": "object",
+        "required": [
+          "complexity",
+          "churn_rate",
+          "hotspot_score",
+          "silo_risk_pct"
+        ],
+        "title": "FileDetailKpis"
+      },
+      "FileDetailMeta": {
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "title": "File Path"
+          },
+          "module": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Module"
+          },
+          "last_modified": {
+            "type": "string",
+            "title": "Last Modified"
+          },
+          "contributor_count": {
+            "type": "integer",
+            "title": "Contributor Count"
+          },
+          "contributor_names": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Contributor Names"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_path",
+          "module",
+          "last_modified",
+          "contributor_count",
+          "contributor_names"
+        ],
+        "title": "FileDetailMeta"
+      },
+      "FileDetailMetrics": {
+        "properties": {
+          "loc": {
+            "type": "integer",
+            "title": "Loc"
+          },
+          "cyclomatic": {
+            "type": "integer",
+            "title": "Cyclomatic"
+          },
+          "cognitive": {
+            "type": "integer",
+            "title": "Cognitive"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "cyclomatic",
+          "cognitive"
+        ],
+        "title": "FileDetailMetrics"
+      },
+      "FileDetailResponse": {
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/FileDetailMeta"
+          },
+          "kpis": {
+            "$ref": "#/components/schemas/FileDetailKpis"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/FileDetailMetrics"
+          },
+          "activity": {
+            "$ref": "#/components/schemas/FileDetailActivity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "meta",
+          "kpis",
+          "metrics",
+          "activity"
+        ],
+        "title": "FileDetailResponse"
+      },
       "FileSiloItem": {
         "properties": {
           "file_path": {
@@ -2909,6 +3128,24 @@
         "type": "object",
         "title": "HotspotComplexityRequest",
         "description": "Pydantic model for the hotspot complexity analysis request body."
+      },
+      "KpiValue": {
+        "properties": {
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "trend_pct": {
+            "type": "number",
+            "title": "Trend Pct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value",
+          "trend_pct"
+        ],
+        "title": "KpiValue"
       },
       "LocItem": {
         "properties": {
