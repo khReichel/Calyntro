@@ -1360,10 +1360,8 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "File path to retrieve details for",
               "title": "File Path"
-            },
-            "description": "File path to retrieve details for"
+            }
           },
           {
             "name": "start_date",
@@ -1379,10 +1377,8 @@
                   "type": "null"
                 }
               ],
-              "description": "Start of analysis window",
               "title": "Start Date"
-            },
-            "description": "Start of analysis window"
+            }
           },
           {
             "name": "end_date",
@@ -1398,10 +1394,8 @@
                   "type": "null"
                 }
               ],
-              "description": "End of analysis window (defaults to now)",
               "title": "End Date"
-            },
-            "description": "End of analysis window (defaults to now)"
+            }
           }
         ],
         "responses": {

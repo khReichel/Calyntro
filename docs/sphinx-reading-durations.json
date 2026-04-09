@@ -1,10 +1,10 @@
 {
     "analysis": 0.061,
-    "api": 0.192,
+    "api": 0.191,
     "config_guide": 0.014,
-    "importer_guide": 0.009,
-    "index": 0.006,
+    "importer_guide": 0.01,
+    "index": 0.007,
     "installation": 0.005,
-    "manage_script": 0.025,
+    "manage_script": 0.027,
     "usage": 0.01
 }
