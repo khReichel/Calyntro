@@ -1,11 +1,11 @@
 {
-    "analysis": 0.066,
-    "api": 0.241,
-    "config_guide": 0.018,
-    "dashboard_overview": 0.06,
-    "importer_guide": 0.011,
-    "index": 0.007,
+    "analysis": 0.062,
+    "api": 0.184,
+    "config_guide": 0.014,
+    "dashboard_overview": 0.049,
+    "importer_guide": 0.009,
+    "index": 0.006,
     "installation": 0.005,
-    "manage_script": 0.011,
-    "usage": 0.011
+    "manage_script": 0.009,
+    "usage": 0.01
 }
