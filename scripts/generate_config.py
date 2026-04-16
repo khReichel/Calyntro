@@ -4,9 +4,9 @@ generate_config.py
 
 Scans a git repository and writes a draft Calyntro config.yaml with:
 
-  analysis.users            — one entry per author, email variants as aliases
-  analysis.components       — top-level dirs ranked by commit activity
-  analysis.excluded_prefixes — low-activity dirs (complement of components)
+  analysis.users             — one entry per author, email variants as aliases
+  analysis.components        — source-code directories at appropriate depth
+  analysis.excluded_prefixes — top-level dirs with no meaningful code
   analysis.excluded_extensions — non-code file types found in HEAD
 
 Teams and team_memberships are left empty — they require organisational
@@ -18,8 +18,9 @@ Usage:
 Options:
   --branch BRANCH       Branch to scan          (default: auto-detected)
   --since  YYYY-MM-DD   analysis_since date     (default: 2020-01-01)
-  --threshold FLOAT     Min commit share [0..1] for a dir to become a
-                        component               (default: 0.02 = 2 %%)
+  --min-files INT       Min code files for a dir to become a component
+                                                (default: 5)
+  --max-depth INT       Max directory depth to explore (default: 2)
   -o, --output PATH     Write to file instead of stdout
 """
 
@@ -92,58 +93,117 @@ def _extract_users(repo: Repo, branch: str) -> list[dict]:
 # Components & excluded_prefixes
 # ---------------------------------------------------------------------------
 
-def _top_dir(path: str) -> str | None:
-    parts = Path(path).parts
-    return parts[0] if parts else None
+def _is_code_file(path: str) -> bool:
+    ext = Path(path).suffix.lower()
+    return bool(ext) and ext not in _NON_CODE
 
 
-def _dir_commit_counts(repo: Repo, branch: str) -> Counter:
-    """Count commits that touched each top-level directory."""
-    counts: Counter = Counter()
-    for commit in repo.iter_commits(branch):
-        touched = {_top_dir(p) for p in commit.stats.files} - {None}
-        for d in touched:
-            counts[d] += 1
-    return counts
+def _build_code_tree(repo: Repo) -> tuple[dict, dict]:
+    """
+    Walk the HEAD tree and build two maps over directories that contain code:
+      recursive_count[dir] — total code files in dir and all subdirectories
+      children[dir]        — direct child directories that contain code files
+    Root-level files (no parent directory) are ignored.
+    """
+    recursive_count: dict[str, int] = defaultdict(int)
+    children: dict[str, set] = defaultdict(set)
 
-
-def _head_top_dirs(repo: Repo) -> set[str]:
-    """All top-level directories present in the HEAD tree."""
-    dirs: set[str] = set()
     for item in repo.head.commit.tree.traverse():
-        d = _top_dir(item.path)
-        if d:
-            dirs.add(d)
-    return dirs
+        if item.type != "blob" or not _is_code_file(item.path):
+            continue
+        parts = item.path.split("/")
+        if len(parts) < 2:
+            continue  # root-level file — no directory to assign
+
+        for depth in range(1, len(parts)):
+            ancestor = "/".join(parts[:depth])
+            recursive_count[ancestor] += 1
+            if depth > 1:
+                parent = "/".join(parts[:depth - 1])
+                children[parent].add(ancestor)
+
+    return dict(recursive_count), {k: set(v) for k, v in children.items()}
 
 
-def _split_components(
-    head_dirs: set[str],
-    dir_counts: Counter,
-    threshold: float,
+def _collect_components(
+    dir_path: str,
+    recursive_count: dict,
+    children: dict,
+    min_files: int,
+    max_depth: int,
+    depth: int,
+) -> list[str]:
+    """
+    Recursively decide whether dir_path is a component or should be
+    expanded into its children.
+
+    A directory is expanded when it has >= 2 children that each contain
+    at least min_files code files AND the current depth is below max_depth.
+    Otherwise the directory itself becomes the component (if it meets min_files).
+    """
+    total = recursive_count.get(dir_path, 0)
+    if total < min_files:
+        return []
+
+    if depth >= max_depth:
+        return [dir_path]
+
+    significant = sorted(
+        [c for c in children.get(dir_path, set())
+         if recursive_count.get(c, 0) >= min_files],
+        key=lambda c: recursive_count.get(c, 0),
+        reverse=True,
+    )
+
+    if len(significant) >= 2:
+        result = []
+        for child in significant:
+            result.extend(_collect_components(
+                child, recursive_count, children, min_files, max_depth, depth + 1
+            ))
+        return result
+
+    return [dir_path]
+
+
+def _find_components(
+    repo: Repo,
+    min_files: int,
+    max_depth: int,
 ) -> tuple[list[dict], list[str]]:
     """
-    Dirs above the commit-share threshold → components.
-    Dirs below                            → excluded_prefixes.
-    Both lists are sorted: components by activity desc, exclusions alphabetically.
+    Return (components, excluded_prefixes).
+    Only actual top-level directories (trees, not files) are considered.
     """
-    total = sum(dir_counts.values()) or 1
-    min_commits = total * threshold
+    recursive_count, children = _build_code_tree(repo)
 
-    components: list[dict] = []
-    excluded:   list[str]  = []
+    # Top-level directories only — explicitly excludes root-level files
+    top_dirs = sorted(
+        item.name for item in repo.head.commit.tree if item.type == "tree"
+    )
 
-    for d in sorted(head_dirs, key=lambda x: dir_counts.get(x, 0), reverse=True):
-        if dir_counts.get(d, 0) >= min_commits:
-            components.append({
-                "component_name": d,
-                "path_prefix":    f"{d}/",
-                "display_name":   d.replace("_", " ").replace("-", " ").title(),
-            })
+    component_paths: list[str] = []
+    excluded_prefixes: list[str] = []
+
+    for top_dir in top_dirs:
+        found = _collect_components(
+            top_dir, recursive_count, children, min_files, max_depth, depth=1
+        )
+        if found:
+            component_paths.extend(found)
         else:
-            excluded.append(f"{d}/")
+            excluded_prefixes.append(f"{top_dir}/")
 
-    return components, sorted(excluded)
+    components = [
+        {
+            "component_name": p.replace("/", "_"),
+            "path_prefix":    f"{p}/",
+            "display_name":   p.split("/")[-1].replace("_", " ").replace("-", " ").title(),
+        }
+        for p in component_paths
+    ]
+
+    return components, sorted(excluded_prefixes)
 
 
 # ---------------------------------------------------------------------------
@@ -168,18 +228,14 @@ def _excluded_extensions(repo: Repo) -> list[str]:
 # Assembly
 # ---------------------------------------------------------------------------
 
-def generate(repo_path: str, branch: str, since: str, threshold: float) -> dict:
+def generate(repo_path: str, branch: str, since: str, min_files: int, max_depth: int) -> dict:
     repo = Repo(repo_path)
 
     print("  Scanning commit history for authors …", file=sys.stderr)
     users = _extract_users(repo, branch)
 
-    print("  Counting commits per directory …", file=sys.stderr)
-    dir_counts = _dir_commit_counts(repo, branch)
-
     print("  Reading HEAD tree …", file=sys.stderr)
-    head_dirs = _head_top_dirs(repo)
-    components, excluded_prefixes = _split_components(head_dirs, dir_counts, threshold)
+    components, excluded_prefixes = _find_components(repo, min_files, max_depth)
     excluded_extensions = _excluded_extensions(repo)
 
     return {
@@ -227,9 +283,11 @@ def main() -> None:
                         help="Branch to scan (default: auto-detected from HEAD)")
     parser.add_argument("--since", default="2020-01-01", metavar="YYYY-MM-DD",
                         help="analysis_since date (default: 2020-01-01)")
-    parser.add_argument("--threshold", type=float, default=0.02, metavar="FLOAT",
-                        help="Min commit share for a dir to become a component "
-                             "(default: 0.02 = 2%%)")
+    parser.add_argument("--min-files", type=int, default=5, metavar="INT",
+                        help="Min code files for a directory to become a component "
+                             "(default: 5)")
+    parser.add_argument("--max-depth", type=int, default=2, metavar="INT",
+                        help="Max directory depth to explore (default: 2)")
     parser.add_argument("-o", "--output", default=None, metavar="PATH",
                         help="Write output to file instead of stdout")
     args = parser.parse_args()
@@ -243,7 +301,7 @@ def main() -> None:
     branch = args.branch or _detect_branch(repo)
     print(f"Scanning {args.repo_path!r}  branch={branch!r} …", file=sys.stderr)
 
-    config = generate(args.repo_path, branch, args.since, args.threshold)
+    config = generate(args.repo_path, branch, args.since, args.min_files, args.max_depth)
 
     output = yaml.dump(
         config,
