@@ -73,7 +73,7 @@ Finally, launch the Calyntro backend, frontend, and gateway services.
 
    ./manage.sh up
 
-You can now open your browser at ``http://localhost`` to explore your dashboard.
+You can now open your browser at ``http://localhost:8765`` to explore your dashboard.
 
 -------------------
 
