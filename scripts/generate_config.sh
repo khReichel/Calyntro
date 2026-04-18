@@ -62,6 +62,7 @@ done
 DOCKER_ARGS=(
     --rm
     --pull=never
+    --user "$(id -u):$(id -g)"
     -e GIT_CONFIG_COUNT=1
     -e GIT_CONFIG_KEY_0=safe.directory
     -e GIT_CONFIG_VALUE_0=/repo
