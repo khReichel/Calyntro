@@ -58,6 +58,7 @@ Retrieves metadata and statistics for the entire repository, including time span
 
    {
      "items": {
+       "project_name": "mongodb",
        "time_span": {
          "start": "01.01.2024",
          "end": "17.04.2026",
@@ -88,6 +89,25 @@ Retrieves metadata and statistics for the entire repository, including time span
        ]
      }
    }
+
+.. list-table:: Response Fields (``items``)
+   :header-rows: 1
+   :widths: 25 75
+
+   * - Field
+     - Description
+   * - ``project_name``
+     - Name of the analyzed project as configured in ``config.yaml`` (``project.name``).
+   * - ``time_span``
+     - Object containing ``start``, ``end`` (formatted dates) and ``days`` (total span).
+   * - ``last_import``
+     - Timestamp of the most recent data import.
+   * - ``total_commits``
+     - Total number of commits in the analysis database.
+   * - ``committers``
+     - Number of distinct active committers.
+   * - ``file_types``
+     - Top-5 file type distribution by commit share. Each entry has ``name``, ``value`` (%), ``color`` (hex), ``extension``.
 
 Get File Details
 ~~~~~~~~~~~~~~~~
@@ -900,7 +920,8 @@ Results are ordered by silo ratio descending.
          "silo_files": 9,
          "silo_ratio": 0.375,
          "dominant_silo_developer": "alice",
-         "risk": "medium"
+         "risk": "medium",
+         "risk_score": 3.75
        }
      ]
    }
@@ -923,6 +944,8 @@ Results are ordered by silo ratio descending.
      - The developer responsible for the highest number of silos within this module.
    * - ``risk``
      - Risk derived from ``silo_ratio``: ``low`` (< 25 %), ``medium`` (25–49 %), ``high`` (50–74 %), ``critical`` (≥ 75 %).
+   * - ``risk_score``
+     - Numeric risk score on a 0–10 scale (``silo_ratio × 10``, rounded to 2 decimal places). Used by the Knowledge Risk screen to rank modules and size the risk bar.
 
 Knowledge Silos (Developers)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1499,8 +1522,11 @@ API Info
 ~~~~~~~~
 Returns metadata about the currently running analysis session, including database paths.
 
-*   **URL:** ``/v1/info``
+*   **URL:** ``/info``
 *   **Method:** ``GET``
+
+.. note::
+   This endpoint does **not** carry the ``/v1`` prefix — it is served at the root path.
 
 **Response:**
 
@@ -1510,4 +1536,31 @@ Returns metadata about the currently running analysis session, including databas
      "analysis_database": "/path/to/analysis.duckdb",
      "config_database": "/path/to/config.duckdb",
      "debug": false
+   }
+
+Health Check
+~~~~~~~~~~~~
+Returns the current health status of the API and its database connection.
+Intended for use by container orchestration systems (Docker, Kubernetes).
+
+*   **URL:** ``/api/health``
+*   **Method:** ``GET``
+
+**Response (healthy):**
+
+.. code-block:: json
+
+   {
+     "status": "healthy",
+     "database": "connected",
+     "version": "1.0.0"
+   }
+
+**Response (unhealthy, HTTP 503):**
+
+.. code-block:: json
+
+   {
+     "status": "unhealthy",
+     "reason": "<error message>"
    }

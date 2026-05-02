@@ -8,11 +8,12 @@ Welcome to Calyntro's documentation!
 
 **Calyntro** is a repository intelligence platform that derives structural and behavioural insights from Git history — without instrumentation, build integration, or access to runtime data.
 
-It is built around three operational questions that matter at the architecture and engineering-management level:
+It is built around four operational questions that matter at the architecture and engineering-management level:
 
 *   **Where are the risks?** The :ref:`Code Map <analysis>` and :ref:`Scatter Analysis <analysis>` make structural risk visible across the entire module landscape in a single view — surfacing which components are simultaneously complex, actively changing, and poorly understood.
 *   **How are trends developing?** The :ref:`Trend Analysis <analysis>` tracks Cognitive Complexity, Lines of Code, Silo Ratio, and commit activity per module over configurable time windows — turning point-in-time snapshots into directional signals.
 *   **What needs attention now?** The :ref:`Dashboard Warnings <analysis>` panel surfaces the top prioritised risks (hotspots, knowledge silos, complexity spikes, churn outliers, reactivated legacy code) with normalised scores and direct navigation to the relevant analysis view.
+*   **Who holds critical knowledge?** The :ref:`Knowledge Risk <knowledge_risk>` screen breaks down Bus Factor exposure to the developer and file level — showing which modules depend on a single person, which files carry the highest weighted risk, and how knowledge concentration has evolved over time.
 
 Calyntro derives all metrics exclusively from commit history: author dates, changed lines, file paths, and commit hashes. No static analysis agents, no test runners, no issue tracker connections are required. A repository import takes minutes; the analysis runs on an embedded DuckDB instance with no external database dependencies.
 
@@ -33,6 +34,7 @@ Check out the :doc:`usage` section for further information, including how to
    importer_guide
    usage
    dashboard_overview
+   knowledge_risk
    api
    analysis
 

@@ -83,6 +83,24 @@ The ``analysis`` section defines the scope of the code analysis, including which
 
 *   **excluded_patterns**: A list of regular expression patterns matched against the full file path (using ``re.search``). Files matching any of these patterns will be excluded from import and all analysis views. This is useful for excluding test files or specific directory patterns that cannot be easily captured by prefixes or extensions alone.
 
+*   **excluded_authors**: A list of author name patterns to exclude from all analyses. Supports glob-style wildcards (``*``). Use this to filter out bot accounts, CI users, or automation commits that would otherwise inflate commit counts and distort ownership metrics.
+
+.. code-block:: yaml
+
+   excluded_authors:
+     - "*[bot]"           # matches dependabot[bot], renovate[bot], etc.
+     - "GitHub Actions"   # exact name match
+
+Wildcard rules:
+
+* ``*`` matches any sequence of characters.
+* Patterns are matched against the ``author_name`` field of each commit.
+* The filter propagates to **all** analyses and views — hotspots, ownership, silos, and trend data.
+
+.. note::
+
+   ``excluded_authors`` filters are applied at the database view level (``v_file_commits``), not at parse time. This means you can add new patterns to ``config.yaml`` and re-run ``importer analysis`` without re-importing the full Git history. Only a configuration sync (``importer config``) followed by a view refresh is required.
+
 Users and Teams
 ---------------
 

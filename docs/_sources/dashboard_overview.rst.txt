@@ -50,7 +50,7 @@ The four KPI cards report the current state of the most critical codebase health
    * - **Knowledge Risk**
      - Percentage of files classified as knowledge silos
      - Green = down, Red = up
-     - :ref:`Knowledge Silos (Module) analysis <analysis>`
+     - :ref:`Knowledge Risk screen <knowledge_risk>`
 
 Clicking any KPI card navigates to the corresponding detail view, pre-filtered to the current date range.
 
@@ -80,7 +80,7 @@ The trend badge is coloured **red when the value rises** (knowledge is becoming 
 
 .. tip::
 
-   A Knowledge Risk value above 30 % combined with a rising trend is a Bus Factor warning at the project level. Navigate to the :ref:`Knowledge Silos <analysis>` view to identify which specific files and developers are driving the concentration.
+   A Knowledge Risk value above 30 % combined with a rising trend is a Bus Factor warning at the project level. Navigate to the :ref:`Knowledge Risk screen <knowledge_risk>` to identify which specific modules, files, and developers are driving the concentration.
 
 ---------
 

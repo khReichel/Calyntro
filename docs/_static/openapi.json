@@ -3557,6 +3557,10 @@
           },
           "risk": {
             "$ref": "#/components/schemas/SiloRisk"
+          },
+          "risk_score": {
+            "type": "number",
+            "title": "Risk Score"
           }
         },
         "type": "object",
@@ -3565,7 +3569,8 @@
           "total_files",
           "silo_files",
           "silo_ratio",
-          "risk"
+          "risk",
+          "risk_score"
         ],
         "title": "ModuleSiloItem"
       },
@@ -3972,6 +3977,11 @@
       },
       "RepositoryInfoResult": {
         "properties": {
+          "project_name": {
+            "type": "string",
+            "title": "Project Name",
+            "description": "Name of the analyzed project"
+          },
           "time_span": {
             "$ref": "#/components/schemas/TimeSpanInfo",
             "description": "Analysis time span information"
@@ -4002,6 +4012,7 @@
         },
         "type": "object",
         "required": [
+          "project_name",
           "time_span",
           "last_import",
           "total_commits",
@@ -4276,6 +4287,16 @@
             "type": "number",
             "title": "Silo Ratio Trend Pct",
             "description": "Trend percentage for silo ratio compared to baseline"
+          },
+          "active_files_pct": {
+            "type": "number",
+            "title": "Active Files Pct",
+            "description": "Percentage of files with at least one commit in the last 90 days"
+          },
+          "active_files_trend_pct": {
+            "type": "number",
+            "title": "Active Files Trend Pct",
+            "description": "Trend percentage for active files compared to 30 days ago"
           }
         },
         "type": "object",
@@ -4287,7 +4308,9 @@
           "avg_complexity",
           "avg_complexity_trend_pct",
           "silo_ratio_pct",
-          "silo_ratio_trend_pct"
+          "silo_ratio_trend_pct",
+          "active_files_pct",
+          "active_files_trend_pct"
         ],
         "title": "SummaryItem",
         "description": "Pydantic model for a single summary result."

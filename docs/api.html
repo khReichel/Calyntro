@@ -116,6 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#average-file-age-kpi">Average File Age KPI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-analysis-start-date">Get Analysis Start Date</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#api-info">API Info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#health-check">Health Check</a></li>
 </ul>
 </li>
 </ul>
@@ -199,6 +200,7 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;project_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mongodb&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;time_span&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;01.01.2024&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;end&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;17.04.2026&quot;</span><span class="p">,</span>
@@ -231,6 +233,38 @@ Dates should be provided in ISO 8601 format (e.g., <code class="docutils literal
 <span class="p">}</span>
 </pre></div>
 </div>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Response Fields (<code class="docutils literal notranslate"><span class="pre">items</span></code>)</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">project_name</span></code></p></td>
+<td><p>Name of the analyzed project as configured in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> (<code class="docutils literal notranslate"><span class="pre">project.name</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">time_span</span></code></p></td>
+<td><p>Object containing <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">end</span></code> (formatted dates) and <code class="docutils literal notranslate"><span class="pre">days</span></code> (total span).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">last_import</span></code></p></td>
+<td><p>Timestamp of the most recent data import.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">total_commits</span></code></p></td>
+<td><p>Total number of commits in the analysis database.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">committers</span></code></p></td>
+<td><p>Number of distinct active committers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">file_types</span></code></p></td>
+<td><p>Top-5 file type distribution by commit share. Each entry has <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">value</span></code> (%), <code class="docutils literal notranslate"><span class="pre">color</span></code> (hex), <code class="docutils literal notranslate"><span class="pre">extension</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="get-file-details">
 <h3>Get File Details<a class="headerlink" href="#get-file-details" title="Link to this heading"></a></h3>
@@ -635,8 +669,8 @@ render them on a common x-axis without further alignment.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id1">
-<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 10.0%" />
@@ -688,8 +722,8 @@ render them on a common x-axis without further alignment.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id2">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -936,8 +970,8 @@ percentage descending.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id3">
-<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id4">
+<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 10.0%" />
@@ -987,8 +1021,8 @@ percentage descending.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id4">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id5">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id5" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 75.0%" />
@@ -1039,14 +1073,15 @@ Results are ordered by silo ratio descending.</p>
 <span class="w">      </span><span class="nt">&quot;silo_files&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;silo_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.375</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;dominant_silo_developer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;alice&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;risk&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;medium&quot;</span>
+<span class="w">      </span><span class="nt">&quot;risk&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;medium&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;risk_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.75</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id5">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id5" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id6">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id6" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 75.0%" />
@@ -1075,6 +1110,9 @@ Results are ordered by silo ratio descending.</p>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">risk</span></code></p></td>
 <td><p>Risk derived from <code class="docutils literal notranslate"><span class="pre">silo_ratio</span></code>: <code class="docutils literal notranslate"><span class="pre">low</span></code> (&lt; 25 %), <code class="docutils literal notranslate"><span class="pre">medium</span></code> (25–49 %), <code class="docutils literal notranslate"><span class="pre">high</span></code> (50–74 %), <code class="docutils literal notranslate"><span class="pre">critical</span></code> (≥ 75 %).</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">risk_score</span></code></p></td>
+<td><p>Numeric risk score on a 0–10 scale (<code class="docutils literal notranslate"><span class="pre">silo_ratio</span> <span class="pre">×</span> <span class="pre">10</span></code>, rounded to 2 decimal places). Used by the Knowledge Risk screen to rank modules and size the risk bar.</p></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -1101,8 +1139,8 @@ knowledge holder of. Results are ordered by silo file count descending.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id6">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id6" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id7">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id7" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 75.0%" />
@@ -1215,8 +1253,8 @@ trend percentages compared to an explicit baseline period. Powers all four KPI c
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id7">
-<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id7" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id8">
+<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id8" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 10.0%" />
@@ -1268,8 +1306,8 @@ trend percentages compared to an explicit baseline period. Powers all four KPI c
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id8">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id8" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id9">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id9" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 30.0%" />
 <col style="width: 70.0%" />
@@ -1324,8 +1362,8 @@ activity. Powers the three sparkline panels on the overview dashboard.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id9">
-<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id9" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id10">
+<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id10" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 10.0%" />
@@ -1380,8 +1418,8 @@ activity. Powers the three sparkline panels on the overview dashboard.</p>
 </div>
 <p>All four series share identical <code class="docutils literal notranslate"><span class="pre">t</span></code> timestamps so they can be aligned on the
 same x-axis in the frontend without further processing.</p>
-<table class="docutils align-default" id="id10">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id10" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id11">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id11" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -1428,8 +1466,8 @@ required. Powers the warnings list on the overview dashboard.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id11">
-<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id11" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id12">
+<caption><span class="caption-text">Request Parameters</span><a class="headerlink" href="#id12" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 10.0%" />
@@ -1475,8 +1513,8 @@ required. Powers the warnings list on the overview dashboard.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id12">
-<caption><span class="caption-text">Warning Reason Codes</span><a class="headerlink" href="#id12" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id13">
+<caption><span class="caption-text">Warning Reason Codes</span><a class="headerlink" href="#id13" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 20.0%" />
@@ -1547,8 +1585,8 @@ KPI indicator.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id13">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id13" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id14">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id14" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 75.0%" />
@@ -1594,8 +1632,8 @@ Files with zero cognitive complexity (e.g. non-code assets) are excluded.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id14">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id14" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id15">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id15" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 75.0%" />
@@ -1645,8 +1683,8 @@ the other silo endpoints — uses the same threshold and noise filters.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id15">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id15" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id16">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id16" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 75.0%" />
@@ -1703,8 +1741,8 @@ the other silo endpoints — uses the same threshold and noise filters.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<table class="docutils align-default" id="id16">
-<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id16" title="Link to this table"></a></caption>
+<table class="docutils align-default" id="id17">
+<caption><span class="caption-text">Response Fields</span><a class="headerlink" href="#id17" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 75.0%" />
@@ -1745,14 +1783,42 @@ the other silo endpoints — uses the same threshold and noise filters.</p>
 <h3>API Info<a class="headerlink" href="#api-info" title="Link to this heading"></a></h3>
 <p>Returns metadata about the currently running analysis session, including database paths.</p>
 <ul class="simple">
-<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/v1/info</span></code></p></li>
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/info</span></code></p></li>
 <li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This endpoint does <strong>not</strong> carry the <code class="docutils literal notranslate"><span class="pre">/v1</span></code> prefix — it is served at the root path.</p>
+</div>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;analysis_database&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/analysis.duckdb&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;config_database&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/config.duckdb&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;debug&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="health-check">
+<h3>Health Check<a class="headerlink" href="#health-check" title="Link to this heading"></a></h3>
+<p>Returns the current health status of the API and its database connection.
+Intended for use by container orchestration systems (Docker, Kubernetes).</p>
+<ul class="simple">
+<li><p><strong>URL:</strong> <code class="docutils literal notranslate"><span class="pre">/api/health</span></code></p></li>
+<li><p><strong>Method:</strong> <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
+</ul>
+<p><strong>Response (healthy):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;healthy&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;database&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;connected&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response (unhealthy, HTTP 503):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;unhealthy&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;error message&gt;&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>

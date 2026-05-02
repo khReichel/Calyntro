@@ -169,7 +169,23 @@
 <li><p><strong>excluded_prefixes</strong>: A list of directory paths to be excluded from the analysis. Any file or directory starting with one of these prefixes will be ignored.</p></li>
 <li><p><strong>excluded_extensions</strong>: A list of file extensions to be excluded from the analysis. Files with these extensions will be ignored.</p></li>
 <li><p><strong>excluded_patterns</strong>: A list of regular expression patterns matched against the full file path (using <code class="docutils literal notranslate"><span class="pre">re.search</span></code>). Files matching any of these patterns will be excluded from import and all analysis views. This is useful for excluding test files or specific directory patterns that cannot be easily captured by prefixes or extensions alone.</p></li>
+<li><p><strong>excluded_authors</strong>: A list of author name patterns to exclude from all analyses. Supports glob-style wildcards (<code class="docutils literal notranslate"><span class="pre">*</span></code>). Use this to filter out bot accounts, CI users, or automation commits that would otherwise inflate commit counts and distort ownership metrics.</p></li>
 </ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">excluded_authors</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;*[bot]&quot;</span><span class="w">           </span><span class="c1"># matches dependabot[bot], renovate[bot], etc.</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;GitHub</span><span class="nv"> </span><span class="s">Actions&quot;</span><span class="w">   </span><span class="c1"># exact name match</span>
+</pre></div>
+</div>
+<p>Wildcard rules:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">*</span></code> matches any sequence of characters.</p></li>
+<li><p>Patterns are matched against the <code class="docutils literal notranslate"><span class="pre">author_name</span></code> field of each commit.</p></li>
+<li><p>The filter propagates to <strong>all</strong> analyses and views — hotspots, ownership, silos, and trend data.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">excluded_authors</span></code> filters are applied at the database view level (<code class="docutils literal notranslate"><span class="pre">v_file_commits</span></code>), not at parse time. This means you can add new patterns to <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> and re-run <code class="docutils literal notranslate"><span class="pre">importer</span> <span class="pre">analysis</span></code> without re-importing the full Git history. Only a configuration sync (<code class="docutils literal notranslate"><span class="pre">importer</span> <span class="pre">config</span></code>) followed by a view refresh is required.</p>
+</div>
 </section>
 <section id="users-and-teams">
 <h2>Users and Teams<a class="headerlink" href="#users-and-teams" title="Link to this heading"></a></h2>
