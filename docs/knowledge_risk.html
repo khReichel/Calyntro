@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knowledge Risk &mdash; calyntro 0.1.10 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="canonical" href="https://khreichel.github.io/Calyntro/knowledge_risk.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=bafade30"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/js/analytics.js?v=ece56f80"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api.html" />
+    <link rel="prev" title="Dashboard Overview" href="dashboard_overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            calyntro
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Setup &amp; Update Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Dashboard User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dashboard_overview.html">Dashboard Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Knowledge Risk</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#kpi-cards">KPI Cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modules-by-risk">Modules by Risk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-persons-exclusive-knowledge">Key Persons — Exclusive Knowledge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#most-at-risk-files">Most At-Risk Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#silo-ratio-over-time">Silo Ratio Over Time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-endpoints">API Endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#relationship-to-the-dashboard">Relationship to the Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Understanding Calyntro Analyses</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">calyntro</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Knowledge Risk</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/knowledge_risk.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="knowledge-risk">
+<span id="id1"></span><h1>Knowledge Risk<a class="headerlink" href="#knowledge-risk" title="Link to this heading"></a></h1>
+<p>The <strong>Knowledge Risk</strong> screen provides a dedicated view of Bus Factor exposure across your repository. While the <a class="reference internal" href="dashboard_overview.html#dashboard-overview"><span class="std std-ref">Dashboard</span></a> surfaces Knowledge Risk as a single headline KPI, this screen breaks down the risk into actionable, developer-level and file-level detail — answering not just <em>how much</em> risk exists, but <em>who</em> carries it and <em>where</em> it lives.</p>
+<p>All values are pre-computed by the backend. The screen performs no client-side aggregation.</p>
+<hr class="docutils" />
+<section id="kpi-cards">
+<h2>KPI Cards<a class="headerlink" href="#kpi-cards" title="Link to this heading"></a></h2>
+<p>Three summary indicators are shown at the top of the screen.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 40.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Card</p></th>
+<th class="head"><p>What it Measures</p></th>
+<th class="head"><p>Trend</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Files with Bus Factor 1</strong></p></td>
+<td><p>Percentage of all repository files where a single developer holds ≥ 80 % of commits.</p></td>
+<td><p>Red = rising (more files becoming silos), Green = falling</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Affected Modules</strong></p></td>
+<td><p>Number of modules that contain at least one silo file, out of the total number of modules.</p></td>
+<td><p>Contextual denominator shown below the value</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Sole Owners in Team</strong></p></td>
+<td><p>Number of distinct developers who are the dominant sole owner of one or more silo files.</p></td>
+<td><p>Count of sole owners classified as “at risk” (high or critical) shown in red</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="modules-by-risk">
+<h2>Modules by Risk<a class="headerlink" href="#modules-by-risk" title="Link to this heading"></a></h2>
+<p>Lists all modules that contain at least one silo file, sorted by severity. Modules classified as <strong>low risk</strong> (80–89 % single-author ownership) are hidden from this panel — only <strong>elevated</strong> and <strong>critical</strong> modules are shown.</p>
+<p>Each row displays:</p>
+<ul class="simple">
+<li><p><strong>Module name</strong> with the <strong>dominant silo developer</strong> shown as a subtitle — the single developer who is the dominant owner across the most silo files in that module.</p></li>
+<li><p>A <strong>risk bar</strong> proportional to the module’s risk score (silo ratio × 10, range 0–10).</p></li>
+<li><p>A <strong>severity badge</strong>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">critical</span></code> — silo ratio ≥ 75 %</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">elevated</span></code> — silo ratio ≥ 25 %</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">low</span></code> — below 25 % (hidden from this panel)</p></li>
+</ul>
+</li>
+<li><p>The <strong>number of silo files</strong> in the module.</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The dominant developer shown beneath the module name is the single most important target for knowledge transfer planning. If that developer leaves before a transfer occurs, the entire module’s silo files become effectively undocumented.</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="key-persons-exclusive-knowledge">
+<h2>Key Persons — Exclusive Knowledge<a class="headerlink" href="#key-persons-exclusive-knowledge" title="Link to this heading"></a></h2>
+<p>Lists all developers who are classified as sole owners of at least one file. Each entry shows:</p>
+<ul class="simple">
+<li><p><strong>Avatar</strong> with initials and the developer’s full name.</p></li>
+<li><p><strong>File count</strong> — the number of silo files this developer owns exclusively.</p></li>
+<li><p><strong>Average ownership percentage</strong> — the mean commit share across all their silo files.</p></li>
+<li><p>A <strong>status badge</strong>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">at</span> <span class="pre">risk</span></code> — risk level is high or critical (≥ 10 silo files, or ≥ 20 files for critical)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watch</span></code> — medium risk (3–9 silo files)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stable</span></code> — low risk (1–2 silo files)</p></li>
+</ul>
+</li>
+<li><p><strong>Module tags</strong> — the modules in which this developer is the dominant owner, derived from the module silo data. These tags make it immediately visible which architectural areas depend on a single person’s knowledge.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A developer appearing in this panel with several module tags and an <code class="docutils literal notranslate"><span class="pre">at</span> <span class="pre">risk</span></code> badge represents a single point of failure at the architectural level — not just in individual files. This is the pattern to escalate first when planning team changes or organizational restructuring.</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="most-at-risk-files">
+<h2>Most At-Risk Files<a class="headerlink" href="#most-at-risk-files" title="Link to this heading"></a></h2>
+<p>Shows the eight files with the highest <strong>weighted knowledge risk</strong>, defined as:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>weighted_risk = total_commits × ownership_pct
+</pre></div>
+</div>
+<p>This formula prioritises files that are <strong>both heavily used and exclusively owned</strong>. A file touched 200 times by a single developer is far more operationally dangerous than a file touched once with 100 % ownership. Files classified as <strong>low risk</strong> (80–89 % ownership) are excluded from this panel.</p>
+<p>Each row shows:</p>
+<ul class="simple">
+<li><p><strong>File name</strong> (truncated; hover for full path).</p></li>
+<li><p><strong>Silo developer</strong>, <strong>module</strong>, and <strong>total commit count</strong> as subtitle context.</p></li>
+<li><p><strong>Ownership percentage</strong> — the dominant developer’s commit share.</p></li>
+<li><p>A <strong>risk badge</strong>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">critical</span></code> — 100 % ownership (no other developer has ever touched this file)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high</span></code> — 95–99 % ownership</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">medium</span></code> — 90–94 % ownership</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="silo-ratio-over-time">
+<h2>Silo Ratio Over Time<a class="headerlink" href="#silo-ratio-over-time" title="Link to this heading"></a></h2>
+<p>A bar chart showing the <strong>cumulative silo ratio</strong> bucketed in 30-day intervals. Each bar represents the percentage of all repository files classified as knowledge silos as of that bucket’s end date.</p>
+<p>Bar colours follow a three-band scale:</p>
+<ul class="simple">
+<li><p><strong>Green</strong> — ratio &lt; 50 %: Knowledge is reasonably distributed.</p></li>
+<li><p><strong>Amber</strong> — ratio 50–74 %: Elevated concentration; monitor closely.</p></li>
+<li><p><strong>Red</strong> — ratio ≥ 75 %: Critical concentration; immediate action recommended.</p></li>
+</ul>
+<p>The chart uses a cumulative (stock) logic: a file established as a silo two years ago remains counted in every subsequent bucket unless a second developer actively takes over ownership. This gives an honest, monotone view of accumulated knowledge risk rather than one that fluctuates with activity windows.</p>
+</section>
+<hr class="docutils" />
+<section id="api-endpoints">
+<h2>API Endpoints<a class="headerlink" href="#api-endpoints" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Widget</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/v1/analysis/silos/modules</span></code></p></td>
+<td><p>Modules by Risk panel + module tags in Key Persons</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/v1/analysis/silos/developers</span></code></p></td>
+<td><p>Key Persons panel</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/v1/analysis/silos/files</span></code></p></td>
+<td><p>Most At-Risk Files panel</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/v1/analysis/silos/count</span></code></p></td>
+<td><p>Files with Bus Factor 1 KPI card (current value + trend)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/v1/analysis/trends/overview</span></code></p></td>
+<td><p>Silo Ratio Over Time chart (<code class="docutils literal notranslate"><span class="pre">silo_ratio</span></code> series)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="relationship-to-the-dashboard">
+<h2>Relationship to the Dashboard<a class="headerlink" href="#relationship-to-the-dashboard" title="Link to this heading"></a></h2>
+<p>The Dashboard’s <strong>Knowledge Risk</strong> KPI card and <strong>Silo Ratio</strong> sparkline are derived from the same underlying data as this screen. The dashboard provides a one-number headline suitable for a weekly status review. The Knowledge Risk screen provides the supporting detail needed to act on that headline — identifying which modules to prioritise, which developers to involve in knowledge transfer, and which files carry the highest operational risk.</p>
+<p>Navigate here from the sidebar whenever the Dashboard’s Knowledge Risk KPI is rising, or before any planned team change that involves a developer shown in the Key Persons panel.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dashboard_overview.html" class="btn btn-neutral float-left" title="Dashboard Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025-2026, karl-heinz reichel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

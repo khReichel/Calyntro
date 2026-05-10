@@ -50,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="importer_guide.html">Setup &amp; Update Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Dashboard User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dashboard_overview.html">Dashboard Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="knowledge_risk.html">Knowledge Risk</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis.html">Understanding Calyntro Analyses</a></li>
 </ul>
@@ -86,7 +87,7 @@
 <li><p><strong>Where are the risks?</strong> The <a class="reference internal" href="analysis.html#analysis"><span class="std std-ref">Code Map</span></a> and <a class="reference internal" href="analysis.html#analysis"><span class="std std-ref">Scatter Analysis</span></a> make structural risk visible across the entire module landscape in a single view — surfacing which components are simultaneously complex, actively changing, and poorly understood.</p></li>
 <li><p><strong>How are trends developing?</strong> The <a class="reference internal" href="analysis.html#analysis"><span class="std std-ref">Trend Analysis</span></a> tracks Cognitive Complexity, Lines of Code, Silo Ratio, and commit activity per module over configurable time windows — turning point-in-time snapshots into directional signals.</p></li>
 <li><p><strong>What needs attention now?</strong> The <a class="reference internal" href="analysis.html#analysis"><span class="std std-ref">Dashboard Warnings</span></a> panel surfaces the top prioritised risks (hotspots, knowledge silos, complexity spikes, churn outliers, reactivated legacy code) with normalised scores and direct navigation to the relevant analysis view.</p></li>
-<li><p><strong>Who holds critical knowledge?</strong> The <span class="xref std std-ref">Knowledge Risk</span> screen breaks down Bus Factor exposure to the developer and file level — showing which modules depend on a single person, which files carry the highest weighted risk, and how knowledge concentration has evolved over time.</p></li>
+<li><p><strong>Who holds critical knowledge?</strong> The <a class="reference internal" href="knowledge_risk.html#knowledge-risk"><span class="std std-ref">Knowledge Risk</span></a> screen breaks down Bus Factor exposure to the developer and file level — showing which modules depend on a single person, which files carry the highest weighted risk, and how knowledge concentration has evolved over time.</p></li>
 </ul>
 <p>Calyntro derives all metrics exclusively from commit history: author dates, changed lines, file paths, and commit hashes. No static analysis agents, no test runners, no issue tracker connections are required. A repository import takes minutes; the analysis runs on an embedded DuckDB instance with no external database dependencies.</p>
 <p>The platform is designed for <strong>Software Architects</strong> who need to identify refactoring priorities, <strong>Engineering Managers</strong> who need to assess team knowledge distribution and Bus Factor risk, and <strong>CTOs</strong> who need a continuous, objective signal on codebase health without relying on self-reporting.</p>
@@ -121,6 +122,16 @@
 <li class="toctree-l2"><a class="reference internal" href="dashboard_overview.html#warnings-panel">Warnings Panel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dashboard_overview.html#repository-insights">Repository Insights</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dashboard_overview.html#api-endpoints">API Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="knowledge_risk.html">Knowledge Risk</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_risk.html#kpi-cards">KPI Cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_risk.html#modules-by-risk">Modules by Risk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_risk.html#key-persons-exclusive-knowledge">Key Persons — Exclusive Knowledge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_risk.html#most-at-risk-files">Most At-Risk Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_risk.html#silo-ratio-over-time">Silo Ratio Over Time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_risk.html#api-endpoints">API Endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowledge_risk.html#relationship-to-the-dashboard">Relationship to the Dashboard</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>

@@ -1,0 +1,146 @@
+.. _knowledge_risk:
+
+Knowledge Risk
+==============
+
+The **Knowledge Risk** screen provides a dedicated view of Bus Factor exposure across your repository. While the :ref:`Dashboard <dashboard_overview>` surfaces Knowledge Risk as a single headline KPI, this screen breaks down the risk into actionable, developer-level and file-level detail — answering not just *how much* risk exists, but *who* carries it and *where* it lives.
+
+All values are pre-computed by the backend. The screen performs no client-side aggregation.
+
+---------
+
+KPI Cards
+---------
+
+Three summary indicators are shown at the top of the screen.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 40 35
+
+   * - Card
+     - What it Measures
+     - Trend
+   * - **Files with Bus Factor 1**
+     - Percentage of all repository files where a single developer holds ≥ 80 % of commits.
+     - Red = rising (more files becoming silos), Green = falling
+   * - **Affected Modules**
+     - Number of modules that contain at least one silo file, out of the total number of modules.
+     - Contextual denominator shown below the value
+   * - **Sole Owners in Team**
+     - Number of distinct developers who are the dominant sole owner of one or more silo files.
+     - Count of sole owners classified as "at risk" (high or critical) shown in red
+
+---------
+
+Modules by Risk
+---------------
+
+Lists all modules that contain at least one silo file, sorted by severity. Modules classified as **low risk** (80–89 % single-author ownership) are hidden from this panel — only **elevated** and **critical** modules are shown.
+
+Each row displays:
+
+*   **Module name** with the **dominant silo developer** shown as a subtitle — the single developer who is the dominant owner across the most silo files in that module.
+*   A **risk bar** proportional to the module's risk score (silo ratio × 10, range 0–10).
+*   A **severity badge**:
+
+    *   ``critical`` — silo ratio ≥ 75 %
+    *   ``elevated`` — silo ratio ≥ 25 %
+    *   ``low`` — below 25 % (hidden from this panel)
+
+*   The **number of silo files** in the module.
+
+.. tip::
+
+   The dominant developer shown beneath the module name is the single most important target for knowledge transfer planning. If that developer leaves before a transfer occurs, the entire module's silo files become effectively undocumented.
+
+---------
+
+Key Persons — Exclusive Knowledge
+----------------------------------
+
+Lists all developers who are classified as sole owners of at least one file. Each entry shows:
+
+*   **Avatar** with initials and the developer's full name.
+*   **File count** — the number of silo files this developer owns exclusively.
+*   **Average ownership percentage** — the mean commit share across all their silo files.
+*   A **status badge**:
+
+    *   ``at risk`` — risk level is high or critical (≥ 10 silo files, or ≥ 20 files for critical)
+    *   ``watch`` — medium risk (3–9 silo files)
+    *   ``stable`` — low risk (1–2 silo files)
+*   **Module tags** — the modules in which this developer is the dominant owner, derived from the module silo data. These tags make it immediately visible which architectural areas depend on a single person's knowledge.
+
+.. note::
+
+   A developer appearing in this panel with several module tags and an ``at risk`` badge represents a single point of failure at the architectural level — not just in individual files. This is the pattern to escalate first when planning team changes or organizational restructuring.
+
+---------
+
+Most At-Risk Files
+------------------
+
+Shows the eight files with the highest **weighted knowledge risk**, defined as:
+
+.. code-block:: text
+
+   weighted_risk = total_commits × ownership_pct
+
+This formula prioritises files that are **both heavily used and exclusively owned**. A file touched 200 times by a single developer is far more operationally dangerous than a file touched once with 100 % ownership. Files classified as **low risk** (80–89 % ownership) are excluded from this panel.
+
+Each row shows:
+
+*   **File name** (truncated; hover for full path).
+*   **Silo developer**, **module**, and **total commit count** as subtitle context.
+*   **Ownership percentage** — the dominant developer's commit share.
+*   A **risk badge**:
+
+    *   ``critical`` — 100 % ownership (no other developer has ever touched this file)
+    *   ``high`` — 95–99 % ownership
+    *   ``medium`` — 90–94 % ownership
+
+---------
+
+Silo Ratio Over Time
+--------------------
+
+A bar chart showing the **cumulative silo ratio** bucketed in 30-day intervals. Each bar represents the percentage of all repository files classified as knowledge silos as of that bucket's end date.
+
+Bar colours follow a three-band scale:
+
+*   **Green** — ratio < 50 %: Knowledge is reasonably distributed.
+*   **Amber** — ratio 50–74 %: Elevated concentration; monitor closely.
+*   **Red** — ratio ≥ 75 %: Critical concentration; immediate action recommended.
+
+The chart uses a cumulative (stock) logic: a file established as a silo two years ago remains counted in every subsequent bucket unless a second developer actively takes over ownership. This gives an honest, monotone view of accumulated knowledge risk rather than one that fluctuates with activity windows.
+
+---------
+
+API Endpoints
+-------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Endpoint
+     - Widget
+   * - ``POST /api/v1/analysis/silos/modules``
+     - Modules by Risk panel + module tags in Key Persons
+   * - ``POST /api/v1/analysis/silos/developers``
+     - Key Persons panel
+   * - ``POST /api/v1/analysis/silos/files``
+     - Most At-Risk Files panel
+   * - ``POST /api/v1/analysis/silos/count``
+     - Files with Bus Factor 1 KPI card (current value + trend)
+   * - ``POST /api/v1/analysis/trends/overview``
+     - Silo Ratio Over Time chart (``silo_ratio`` series)
+
+---------
+
+Relationship to the Dashboard
+------------------------------
+
+The Dashboard's **Knowledge Risk** KPI card and **Silo Ratio** sparkline are derived from the same underlying data as this screen. The dashboard provides a one-number headline suitable for a weekly status review. The Knowledge Risk screen provides the supporting detail needed to act on that headline — identifying which modules to prioritise, which developers to involve in knowledge transfer, and which files carry the highest operational risk.
+
+Navigate here from the sidebar whenever the Dashboard's Knowledge Risk KPI is rising, or before any planned team change that involves a developer shown in the Key Persons panel.
