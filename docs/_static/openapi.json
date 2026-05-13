@@ -1444,6 +1444,28 @@
         }
       }
     },
+    "/api/context": {
+      "get": {
+        "tags": [
+          "Context"
+        ],
+        "summary": "Get Context",
+        "description": "Returns UI-facing runtime context set by the server configuration.\nClients fetch this once at startup to adapt their behaviour accordingly.",
+        "operationId": "get_context_api_context_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContextConfig"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/info": {
       "get": {
         "summary": "Info",
@@ -2450,6 +2472,22 @@
           "display_name"
         ],
         "title": "ConfigModulesResponseItem"
+      },
+      "ContextConfig": {
+        "properties": {
+          "anonymized": {
+            "type": "boolean",
+            "title": "Anonymized",
+            "default": false
+          },
+          "demo_mode": {
+            "type": "boolean",
+            "title": "Demo Mode",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "ContextConfig"
       },
       "ContributorsRequest": {
         "properties": {

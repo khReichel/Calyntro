@@ -7,16 +7,16 @@
   <meta name="description" content="Calyntro analyses Git history, complexity metrics, and team ownership to give CTOs and Engineering Managers a clear view of hotspots, knowledge silos, and architectural drift." />
 
   <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://khreichel.github.io/Calyntro/" />
+  <meta property="og:url"         content="https://calyntro.com/" />
   <meta property="og:title"       content="Calyntro — See the risks in your codebase before your team does" />
-  <meta property="og:description" content="Repository intelligence for Engineering Leaders. Self-hosted, Git-native, free to use." />
-  <meta property="og:image"       content="https://khreichel.github.io/Calyntro/calyntro.png" />
+  <meta property="og:description" content="Repository intelligence for Engineering Leaders. We help you see where knowledge risk lives in your codebase — before someone leaves." />
+  <meta property="og:image"       content="https://calyntro.com/calyntro_og.png" />
   <meta property="og:site_name"   content="Calyntro" />
 
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:title"       content="Calyntro — See the risks in your codebase before your team does" />
-  <meta name="twitter:description" content="Repository intelligence for Engineering Leaders. Self-hosted, Git-native, free to use." />
-  <meta name="twitter:image"       content="https://khreichel.github.io/Calyntro/calyntro.png" />
+  <meta name="twitter:description" content="Repository intelligence for Engineering Leaders. We help you see where knowledge risk lives in your codebase — before someone leaves." />
+  <meta name="twitter:image"       content="https://calyntro.com/calyntro_og.png" />
 
   <link rel="icon"             type="image/png" href="calyntro.png" />
   <link rel="apple-touch-icon"                  href="calyntro.png" />
@@ -25,10 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
-  <!-- Cloudflare Web Analytics -->
-  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a41f9235d37c42a585fcca99aca7da46"}'>
-  </script>
-  <!-- End Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a41f9235d37c42a585fcca99aca7da46"}'></script>
 
   <style>
    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -86,24 +83,21 @@
 
    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 32px; }
 
-   /* Nav */
    nav { border-bottom: 0.5px solid var(--color-border); padding: 0 32px; position: sticky; top: 0; background: var(--color-bg); z-index: 100; }
    .nav-inner { max-width: var(--max-w); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 56px; }
    .nav-logo { font-size: 20px; font-weight: 500; color: var(--color-text-primary); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-   .nav-logo img { width: 24px; height: 24px; border-radius: 4px; }
+   .nav-logo img { width: 24px; height: 24px; border-radius: 4px; object-fit: contain; }
    .nav-links { display: flex; align-items: center; gap: 24px; list-style: none; }
    .nav-links a { font-size: 14px; color: var(--color-text-secondary); text-decoration: none; transition: color 0.15s; }
    .nav-links a:hover { color: var(--color-text-primary); }
    .nav-cta { background: var(--teal) !important; color: #fff !important; padding: 7px 16px; border-radius: var(--radius-md); font-weight: 500 !important; }
 
-   /* Buttons */
    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 11px 24px; border-radius: var(--radius-md); font-family: var(--font-sans); font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; transition: opacity 0.15s, background 0.15s; border: none; }
    .btn-primary { background: var(--teal); color: #fff; }
    .btn-primary:hover { opacity: 0.85; }
    .btn-outline { background: transparent; color: var(--color-text-secondary); border: 0.5px solid var(--color-border-mid); }
    .btn-outline:hover { background: var(--color-bg-secondary); }
 
-   /* Pills */
    .eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-info-text); background: var(--color-info-bg); border: 0.5px solid var(--color-info-border); padding: 4px 12px; border-radius: var(--radius-pill); }
    .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--color-info-text); }
    .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: var(--radius-sm); }
@@ -113,7 +107,6 @@
    .section-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-tertiary); font-weight: 500; margin-bottom: 8px; }
    .section-title { font-size: 28px; font-weight: 400; line-height: 1.25; margin-bottom: 28px; }
 
-   /* Hero */
    .hero { padding: 72px 32px 64px; border-bottom: 0.5px solid var(--color-border); position: relative; overflow: hidden; }
    .hero-bg { position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; border-radius: 50%; background: var(--teal); opacity: 0.08; pointer-events: none; }
    .hero-inner { max-width: var(--max-w); margin: 0 auto; position: relative; }
@@ -123,14 +116,12 @@
    .hero-sub { font-size: 17px; color: var(--color-text-secondary); max-width: 540px; margin-bottom: 20px; font-weight: 300; line-height: 1.7; }
    .hero-cta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
 
-   /* Stat strip */
    .stat-strip { display: flex; border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; max-width: 560px; margin-top: 32px; }
    .stat-item { flex: 1; padding: 16px 20px; border-right: 0.5px solid var(--color-border); }
    .stat-item:last-child { border-right: none; }
    .stat-num { font-size: 22px; font-weight: 500; line-height: 1; margin-bottom: 3px; }
    .stat-label { font-size: 11px; color: var(--color-text-secondary); }
 
-   /* Screenshot frame */
    .screenshot-frame { border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 4px 24px rgba(13,158,143,0.08); }
    .screenshot-bar { background: var(--color-bg-secondary); border-bottom: 0.5px solid var(--color-border); padding: 9px 14px; display: flex; align-items: center; gap: 6px; }
    .dot { width: 10px; height: 10px; border-radius: 50%; }
@@ -142,7 +133,6 @@
    .screenshot-caption { margin-top: 10px; font-size: 11px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 6px; }
    .screenshot-caption strong { color: var(--color-text-secondary); }
 
-   /* Pain section */
    .pain-section { padding: 64px 32px; border-bottom: 0.5px solid var(--color-border); }
    .pain-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px; }
    @media (max-width: 640px) { .pain-grid { grid-template-columns: 1fr; } }
@@ -152,7 +142,6 @@
    .pain-body  { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
    .bridge { display: flex; align-items: flex-start; gap: 10px; padding: 14px 18px; background: var(--color-success-bg); border: 0.5px solid var(--color-success-border); border-radius: var(--radius-md); font-size: 13px; color: var(--color-success-text); line-height: 1.55; }
 
-   /* Feature blocks */
    .feature-block { padding: 64px 32px; border-bottom: 0.5px solid var(--color-border); }
    .feat-inner { max-width: var(--max-w); margin: 0 auto; }
    .feat-tag { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: var(--radius-sm); display: inline-block; margin-bottom: 14px; }
@@ -166,7 +155,6 @@
    .feat-metric-name { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-tertiary); margin-bottom: 5px; }
    .feat-metric-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.55; }
 
-   /* How it works */
    .how-section { padding: 64px 32px; border-bottom: 0.5px solid var(--color-border); }
    .steps { display: flex; flex-direction: column; }
    .step { display: flex; gap: 20px; padding: 20px 0; border-bottom: 0.5px solid var(--color-border); }
@@ -175,7 +163,6 @@
    .step-title { font-size: 15px; font-weight: 500; margin-bottom: 5px; }
    .step-body  { font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; }
 
-   /* CTA */
    .cta-section { padding: 80px 32px; text-align: center; }
    .cta-inner { max-width: 480px; margin: 0 auto; }
    .cta-title { font-size: 32px; font-weight: 400; margin-bottom: 12px; line-height: 1.2; }
@@ -184,15 +171,41 @@
    .trust-badges { display: flex; gap: 10px; justify-content: center; margin-top: 22px; flex-wrap: wrap; }
    .trust-badge { font-size: 11px; color: var(--color-text-tertiary); background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); padding: 4px 12px; border-radius: var(--radius-pill); }
 
-   /* Footer */
    footer { border-top: 0.5px solid var(--color-border); padding: 24px 32px; }
    .footer-inner { max-width: var(--max-w); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
    .footer-logo { font-size: 16px; font-weight: 500; color: var(--color-text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-   .footer-logo img { width: 18px; height: 18px; border-radius: 3px; }
+   .footer-logo img { width: 18px; height: 18px; border-radius: 3px; object-fit: contain; }
    .footer-note { font-size: 12px; color: var(--color-text-tertiary); }
    .footer-links { display: flex; gap: 20px; list-style: none; }
    .footer-links a { font-size: 12px; color: var(--color-text-tertiary); text-decoration: none; }
    .footer-links a:hover { color: var(--color-text-secondary); }
+
+   /* Contact Section */
+   .contact-section { padding: 80px 32px; border-top: 0.5px solid var(--color-border); border-bottom: 0.5px solid var(--color-border); }
+   .contact-inner { max-width: var(--max-w); margin: 0 auto; display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: start; }
+   @media (max-width: 720px) { .contact-inner { grid-template-columns: 1fr; gap: 40px; } }
+   .contact-title { font-size: 28px; font-weight: 400; line-height: 1.25; margin-bottom: 12px; }
+   .contact-body { font-size: 14px; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 28px; }
+   .contact-hints { display: flex; flex-direction: column; gap: 10px; }
+   .contact-hint { font-size: 13px; color: var(--color-text-secondary); display: flex; align-items: baseline; gap: 8px; line-height: 1.5; }
+   .contact-hint-icon { color: var(--teal); flex-shrink: 0; font-size: 12px; }
+   .contact-form { background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); padding: 28px; position: relative; }
+   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+   @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+   .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+   .form-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-tertiary); }
+   .form-input { font-family: var(--font-sans); font-size: 14px; color: var(--color-text-primary); background: var(--color-bg); border: 0.5px solid var(--color-border-mid); border-radius: var(--radius-md); padding: 10px 14px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; width: 100%; appearance: none; -webkit-appearance: none; }
+   .form-input::placeholder { color: var(--color-text-tertiary); }
+   .form-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(13, 158, 143, 0.1); }
+   .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237eaaa4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
+   .form-textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+   .form-footer { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
+   .contact-submit { flex-shrink: 0; }
+   .form-note { font-size: 12px; color: var(--color-text-tertiary); line-height: 1.4; }
+   .form-success { position: absolute; inset: 0; background: var(--color-bg-secondary); border-radius: var(--radius-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; padding: 32px; }
+   .form-success-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--color-success-bg); color: var(--color-success-text); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+   .form-success-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+   .form-success-body { font-size: 13px; color: var(--color-text-secondary); }
   </style>
 </head>
 <body>
@@ -201,14 +214,14 @@
   <nav>
     <div class="nav-inner">
       <a href="#" class="nav-logo">
-        <img src="calyntro.png" alt="Calyntro" />
+        <img src="data:image/png;base64,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" alt="Calyntro" />
         Calyntro
       </a>
       <ul class="nav-links">
         <li><a href="#features">Features</a></li>
         <li><a href="#how-it-works">How it works</a></li>
-        <li><a href="https://khreichel.github.io/Calyntro/docs/" target="_blank" rel="noopener">Docs</a></li>
-        <li><a href="https://khreichel.github.io/Calyntro/docs/installation.html" class="nav-cta">Get started</a></li>
+        <li><a href="https://calyntro.com/blog">Blog</a></li>
+        <li><a href="#contact" class="nav-cta">Get in touch</a></li>
       </ul>
     </div>
   </nav>
@@ -224,21 +237,21 @@
       <p class="hero-sub">Calyntro analyses Git history, complexity metrics, and team ownership to give CTOs and Engineering Managers a clear view of Knowledge Silos, Absolute Churn, and architectural drift — at File, Module, and Team level.</p>
       <div class="hero-cta">
         <a href="#contact" class="btn btn-primary">Get in touch →</a>
+        <a href="https://calyntro.com/blog" class="btn btn-outline">Read the blog</a>
       </div>
 
-      <!-- Hero screenshot: Overview Dashboard -->
       <div class="screenshot-frame">
         <div class="screenshot-bar">
           <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
           <span class="screenshot-label">Calyntro · Data Analysis Dashboard · Overview</span>
         </div>
-          <img src="screenshots/dashboard-overview.png" alt="Calyntro Data Analysis Dashboard – Overview" />
+        <img src="screenshots/dashboard-overview.png" alt="Calyntro Data Analysis Dashboard – Overview" />
       </div>
 
       <div class="stat-strip">
         <div class="stat-item"><div class="stat-num">3 scopes</div><div class="stat-label">File · Module · Team</div></div>
         <div class="stat-item"><div class="stat-num">Git-native</div><div class="stat-label">No agents, no instrumentation</div></div>
-        <div class="stat-item"><div class="stat-num">Docker</div><div class="stat-label">Self-hosted, data stays yours</div></div>
+        <div class="stat-item"><div class="stat-num">Your data</div><div class="stat-label">Stays in your infrastructure</div></div>
       </div>
     </div>
   </section>
@@ -252,7 +265,7 @@
         <div class="pain-card">
           <div class="pain-icon">!</div>
           <div class="pain-title">Knowledge walks out the door</div>
-          <div class="pain-body">When a key engineer leaves, their understanding of critical modules leaves with them. In a typical mature codebase, over 70% of files have a bus factor of one — you only discover the gap when something breaks in production.</div>
+          <div class="pain-body">When a key engineer leaves, their understanding of critical modules leaves with them. In professionally maintained codebases, a single developer often holds exclusive knowledge of hundreds of files — you only discover the gap when something breaks.</div>
         </div>
         <div class="pain-card">
           <div class="pain-icon">!</div>
@@ -272,7 +285,7 @@
     </div>
   </section>
 
-  <!-- Feature 1: Operational Excellence -->
+  <!-- Feature 1 -->
   <section class="feature-block" id="features">
     <div class="feat-inner">
       <span class="feat-tag feat-tag-teal">Operational Excellence</span>
@@ -301,7 +314,7 @@
           <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
           <span class="screenshot-label">Hotspot Analysis · Module Level · All Modules</span>
         </div>
-          <img src="screenshots/hotspot-heatmap.png" alt="Hotspot Analysis – Module Level, All Modules" />
+        <img src="screenshots/hotspot-heatmap.png" alt="Hotspot Analysis – Module Level, All Modules" />
       </div>
       <div class="screenshot-caption">
         Real data: Calyntro analysed against the <strong>MongoDB</strong> open-source repository — no synthetic data, no cherry-picked examples.
@@ -309,12 +322,12 @@
     </div>
   </section>
 
-  <!-- Feature 2: Strategic Planning -->
+  <!-- Feature 2 -->
   <section class="feature-block">
     <div class="feat-inner">
       <span class="feat-tag feat-tag-teal">Strategic Planning &amp; Stability</span>
       <h3 class="feat-headline">From gut feeling to architectural evidence</h3>
-      <p class="feat-sub">The Scatter Analysis maps every module by complexity vs. churn — instantly revealing which components are priority hotspots, legacy risks, or healthy and stable. The evidence base your roadmap conversations have been missing. The Code Map adds a spatial dimension: area = Lines of Code, colour = risk score.</p>
+      <p class="feat-sub">The Scatter Analysis maps every module by complexity vs. churn — instantly revealing which components are priority hotspots, legacy risks, or healthy and stable. The evidence base your roadmap conversations have been missing.</p>
       <div class="feat-metrics">
         <div class="feat-metric">
           <div class="feat-metric-name">Scatter Analysis</div>
@@ -355,7 +368,7 @@
     </div>
   </section>
 
-  <!-- Feature 3: Risk & Knowledge -->
+  <!-- Feature 3 -->
   <section class="feature-block">
     <div class="feat-inner">
       <span class="feat-tag feat-tag-amber">Knowledge Risk</span>
@@ -372,15 +385,15 @@
         </div>
         <div class="feat-metric">
           <div class="feat-metric-name">Key Persons &amp; Module Breakdown</div>
-          <div class="feat-metric-desc">Developer-level view: who owns how many files, at what average concentration, and across which modules. Critical / Watch / Stable status makes risk conversations with your team concrete.</div>
+          <div class="feat-metric-desc">Developer-level view: who owns how many files, at what average concentration, and across which modules. Critical / Watch / Stable status makes risk conversations concrete.</div>
         </div>
         <div class="feat-metric">
           <div class="feat-metric-name">Top Risky Files</div>
-          <div class="feat-metric-desc">Ranked by activity × ownership concentration, not just ownership % alone. A file touched 200 times by one person is far riskier than a 2-commit file at 100% — and this view shows it.</div>
+          <div class="feat-metric-desc">Ranked by activity × ownership concentration. A file touched 200 times by one person is far riskier than a 2-commit file at 100% — and this view shows it.</div>
         </div>
         <div class="feat-metric">
           <div class="feat-metric-name">Silo Ratio Trend</div>
-          <div class="feat-metric-desc">Month-by-month chart of your knowledge concentration. A rising trend signals that ownership is narrowing — a strategic warning, not just a snapshot in time.</div>
+          <div class="feat-metric-desc">Month-by-month chart of your knowledge concentration. A rising trend signals that ownership is narrowing — a strategic warning, not just a snapshot.</div>
         </div>
         <div class="feat-metric">
           <div class="feat-metric-name">Temporal Ownership</div>
@@ -390,9 +403,9 @@
       <div class="screenshot-frame">
         <div class="screenshot-bar">
           <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
-          <span class="screenshot-label">Knowledge Silos · File Level · Module: db — MongoDB repository</span>
+          <span class="screenshot-label">Knowledge Risk · Module Level · MongoDB repository</span>
         </div>
-          <img src="screenshots/knowledge-risk.png" alt="Knowledge Risk – File Level Silos, MongoDB repository" />
+        <img src="screenshots/knowledge-risk.png" alt="Knowledge Risk – File Level Silos, MongoDB repository" />
       </div>
       <div class="screenshot-caption">
         Real data: Calyntro analysed against the <strong>MongoDB</strong> open-source repository — no synthetic data, no cherry-picked examples.
@@ -403,28 +416,28 @@
   <!-- How it works -->
   <section class="how-section" id="how-it-works">
     <div class="container">
-      <div class="section-label">Deployment</div>
-      <h2 class="section-title">Up and running in one afternoon</h2>
+      <div class="section-label">How we work</div>
+      <h2 class="section-title">From first conversation to actionable insight</h2>
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
           <div>
-            <div class="step-title">Deploy via Docker</div>
-            <div class="step-body">Calyntro ships as a self-hosted Docker container. No SaaS vendor receives your code. Your IP stays on your infrastructure.</div>
+            <div class="step-title">We talk about your codebase</div>
+            <div class="step-body">A short conversation about your team structure, current pain points, and what decisions you're trying to make. No forms, no demos — just a direct discussion about where you are today.</div>
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div>
-            <div class="step-title">Import your Git history</div>
-            <div class="step-body">Run the initial data import against your repository. Incremental updates keep the dashboard current with zero downtime — designed to fit existing CI/CD pipelines.</div>
+            <div class="step-title">We run the analysis</div>
+            <div class="step-body">Calyntro analyses your Git history — complexity trends, knowledge silos, churn patterns, and ownership concentration. Your code never leaves your infrastructure. We work with aggregated metrics only.</div>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div>
-            <div class="step-title">Filter, analyse, decide</div>
-            <div class="step-body">Switch between File, Module, and Team scope. Choose Hotspot Heatmap, Scatter, Code Map, or Trend view. Filter by module and date range — session filters are saved automatically.</div>
+            <div class="step-title">We walk through the findings together</div>
+            <div class="step-body">Not a dashboard hand-off — a structured review of what the data shows, what it means for your team, and where to focus first. Concrete, prioritised, and tied to your roadmap.</div>
           </div>
         </div>
       </div>
@@ -435,372 +448,120 @@
   <section class="cta-section" id="cta">
     <div class="cta-inner">
       <h2 class="cta-title">Your Git history already holds the answers</h2>
-      <p class="cta-body">Calyntro surfaces them. Deploy in an afternoon, run your first hotspot analysis the same day.</p>
+      <p class="cta-body">Calyntro surfaces them. Get in touch to discuss what a codebase analysis would look like for your team.</p>
       <div class="cta-btns">
-        <a href="https://khreichel.github.io/Calyntro/docs/installation.html" target="_blank" rel="noopener" class="btn btn-primary">Get started →</a>
-        <a href="https://khreichel.github.io/Calyntro/docs/" target="_blank" rel="noopener" class="btn btn-outline">Read the docs</a>
+        <a href="#contact" class="btn btn-primary">Get in touch →</a>
+        <a href="https://calyntro.com/blog" class="btn btn-outline">Read the blog</a>
       </div>
       <div class="trust-badges">
-        <span class="trust-badge">Self-hosted · your data stays yours</span>
-        <span class="trust-badge">Docker · no infrastructure overhead</span>
+        <span class="trust-badge">Your data stays in your infrastructure</span>
         <span class="trust-badge">Git-native · no agents required</span>
-        <span class="trust-badge">Free to use</span>
+        <span class="trust-badge">File · Module · Team scope</span>
       </div>
     </div>
   </section>
 
-  <!-- ============================================================
-  CALYNTRO — Contact Section
-  Drop this section into index.html before the <footer> tag.
-  Replace YOUR_FORM_ID with your Formspree form ID.
-  Get one free at https://formspree.io (New form → copy the ID)
-  ============================================================ -->
-
+  <!-- Contact -->
   <section class="contact-section" id="contact">
-      <div class="container">
-          <div class="contact-inner">
-
-              <div class="contact-left">
-                  <div class="section-label">Get in touch</div>
-                  <h2 class="contact-title">Questions? Let's talk.</h2>
-                  <p class="contact-body">
-                      Whether you're evaluating Calyntro for your team, have a technical question, or want to share feedback — we read every message.
-                  </p>
-                  <div class="contact-hints">
-                      <div class="contact-hint">
-                          <span class="contact-hint-icon">→</span>
-                          Onboarding support for your repository
-                      </div>
-                      <div class="contact-hint">
-                          <span class="contact-hint-icon">→</span>
-                          Feature requests and roadmap questions
-                      </div>
-                      <div class="contact-hint">
-                          <span class="contact-hint-icon">→</span>
-                          Enterprise or team deployments
-                      </div>
-                  </div>
-              </div>
-
-              <div class="contact-right">
-                  <form
-                          class="contact-form"
-                          action="https://formspree.io/f/mnjwjnll"
-                          method="POST"
-                          id="calyntro-contact-form"
-                  >
-                      <div class="form-row">
-                          <div class="form-group">
-                              <label class="form-label" for="cf-name">Name</label>
-                              <input
-                                      class="form-input"
-                                      type="text"
-                                      id="cf-name"
-                                      name="name"
-                                      placeholder="User Name"
-                                      required
-                              />
-                          </div>
-                          <div class="form-group">
-                              <label class="form-label" for="cf-email">Work email</label>
-                              <input
-                                      class="form-input"
-                                      type="email"
-                                      id="cf-email"
-                                      name="email"
-                                      placeholder="you@company.com"
-                                      required
-                              />
-                          </div>
-                      </div>
-
-                      <div class="form-group">
-                          <label class="form-label" for="cf-subject">What's this about?</label>
-                          <select class="form-input form-select" id="cf-subject" name="subject">
-                              <option value="" disabled selected>Select a topic</option>
-                              <option value="onboarding">Help getting started</option>
-                              <option value="feature">Feature request</option>
-                              <option value="enterprise">Enterprise / team deployment</option>
-                              <option value="feedback">Feedback</option>
-                              <option value="other">Something else</option>
-                          </select>
-                      </div>
-
-                      <div class="form-group">
-                          <label class="form-label" for="cf-message">Message</label>
-                          <textarea
-                                  class="form-input form-textarea"
-                                  id="cf-message"
-                                  name="message"
-                                  placeholder="Tell us what you're working on or what you'd like to know..."
-                                  required
-                          ></textarea>
-                      </div>
-
-                      <div class="form-footer">
-                          <button type="submit" class="btn btn-primary contact-submit" id="cf-submit">
-                              Send message →
-                          </button>
-                          <span class="form-note">We usually reply within one business day.</span>
-                      </div>
-
-                      <!-- Success state -->
-                      <div class="form-success" id="cf-success" style="display:none;">
-                          <div class="form-success-icon">✓</div>
-                          <div class="form-success-title">Message sent.</div>
-                          <div class="form-success-body">Thanks — we'll get back to you shortly.</div>
-                      </div>
-
-                  </form>
-              </div>
-
+    <div class="container">
+      <div class="contact-inner">
+        <div class="contact-left">
+          <div class="section-label">Get in touch</div>
+          <h2 class="contact-title">Questions? Let's talk.</h2>
+          <p class="contact-body">
+            Whether you want to discuss a codebase analysis for your team, have a question about what Calyntro measures, or just want to explore what's possible — we read every message.
+          </p>
+          <div class="contact-hints">
+            <div class="contact-hint">
+              <span class="contact-hint-icon">→</span>
+              Codebase risk analysis for your team
+            </div>
+            <div class="contact-hint">
+              <span class="contact-hint-icon">→</span>
+              Questions about methodology and metrics
+            </div>
+            <div class="contact-hint">
+              <span class="contact-hint-icon">→</span>
+              Ongoing advisory and monitoring
+            </div>
           </div>
+        </div>
+
+        <div class="contact-right">
+          <form class="contact-form" action="https://formspree.io/f/mnjwjnll" method="POST" id="calyntro-contact-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="cf-name">Name</label>
+                <input class="form-input" type="text" id="cf-name" name="name" placeholder="Your name" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cf-email">Work email</label>
+                <input class="form-input" type="email" id="cf-email" name="email" placeholder="you@company.com" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cf-subject">What's this about?</label>
+              <select class="form-input form-select" id="cf-subject" name="subject">
+                <option value="" disabled selected>Select a topic</option>
+                <option value="analysis">Codebase risk analysis</option>
+                <option value="methodology">Questions about methodology</option>
+                <option value="advisory">Ongoing advisory</option>
+                <option value="other">Something else</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cf-message">Message</label>
+              <textarea class="form-input form-textarea" id="cf-message" name="message" placeholder="Tell us what you're working on or what you'd like to know..." required></textarea>
+            </div>
+            <div class="form-footer">
+              <button type="submit" class="btn btn-primary contact-submit" id="cf-submit">Send message →</button>
+              <span class="form-note">We usually reply within one business day.</span>
+            </div>
+            <div class="form-success" id="cf-success" style="display:none;">
+              <div class="form-success-icon">✓</div>
+              <div class="form-success-title">Message sent.</div>
+              <div class="form-success-body">Thanks — we'll get back to you shortly.</div>
+            </div>
+          </form>
+        </div>
       </div>
+    </div>
   </section>
 
-  <!-- ============================================================
-    Add this CSS inside the existing <style> block in your <head>
-    ============================================================ -->
-  <style>
-      /* Contact Section */
-      .contact-section {
-          padding: 80px 32px;
-          border-top: 0.5px solid var(--color-border);
-          border-bottom: 0.5px solid var(--color-border);
-      }
-
-      .contact-inner {
-          max-width: var(--max-w);
-          margin: 0 auto;
-          display: grid;
-          grid-template-columns: 1fr 1.4fr;
-          gap: 64px;
-          align-items: start;
-      }
-
-      @media (max-width: 720px) {
-          .contact-inner { grid-template-columns: 1fr; gap: 40px; }
-      }
-
-      /* Left column */
-      .contact-title {
-          font-size: 28px;
-          font-weight: 400;
-          line-height: 1.25;
-          margin-bottom: 12px;
-      }
-
-      .contact-body {
-          font-size: 14px;
-          color: var(--color-text-secondary);
-          line-height: 1.7;
-          margin-bottom: 28px;
-      }
-
-      .contact-hints {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-      }
-
-      .contact-hint {
-          font-size: 13px;
-          color: var(--color-text-secondary);
-          display: flex;
-          align-items: baseline;
-          gap: 8px;
-          line-height: 1.5;
-      }
-
-      .contact-hint-icon {
-          color: var(--teal);
-          flex-shrink: 0;
-          font-size: 12px;
-      }
-
-      /* Form */
-      .contact-form {
-          background: var(--color-bg-secondary);
-          border: 0.5px solid var(--color-border);
-          border-radius: var(--radius-lg);
-          padding: 28px;
-          position: relative;
-      }
-
-      .form-row {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 14px;
-      }
-
-      @media (max-width: 500px) {
-          .form-row { grid-template-columns: 1fr; }
-      }
-
-      .form-group {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          margin-bottom: 14px;
-      }
-
-      .form-label {
-          font-size: 11px;
-          font-weight: 500;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          color: var(--color-text-tertiary);
-      }
-
-      .form-input {
-          font-family: var(--font-sans);
-          font-size: 14px;
-          color: var(--color-text-primary);
-          background: var(--color-bg);
-          border: 0.5px solid var(--color-border-mid);
-          border-radius: var(--radius-md);
-          padding: 10px 14px;
-          outline: none;
-          transition: border-color 0.15s, box-shadow 0.15s;
-          width: 100%;
-          appearance: none;
-          -webkit-appearance: none;
-      }
-
-      .form-input::placeholder {
-          color: var(--color-text-tertiary);
-      }
-
-      .form-input:focus {
-          border-color: var(--teal);
-          box-shadow: 0 0 0 3px rgba(13, 158, 143, 0.1);
-      }
-
-      .form-select {
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237eaaa4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-          background-repeat: no-repeat;
-          background-position: right 14px center;
-          padding-right: 36px;
-          cursor: pointer;
-      }
-
-      .form-textarea {
-          resize: vertical;
-          min-height: 110px;
-          line-height: 1.6;
-      }
-
-      .form-footer {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          flex-wrap: wrap;
-          margin-top: 4px;
-      }
-
-      .contact-submit {
-          flex-shrink: 0;
-      }
-
-      .form-note {
-          font-size: 12px;
-          color: var(--color-text-tertiary);
-          line-height: 1.4;
-      }
-
-      /* Success state */
-      .form-success {
-          position: absolute;
-          inset: 0;
-          background: var(--color-bg-secondary);
-          border-radius: var(--radius-lg);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          text-align: center;
-          padding: 32px;
-      }
-
-      .form-success-icon {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: var(--color-success-bg);
-          color: var(--color-success-text);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 18px;
-          font-weight: 500;
-          margin-bottom: 4px;
-      }
-
-      .form-success-title {
-          font-size: 16px;
-          font-weight: 500;
-          color: var(--color-text-primary);
-      }
-
-      .form-success-body {
-          font-size: 13px;
-          color: var(--color-text-secondary);
-      }
-  </style>
-
-  <!-- ============================================================
-    Add this JS before the closing </body> tag
-    ============================================================ -->
-  <script>
-      (function () {
-          const form = document.getElementById('calyntro-contact-form');
-          const success = document.getElementById('cf-success');
-          const submit = document.getElementById('cf-submit');
-
-          if (!form) return;
-
-          form.addEventListener('submit', async function (e) {
-              e.preventDefault();
-              submit.textContent = 'Sending…';
-              submit.disabled = true;
-
-              try {
-                  const data = new FormData(form);
-                  const res = await fetch(form.action, {
-                      method: 'POST',
-                      body: data,
-                      headers: { 'Accept': 'application/json' }
-                  });
-
-                  if (res.ok) {
-                      success.style.display = 'flex';
-                  } else {
-                      submit.textContent = 'Something went wrong — try again';
-                      submit.disabled = false;
-                  }
-              } catch (err) {
-                  submit.textContent = 'Something went wrong — try again';
-                  submit.disabled = false;
-              }
-          });
-      })();
-  </script>
   <!-- Footer -->
   <footer>
     <div class="footer-inner">
       <a href="#" class="footer-logo">
-        <img src="calyntro.png" alt="Calyntro" />
+        <img src="data:image/png;base64,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" alt="Calyntro" />
         Calyntro
       </a>
-      <span class="footer-note">© 2025–2026 karl-heinz reichel · calyntro 0.9.3</span>
+      <span class="footer-note">© 2025–2026 Karl-Heinz Reichel · calyntro.com</span>
       <ul class="footer-links">
-        <li><a href="https://khreichel.github.io/Calyntro/docs/" target="_blank" rel="noopener">Docs</a></li>
-        <li><a href="https://khreichel.github.io/Calyntro/docs/installation.html" target="_blank" rel="noopener">Install</a></li>
-        <li><a href="https://khreichel.github.io/Calyntro/docs/analysis.html" target="_blank" rel="noopener">Analyses</a></li>
+        <li><a href="https://calyntro.com/blog">Blog</a></li>
+        <li><a href="#contact">Contact</a></li>
       </ul>
     </div>
   </footer>
+
+  <script>
+    (function () {
+      const form = document.getElementById('calyntro-contact-form');
+      const success = document.getElementById('cf-success');
+      const submit = document.getElementById('cf-submit');
+      if (!form) return;
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        submit.textContent = 'Sending…';
+        submit.disabled = true;
+        try {
+          const data = new FormData(form);
+          const res = await fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+          if (res.ok) { success.style.display = 'flex'; }
+          else { submit.textContent = 'Something went wrong — try again'; submit.disabled = false; }
+        } catch (err) { submit.textContent = 'Something went wrong — try again'; submit.disabled = false; }
+      });
+    })();
+  </script>
 
 </body>
 </html>
