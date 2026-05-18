@@ -51,8 +51,6 @@
     html { font-size: 16px; scroll-behavior: smooth; }
     body { font-family: var(--font); background: var(--bg); color: var(--text-primary); line-height: 1.65; -webkit-font-smoothing: antialiased; }
 
-    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 32px; }
-
     /* Subtle grid bg */
     body::before {
       content: '';
@@ -239,6 +237,152 @@
     .footer-links { display: flex; gap: 20px; list-style: none; }
     .footer-links a { font-size: 12px; color: var(--text-tertiary); text-decoration: none; transition: color 0.15s; }
     .footer-links a:hover { color: var(--text-secondary); }
+
+    /* ===== IMPRESSUM MODAL ===== */
+    .impressum-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 14, 13, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .impressum-overlay.is-open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .impressum-modal {
+      background: #0f2423;
+      border: 0.5px solid var(--border-mid);
+      border-radius: 16px;
+      max-width: 560px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(27,191,176,0.08);
+      transform: translateY(12px);
+      transition: transform 0.2s ease;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(27,191,176,0.2) transparent;
+    }
+    .impressum-overlay.is-open .impressum-modal {
+      transform: translateY(0);
+    }
+    .impressum-modal::-webkit-scrollbar { width: 4px; }
+    .impressum-modal::-webkit-scrollbar-track { background: transparent; }
+    .impressum-modal::-webkit-scrollbar-thumb { background: rgba(27,191,176,0.2); border-radius: 2px; }
+
+    .impressum-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 28px 20px;
+      border-bottom: 0.5px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: #0f2423;
+      z-index: 1;
+    }
+    .impressum-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .impressum-eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+    .impressum-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .impressum-close {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--r-md);
+      background: rgba(255,255,255,0.05);
+      border: 0.5px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      line-height: 1;
+      transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .impressum-close:hover {
+      background: rgba(255,255,255,0.09);
+      color: var(--text-primary);
+    }
+    .impressum-body {
+      padding: 24px 28px 28px;
+    }
+    .imp-section {
+      margin-bottom: 24px;
+    }
+    .imp-section:last-child {
+      margin-bottom: 0;
+    }
+    .imp-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 0.5px solid rgba(27,191,176,0.15);
+    }
+    .imp-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 5px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .imp-key {
+      color: var(--text-tertiary);
+      min-width: 140px;
+      flex-shrink: 0;
+    }
+    .imp-val {
+      color: var(--text-secondary);
+    }
+    .imp-val a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+    .imp-val a:hover {
+      text-decoration: underline;
+    }
+    .imp-note {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      line-height: 1.65;
+      background: var(--bg-card);
+      border: 0.5px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 12px 14px;
+      margin-top: 6px;
+    }
+    .imp-divider {
+      height: 0.5px;
+      background: var(--border);
+      margin: 20px 0;
+    }
   </style>
 </head>
 <body>
@@ -498,33 +642,187 @@
         <img src="data:image/png;base64,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" alt="Calyntro" />
         Calyntro
       </a>
-      <span class="footer-note">© 2025–2026 Karl-Heinz Reichel · calyntro.com</span>
+      <span class="footer-note">© 2025–2026 Ing-Büro Reichel-Langer · calyntro.com</span>
       <ul class="footer-links">
         <li><a href="https://calyntro.com/blog">Blog</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><a href="#" id="impressum-trigger">Impressum</a></li>
       </ul>
     </div>
   </footer>
 
+  <!-- ===== IMPRESSUM MODAL ===== -->
+  <div class="impressum-overlay" id="impressum-overlay" role="dialog" aria-modal="true" aria-labelledby="impressum-modal-title">
+    <div class="impressum-modal" id="impressum-modal">
+      <div class="impressum-header">
+        <div class="impressum-header-left">
+          <span class="impressum-eyebrow">Rechtliche Angaben</span>
+          <h2 class="impressum-title" id="impressum-modal-title">Impressum</h2>
+        </div>
+        <button class="impressum-close" id="impressum-close" aria-label="Impressum schließen">✕</button>
+      </div>
+
+      <div class="impressum-body">
+
+        <!-- Angaben gemäß §5 TMG -->
+        <div class="imp-section">
+          <div class="imp-section-label">Angaben gemäß § 5 TMG</div>
+          <div class="imp-row">
+            <span class="imp-key">Unternehmen</span>
+            <span class="imp-val">Ing-Büro Reichel-Langer</span>
+          </div>
+          <div class="imp-row">
+            <span class="imp-key">Rechtsform</span>
+            <span class="imp-val">Personengesellschaft</span>
+          </div>
+          <div class="imp-row">
+            <span class="imp-key">Anschrift</span>
+            <span class="imp-val">Trollmannstraße 9<br>86650 Wemding<br>Deutschland</span>
+          </div>
+        </div>
+
+        <div class="imp-divider"></div>
+
+        <!-- Kontakt -->
+        <div class="imp-section">
+          <div class="imp-section-label">Kontakt</div>
+          <div class="imp-row">
+            <span class="imp-key">Telefon</span>
+            <span class="imp-val"><a href="tel:+4909092911773">09092 911773</a></span>
+          </div>
+          <div class="imp-row">
+            <span class="imp-key">E-Mail</span>
+            <span class="imp-val"><a href="mailto:khreichel@calyntro.com">khreichel@calyntro.com</a></span>
+          </div>
+        </div>
+
+        <div class="imp-divider"></div>
+
+        <!-- Verantwortlicher -->
+        <div class="imp-section">
+          <div class="imp-section-label">Vertretungsberechtigte Person</div>
+          <div class="imp-row">
+            <span class="imp-key">Inhaber</span>
+            <span class="imp-val">Karl-Heinz Reichel</span>
+          </div>
+        </div>
+
+        <div class="imp-divider"></div>
+
+        <!-- Steuer / Berufsrecht -->
+        <div class="imp-section">
+          <div class="imp-section-label">Steuerliche Angaben</div>
+          <div class="imp-row">
+            <span class="imp-key">Umsatzsteuer-ID</span>
+            <span class="imp-val"><!-- Nicht vorhanden (Kleinunternehmer gemäß § 19 UStG) --> </span>
+          </div>
+          <div class="imp-note">
+            <!--  Gemäß § 19 UStG wird keine Umsatzsteuer berechnet. Eine Umsatzsteuer-Identifikationsnummer liegt nicht vor. -->
+          </div>
+        </div>
+
+        <div class="imp-divider"></div>
+
+        <!-- Haftung für Inhalte -->
+        <div class="imp-section">
+          <div class="imp-section-label">Haftung für Inhalte</div>
+          <div class="imp-note">
+            Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt.
+          </div>
+        </div>
+
+        <div class="imp-divider"></div>
+
+        <!-- Haftung für Links -->
+        <div class="imp-section">
+          <div class="imp-section-label">Haftung für Links</div>
+          <div class="imp-note">
+            Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.
+          </div>
+        </div>
+
+        <div class="imp-divider"></div>
+
+        <!-- Urheberrecht -->
+        <div class="imp-section">
+          <div class="imp-section-label">Urheberrecht</div>
+          <div class="imp-note">
+            Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+          </div>
+        </div>
+
+      </div><!-- /impressum-body -->
+    </div><!-- /impressum-modal -->
+  </div><!-- /impressum-overlay -->
+
   <script>
-    (function () {
-      const form = document.getElementById('calyntro-contact-form');
-      const success = document.getElementById('cf-success');
-      const submit = document.getElementById('cf-submit');
-      if (!form) return;
-      form.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        submit.textContent = 'Sending…';
-        submit.disabled = true;
-        try {
-          const data = new FormData(form);
-          const res = await fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
-          if (res.ok) { success.style.display = 'flex'; }
-          else { submit.textContent = 'Something went wrong — try again'; submit.disabled = false; }
-        } catch (err) { submit.textContent = 'Something went wrong — try again'; submit.disabled = false; }
-      });
-    })();
+   /* Contact form */
+   (function () {
+       const form = document.getElementById('calyntro-contact-form');
+       const success = document.getElementById('cf-success');
+       const submit = document.getElementById('cf-submit');
+       if (!form) return;
+       form.addEventListener('submit', async function (e) {
+           e.preventDefault();
+           submit.textContent = 'Sending…';
+           submit.disabled = true;
+           try {
+               const data = new FormData(form);
+               const res = await fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+               if (res.ok) { success.style.display = 'flex'; }
+               else { submit.textContent = 'Something went wrong — try again'; submit.disabled = false; }
+           } catch (err) { submit.textContent = 'Something went wrong — try again'; submit.disabled = false; }
+       });
+   })();
+
+   /* Impressum Modal */
+   (function () {
+       const overlay  = document.getElementById('impressum-overlay');
+       const modal    = document.getElementById('impressum-modal');
+       const trigger  = document.getElementById('impressum-trigger');
+       const closeBtn = document.getElementById('impressum-close');
+
+       function openModal(e) {
+           e.preventDefault();
+           overlay.classList.add('is-open');
+           document.body.style.overflow = 'hidden';
+           closeBtn.focus();
+       }
+
+       function closeModal() {
+           overlay.classList.remove('is-open');
+           document.body.style.overflow = '';
+           trigger.focus();
+       }
+
+       trigger.addEventListener('click', openModal);
+       closeBtn.addEventListener('click', closeModal);
+
+       // Close on backdrop click
+       overlay.addEventListener('click', function (e) {
+           if (e.target === overlay) closeModal();
+       });
+
+       // Close on Escape
+       document.addEventListener('keydown', function (e) {
+           if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeModal();
+       });
+
+       // Trap focus inside modal
+       modal.addEventListener('keydown', function (e) {
+           if (e.key !== 'Tab') return;
+           const focusable = modal.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+           const first = focusable[0];
+           const last  = focusable[focusable.length - 1];
+           if (e.shiftKey) {
+               if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+           } else {
+               if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+           }
+       });
+   })();
   </script>
 
 </body>
 </html>
+
